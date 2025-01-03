@@ -4,12 +4,13 @@ import os
 
 # Установка размеров окна
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) = 1200, 800
-PLATFORM_WIDTH = PLATFORM_HEIGHT = 42  # Ширина и высота платформ
+PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
 MOVE_STEP = 42
+FPS = 60
 
 # Начальное положения персонажа (отсчет с 0)
-START_X = 1
-START_Y = 1
+START_X = 11
+START_Y = 15
 
 BACKGROUND_COLOR = "#101920"  # Цвет фона
 
@@ -39,20 +40,18 @@ class Platform(sprite.Sprite):
 class Player(sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.timer = pygame.time.Clock()  # Создаем таймер
 
         # Направление взгляда персонажа (начальное вправо вниз)
-        self.up = False
-        self.down = True
-        self.left = False
-        self.right = True
+        self.up = self.left = False
+        self.down = self.right = True
+        self.direction = None
 
         # Загружаем кадры для различных направлений
         self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botleft")
-        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botright")
+        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_botright")
         self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_leftbot")
         self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_lefttop")
-        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_rightbot")
+        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_rightbot")
         self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_righttop")
         self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topleft")
         self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topright")
@@ -60,13 +59,27 @@ class Player(sprite.Sprite):
         self.frames = self.frames_down_right  # Начальные кадры - смотрим вниз вправо
         self.index = 0  # Индекс текущего кадра
         self.image = self.frames[self.index]  # Начальное изображение
-
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для игрока
         self.frame_rate = 8  # Частота смены кадров
         self.frame_counter = 0  # Счетчик кадров для управления анимацией
 
-    # Метод обновления состояния игрока
-    def update(self, left, right, up, down, platforms):
+    def start_move(self, left, right, up, down, direction):
+        # Установка направления движения на основе нажатых клавиш
+        self.direction = direction
+        if left:
+            self.left = True
+            self.right = False
+        elif right:
+            self.right = True
+            self.left = False
+        elif up:
+            self.up = True
+            self.down = False
+        elif down:
+            self.down = True
+            self.up = False
+
+    def update(self, platforms):
         # Основная логика анимации
         self.frame_counter += 1
         if self.frame_counter >= self.frame_rate:
@@ -74,50 +87,62 @@ class Player(sprite.Sprite):
             self.index = (self.index + 1) % len(self.frames)
             self.image = self.frames[self.index]
 
+        # Двигаемся в текущее направление, если оно задано
+        if self.direction:
+            moved = self.move(platforms)
+            if not moved:
+                self.direction = None  # Останавливаем движение, если столкновение
+
+    def move(self, platforms):
         # Переменные для изменения позиции
         dx, dy = 0, 0
-        if left:
+
+        if self.direction == 'left':
             dx = -MOVE_STEP
-            self.frames = self.frames_left_down if self.down else self.frames_left_up
-        elif right:
+            if self.down:
+                self.frames = self.frames_left_down
+            elif self.up:
+                self.frames = self.frames_left_up
+
+        elif self.direction == 'right':
             dx = MOVE_STEP
-            self.frames = self.frames_right_down if self.down else self.frames_right_up
-        elif up:
+            if self.down:
+                self.frames = self.frames_right_down
+            elif self.up:
+                self.frames = self.frames_right_up
+
+        elif self.direction == 'up':
             dy = -MOVE_STEP
-            self.frames = self.frames_up_left if self.left else self.frames_up_right
-        elif down:
+            if self.left:
+                self.frames = self.frames_up_left
+            elif self.right:
+                self.frames = self.frames_up_right
+
+        elif self.direction == 'down':
             dy = MOVE_STEP
-            self.frames = self.frames_down_left if self.left else self.frames_down_right
+            if self.left:
+                self.frames = self.frames_down_left
+            elif self.right:
+                self.frames = self.frames_down_right
 
-        # Если есть движение, начинаем процесс движения
-        if dx != 0 or dy != 0:
-            self.move(dx, dy, platforms)  # Вызываем метод перемещения
+        # Обновляем позицию игрока
+        self.rect.x += dx
+        self.rect.y += dy
 
-    def move(self, dx, dy, platforms):
-        # Постоянно обновляем положение до столкновения со стеной
-        while True:
-            # Обновляем позицию игрока
-            self.rect.x += dx
-            self.rect.y += dy
+        # Проверка коллизий с платформами
+        for platform in platforms:
+            if self.rect.colliderect(platform.rect):
+                if dx < 0:  # Движение влево
+                    self.rect.left = platform.rect.right
+                elif dx > 0:  # Движение вправо
+                    self.rect.right = platform.rect.left
+                if dy < 0:  # Движение вверх
+                    self.rect.top = platform.rect.bottom
+                elif dy > 0:  # Движение вниз
+                    self.rect.bottom = platform.rect.top
+                return False  # Столкновение произошло
 
-            # Проверка коллизий с платформами
-            collided = False
-            for platform in platforms:
-                if self.rect.colliderect(platform.rect):  # Если игрок столкнулся с платформой
-                    collided = True
-                    # Восстанавливаем позицию перед столкновением
-                    if dx < 0:  # Если движемся влево
-                        self.rect.left = platform.rect.right
-                    elif dx > 0:  # Если движемся вправо
-                        self.rect.right = platform.rect.left
-                    if dy < 0:  # Если движемся вверх
-                        self.rect.top = platform.rect.bottom
-                    elif dy > 0:  # Если движемся вниз
-                        self.rect.bottom = platform.rect.top
-                    break
-
-            if collided:
-                break  # Завершаем движение при столкновении
+        return True  # Перемещение прошло успешно
 
 
 # Класс для представления камеры
@@ -155,12 +180,11 @@ def camera_configure(camera, target_rect):
     return Rect(l, t, w, h)
 
 
-# Загрузка анимации персонажа
+# Функция для загрузки анимационных кадров
 def load_animation_frames(path, count, prefix):
-    """Загружает анимационные кадры из файлов."""
     frames = []
     for i in range(count):
-        image_path = os.path.join(path, f'{prefix}_{i}.png')  # Загружаем из общей папки man
+        image_path = os.path.join(path, f'{prefix}_{i}.png')  # Загружаем кадры анимации
         frames.append(image.load(image_path))
     return frames
 
@@ -173,7 +197,7 @@ def main():
     bg = Surface(DISPLAY)  # Создаем поверхность для фона
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
-    hero = Player(42 * START_X, 42 * START_Y)  # Создаем экземпляр игрока
+    hero = Player(START_X * 42, START_Y * 42)  # Создаем экземпляр игрока
     entities = pygame.sprite.Group()  # Группа всех спрайтов
     platforms = []  # Список платформ
 
@@ -181,38 +205,38 @@ def main():
 
     # Определение уровня в виде строк
     level = [
-        "6336333336333336333336333336333336333336333336333336333336333337",
-        "p00p00000p00000p00000p00000p00000p00000p00000p00000p00000p00000p",
-        "p00p00000p00000p00000p00000p00000p00000p00000p00000p00000p00000p",
-        "p00p00u00p00u00p00u00p00u00p00u00p00u00p00u00p00u00p00u00p00u00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p00p",
-        "p00-00p00-00p00-00p00-00p00-00p00-00p00-00p00-00p00-00p00-00-00p",
-        "p00000p00000p00000p00000p00000p00000p00000p00000p00000p00000000p",
-        "p00000p00000p00000p00000p00000p00000p00000p00000p00000p00000000p",
-        "92--------------------------------------------------------------",
+        "00000000063700000",
+        "00000000040500000",
+        "00000000040500000",
+        "00000000040500000",
+        "00000000040500000",
+        "000000633r0500000",
+        "00000040000500000",
+        "000000400w2800000",
+        "000000400e7000000",
+        "00000040005000000",
+        "00000092q05000000",
+        "00000000405000000",
+        "00000000405000000",
+        "00000063r0e370000",
+        "00000040000050000",
+        "0000004000u050000",
+        "0000004000p050000",
+        "0000004000p050000",
+        "000633txy2s050000",
+        "00040000504050000",
+        "00040wq0e3r050000",
+        "00040540000050000",
+        "633r0etxxxyca3337",
+        "4000000000er00005",
+        "40000w22q00000005",
+        "400005009cxxz0005",
+        "40000500040000005",
+        "92--2800040000005",
+        "00000000040000005",
+        "00000000092----28",
     ]
 
-    timer = pygame.time.Clock()  # Создаем таймер
     x = y = 0  # Начальные координаты для размещения платформ
     for row in level:
         for col in row:
@@ -232,20 +256,31 @@ def main():
     camera = Camera(camera_configure, total_level_width, total_level_height)  # Создаем камеру
 
     while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:  # Если событие 'QUIT', выходим из программы
-                exit()
-
         keys = pygame.key.get_pressed()  # Получаем состояние клавиш
-        hero.update(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], platforms)  # Обновляем состояние игрока
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit()
+            elif event.type == KEYDOWN:  # Обработка нажатий клавиш
+                if event.key == K_LEFT:
+                    hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'left')
+                elif event.key == K_RIGHT:
+                    hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'right')
+                elif event.key == K_UP:
+                    hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
+                elif event.key == K_DOWN:
+                    hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
+
+        # Обновляем игрока
+        hero.update(platforms)
 
         screen.blit(bg, (0, 0))  # Отображаем фон
         camera.update(hero)  # Обновляем камеру
-        for i in entities:  # Отображаем все сущности на экране
-            screen.blit(i.image, camera.apply(i))
+        for spr in entities:
+            screen.blit(spr.image, camera.apply(spr))
 
         pygame.display.update()  # Обновляем экран
-        timer.tick(60)  # Ограничиваем FPS игры до 60
+        pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 60
+
 
 # Запуск основной функции
 if __name__ == "__main__":
