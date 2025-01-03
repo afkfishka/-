@@ -10,5 +10,5 @@
 
 ### Клонирование репозитория
 ```bash
-git clone https://github.com/yourusername/mysteries-of-the-dungeons.git
+git clone https://github.com/afkfishka/Tajny-podzemelij
 cd mysteries-of-the-dungeons
