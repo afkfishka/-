@@ -1,9 +1,12 @@
 import pygame
 import sys
+import game
+
+STATE = game.load_game()
 
 flag_shop = False  # флаг для отрисовки магазина
 flag_skins = False  # флаг для отрисовки меню скинов
-flag_map = False  # флаг для отрисовки карты уровней
+flag_map = True  # флаг для отрисовки карты уровней
 flag_arcade = False  # флаг для отрисовки аркады
 
 
@@ -171,6 +174,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption("Тайны подземелий")
 
+        # Воспроизведение фоновой музыки
+        pygame.mixer.init()
+        pygame.mixer.music.load('music and sounds/menu.mp3')
+        pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
+        pygame.mixer.music.set_volume(0.02)  # Установка громкости на 2%
+
         self.BLACK = (0, 0, 0)
 
         self.font_path = 'fonts/zx_spectrum_7_bold.ttf'
@@ -233,16 +242,16 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
             if flag_map:  # отображение карты уровней
                 self.map_sprites.draw(self.screen)
-                self.draw_text("1", self.b_font, self.screen, 180, 310, (160, 40, 222))  # 6 4
-                self.draw_text("2", self.b_font, self.screen, 180, 470, (160, 40, 222))
-                self.draw_text("3", self.b_font, self.screen, 390, 470, (160, 40, 222))
-                self.draw_text("4", self.b_font, self.screen, 390, 310, (160, 40, 222))
-                self.draw_text("5", self.b_font, self.screen, 600, 310, (160, 40, 222))
-                self.draw_text("6", self.b_font, self.screen, 600, 470, (160, 40, 222))
-                self.draw_text("7", self.b_font, self.screen, 810, 470, (160, 40, 222))
-                self.draw_text("8", self.b_font, self.screen, 810, 310, (160, 40, 222))
-                self.draw_text("9", self.b_font, self.screen, 1020, 310, (160, 40, 222))
-                self.draw_text("10", self.b_font, self.screen, 1020, 470, (160, 40, 222))
+                self.draw_text("1", self.b_font, self.screen, 180, 310, (0, 0, 0))  # 6 4
+                self.draw_text("2", self.b_font, self.screen, 180, 470, (0, 0, 0))
+                self.draw_text("3", self.b_font, self.screen, 390, 470, (0, 0, 0))
+                self.draw_text("4", self.b_font, self.screen, 390, 310, (0, 0, 0))
+                self.draw_text("5", self.b_font, self.screen, 600, 310, (0, 0, 0))
+                self.draw_text("6", self.b_font, self.screen, 600, 470, (0, 0, 0))
+                self.draw_text("7", self.b_font, self.screen, 810, 470, (0, 0, 0))
+                self.draw_text("8", self.b_font, self.screen, 810, 310, (0, 0, 0))
+                self.draw_text("9", self.b_font, self.screen, 1020, 310, (0, 0, 0))
+                self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0))
 
             # Обработка событий
             for event in pygame.event.get():
@@ -293,9 +302,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         for sprite in self.map_sprites:
             if sprite.rect.collidepoint(pos):
                 if isinstance(sprite, Lvl1):
-                    print('1')
+                    game.main("level_1.txt", 13, 28)
                 elif isinstance(sprite, Lvl2):
-                    print('2')
+                    game.main("level_2.txt", 12, 4)
                 elif isinstance(sprite, Lvl3):
                     print('3')
                 elif isinstance(sprite, Lvl4):

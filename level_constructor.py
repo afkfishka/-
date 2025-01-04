@@ -4,7 +4,7 @@ import re
 from pygame import KEYDOWN, K_ESCAPE
 
 screen_size = width, height = 1920, 1080
-cell_size = 30
+cell_size = 15
 
 
 class Board:

@@ -1,20 +1,21 @@
 import pygame
 from pygame import *
 import os
+import pickle
 
-# Установка размеров окна
+# Установка размеров окна и платформы
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) = 1200, 800
 PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
+
 MOVE_STEP = 21
 FPS = 120
 
-SELECT_LEVEL = "level_1.txt"
+STATE = {'coins': 0,
+         'levels': [0, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+         'music': None,
+         'sound': None}
 
-# Начальное положения персонажа (отсчет с 0)
-START_X = 13
-START_Y = 28
-
-BACKGROUND_COLOR = "#101920"  # Цвет фона
+BACKGROUND_COLOR = "#00000000"
 
 # Получение директории для изображений
 ICON_DIR = os.path.dirname(__file__)
@@ -26,7 +27,13 @@ WALL_IMAGES = {
     '⊓': 'wall_10.png', '⊏': 'wall_11.png', '⊔': 'wall_12.png', '⊐': 'wall_13.png', '=': 'wall_14.png',
     '║': 'wall_15.png', '┓': 'wall_16.png', '┛': 'wall_17.png', '┗': 'wall_18.png', '┏': 'wall_19.png',
     'q': 'wall_20.png', 'w': 'wall_21.png', 'e': 'wall_22.png', 'r': 'wall_23.png', 't': 'wall_24.png',
-    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png',
+    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png', 'o': 'wall_28.png',
+}
+
+# Словарь с изображениями шипов
+SPIKE_IMAGES = {
+    'z': 'spike_0.png', 'x': 'spike_1.png', 'c': 'spike_2.png', 'v': 'spike_3.png',
+    'b': 'spike_4.png', 'n': 'spike_5.png', 'm': 'spike_6.png', ',': 'spike_7.png',
 }
 
 
@@ -46,6 +53,8 @@ class Player(sprite.Sprite):
         # Направление взгляда персонажа (начальное вправо вниз)
         self.up = self.left = False
         self.down = self.right = True
+
+        # Направление передвижения
         self.direction = None
 
         # Загружаем кадры для различных направлений
@@ -208,12 +217,33 @@ class Finish(sprite.Sprite):
         self.frame_counter = 0
 
     def update(self):
-        # Логика анимации объекта Finish
+        # Логика анимации финиша
         self.frame_counter += 1
         if self.frame_counter >= self.frame_rate:
             self.frame_counter = 0
             self.index = (self.index + 1) % len(self.frames)
             self.image = self.frames[self.index]
+
+    def activate_menu(self):
+        # Возвращаемся в меню
+        from lobby import Lobby  # Импорт класса Lobby для перехода обратно
+        Lobby()  # Инициализируем меню
+
+
+# Новый класс для шипов
+class Spike(sprite.Sprite):
+    def __init__(self, x, y, spike_type):
+        super().__init__()
+        self.image = image.load(Spike.get_spike_image_path(spike_type))  # Исправлено: добавлено 'Spike.'
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для шипа
+
+    def get_spike_image_path(key):
+        return os.path.join(os.path.dirname(__file__), "spike", SPIKE_IMAGES[key])  # Получаем путь
+
+    def activate_menu(self):
+        # Возвращаемся в меню
+        from lobby import Lobby  # Импорт класса Lobby для перехода обратно
+        Lobby()  # Инициализируем меню
 
 
 # Класс для представления камеры
@@ -267,22 +297,44 @@ def load_level_from_file(filename):
         return []
 
 
+# функция для сохранения игры
+def save_game(state):
+    with open('savegame.pkl', 'wb') as f:
+        pickle.dump(state, f)
+
+
+# функция для загрузки сохраненной игры
+def load_game():
+    with open('savegame.pkl', 'rb') as f:
+        state = pickle.load(f)
+    return state
+
+
 # Основная функция игры
-def main():
+def main(name_file, start_x, start_y):
+    pygame.mixer.music.stop()  # Останавливаем текущую музыку
+
+    pygame.mixer.init()
+    pygame.mixer.music.load('music and sounds/game.mp3')
+    pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
+    pygame.mixer.music.set_volume(0.1)  # Установка громкости на 10%
+
     pygame.init()  # Инициализация Pygame
     screen = pygame.display.set_mode(DISPLAY)  # Создание окна игры
     pygame.display.set_caption("Тайны подземелий")  # Установка заголовка окна
     bg = Surface(DISPLAY)  # Создаем поверхность для фона
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
-    hero = Player(START_X * PLATFORM_WIDTH, START_Y * PLATFORM_HEIGHT)  # Создаем экземпляр игрока
+    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)  # Создаем экземпляр игрока
     entities = pygame.sprite.Group()  # Группа всех спрайтов
     platforms = []  # Список платформ
 
     entities.add(hero)  # Добавляем игрока в группу спрайтов
+    count_star = 0
+    count_coin = 0
 
     # Определение уровня в виде строк
-    level = load_level_from_file(os.path.join("levels", SELECT_LEVEL))
+    level = load_level_from_file(os.path.join("levels", name_file))
 
     if not level:
         print("Ошибка: Не удалось загрузить уровень.")
@@ -308,6 +360,9 @@ def main():
             elif col == 'F':  # Объект Finish
                 finish = Finish(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
                 entities.add(finish)  # Добавляем объект Finish в группу спрайтов
+            elif col in SPIKE_IMAGES:  # Шипы
+                spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)  # Передаем символ
+                entities.add(spike)
 
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
@@ -340,8 +395,16 @@ def main():
         # Проверка столкновений с объектами
         collided_objects = pygame.sprite.spritecollide(hero, entities, dokill=False)
         for obj in collided_objects:
+            # Проверка столкновения игрока с шипами
+            if isinstance(obj, Spike):
+                print("Вы погибли!")
+                pygame.quit()  # Закрываем текущее игровое окно
+                obj.activate_menu()  # Активируем меню
+                pygame.quit()  # Закрываем текущее игровое окно
+
             if isinstance(obj, Coin):
                 print("Монета собрана!")
+                count_coin += 1
                 entities.remove(obj)  # Удаляем монету
             elif isinstance(obj, XP):
                 print("Опыт получен!")
@@ -349,8 +412,17 @@ def main():
             elif isinstance(obj, Star):
                 print("Звезда собрана!")
                 entities.remove(obj)  # Удаляем звезду
+                count_star += 1
             elif isinstance(obj, Finish):
-                print("Поздравляю! Вы достигли финиша!")  # Сообщение о достижении финиша
+                print("Поздравляю! Вы достигли финиша!")
+
+                STATE['levels'][int(name_file[-5]) - 1] = count_star
+                STATE['coins'] += count_coin
+                save_game(STATE)
+
+                obj.activate_menu()  # Активируем меню
+                pygame.quit()  # Закрываем текущее игровое окно
+                return  # Завершаем выполнение игры
 
         # Отображение заднего фона и всех сущностей
         screen.blit(bg, (0, 0))  # Отображаем фон
@@ -360,8 +432,3 @@ def main():
 
         pygame.display.update()  # Обновляем экран
         pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
-
-
-# Запуск основной функции
-if __name__ == "__main__":
-    main()
