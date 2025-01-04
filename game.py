@@ -5,12 +5,14 @@ import os
 # Установка размеров окна
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) = 1200, 800
 PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
-MOVE_STEP = 42
-FPS = 60
+MOVE_STEP = 21
+FPS = 120
+
+SELECT_LEVEL = "level_1.txt"
 
 # Начальное положения персонажа (отсчет с 0)
-START_X = 11
-START_Y = 15
+START_X = 13
+START_Y = 28
 
 BACKGROUND_COLOR = "#101920"  # Цвет фона
 
@@ -19,12 +21,12 @@ ICON_DIR = os.path.dirname(__file__)
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
-    '1': 'wall_1.png', '2': 'wall_2.png', '3': 'wall_3.png', '4': 'wall_4.png',
-    '5': 'wall_5.png', '6': 'wall_6.png', '7': 'wall_7.png', '8': 'wall_8.png',
-    '9': 'wall_9.png', '-': 'wall_2.png', 'z': 'wall_10.png', 'x': 'wall_11.png',
-    'c': 'wall_12.png', 'q': 'wall_13.png', 'w': 'wall_14.png', 'e': 'wall_15.png',
-    'r': 'wall_16.png', 't': 'wall_17.png', 'y': 'wall_18.png', 'u': 'wall_19.png',
-    'p': 'wall_20.png', 'a': 'wall_21.png', 's': 'wall_22.png'
+    '□': 'wall_1.png', '▔': 'wall_2.png', '▁': 'wall_3.png', '▕': 'wall_4.png', '▎': 'wall_5.png',
+    '╔': 'wall_6.png', '╗': 'wall_7.png', '╚': 'wall_8.png', '╝': 'wall_9.png', '-': 'wall_2.png',
+    '⊓': 'wall_10.png', '⊏': 'wall_11.png', '⊔': 'wall_12.png', '⊐': 'wall_13.png', '=': 'wall_14.png',
+    '║': 'wall_15.png', '┓': 'wall_16.png', '┛': 'wall_17.png', '┗': 'wall_18.png', '┏': 'wall_19.png',
+    'q': 'wall_20.png', 'w': 'wall_21.png', 'e': 'wall_22.png', 'r': 'wall_23.png', 't': 'wall_24.png',
+    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png',
 }
 
 
@@ -48,13 +50,18 @@ class Player(sprite.Sprite):
 
         # Загружаем кадры для различных направлений
         self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botleft")
-        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_botright")
+        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                       "man_botright")
         self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_leftbot")
         self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_lefttop")
-        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_rightbot")
+        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                       "man_rightbot")
         self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_righttop")
         self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topleft")
         self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topright")
+
+        # Загружаем кадры анимации движения
+        self.flight_frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 4, "man_move")
 
         self.frames = self.frames_down_right  # Начальные кадры - смотрим вниз вправо
         self.index = 0  # Индекс текущего кадра
@@ -65,27 +72,35 @@ class Player(sprite.Sprite):
 
     def start_move(self, left, right, up, down, direction):
         # Установка направления движения на основе нажатых клавиш
-        self.direction = direction
-        if left:
-            self.left = True
-            self.right = False
-        elif right:
-            self.right = True
-            self.left = False
-        elif up:
-            self.up = True
-            self.down = False
-        elif down:
-            self.down = True
-            self.up = False
+        if not self.direction:
+            self.direction = direction
+            if left:
+                self.left = True
+                self.right = False
+            elif right:
+                self.right = True
+                self.left = False
+            elif up:
+                self.up = True
+                self.down = False
+            elif down:
+                self.down = True
+                self.up = False
 
     def update(self, platforms):
-        # Основная логика анимации
-        self.frame_counter += 1
-        if self.frame_counter >= self.frame_rate:
-            self.frame_counter = 0
-            self.index = (self.index + 1) % len(self.frames)
-            self.image = self.frames[self.index]
+        # Проверяем, движется ли игрок
+        if self.direction:  # Если персонаж движется, используем анимацию
+            self.frame_counter += 1
+            if self.frame_counter >= self.frame_rate:
+                self.frame_counter = 0
+                self.index = (self.index + 1) % len(self.flight_frames)
+                self.image = self.flight_frames[self.index]
+        else:  # Если не движется, используем основную анимацию
+            self.frame_counter += 1
+            if self.frame_counter >= self.frame_rate:
+                self.frame_counter = 0
+                self.index = (self.index + 1) % len(self.frames)
+                self.image = self.frames[self.index]
 
         # Двигаемся в текущее направление, если оно задано
         if self.direction:
@@ -145,6 +160,62 @@ class Player(sprite.Sprite):
         return True  # Перемещение прошло успешно
 
 
+# Новый класс для монет
+class Coin(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'coin'), 4, "coin")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.frame_rate = 15
+        self.frame_counter = 0
+
+    def update(self):
+        # Логика анимации монеты
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+
+
+# Новый класс для опыта
+class XP(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'xp', 'xp_0.png'))
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+
+# Новый класс для звезд
+class Star(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'star', 'star_0.png'))
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+
+# Новый класс для финиша
+class Finish(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'exit'), 2, "exit")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.frame_rate = 15
+        self.frame_counter = 0
+
+    def update(self):
+        # Логика анимации объекта Finish
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+
+
 # Класс для представления камеры
 class Camera:
     def __init__(self, camera_func, width, height):
@@ -169,14 +240,6 @@ def camera_configure(camera, target_rect):
     _, _, w, h = camera
     l, t = -l + WIN_WIDTH // 2, -t + WIN_HEIGHT // 2  # Центрируем камеру на игроке
 
-    # Ограничиваем движение камеры по x
-    l = max(-(camera.width - WIN_WIDTH), l)  # Правая граница
-    l = min(0, l)  # Левая граница
-
-    # Ограничиваем движение камеры по y
-    t = max(-(camera.height - WIN_HEIGHT), t)  # Нижняя граница
-    t = min(0, t)  # Верхняя граница
-
     return Rect(l, t, w, h)
 
 
@@ -189,6 +252,21 @@ def load_animation_frames(path, count, prefix):
     return frames
 
 
+def load_level_from_file(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            level = file.readlines()
+        if not level:
+            raise ValueError("Файл уровня пуст.")
+        return [line.strip() for line in level]  # Возвращаем строки уровня без изменений
+    except FileNotFoundError:
+        print(f"Ошибка: Файл не найден: {filename}")
+        return []
+    except ValueError as e:
+        print(e)
+        return []
+
+
 # Основная функция игры
 def main():
     pygame.init()  # Инициализация Pygame
@@ -197,58 +275,39 @@ def main():
     bg = Surface(DISPLAY)  # Создаем поверхность для фона
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
-    hero = Player(START_X * 42, START_Y * 42)  # Создаем экземпляр игрока
+    hero = Player(START_X * PLATFORM_WIDTH, START_Y * PLATFORM_HEIGHT)  # Создаем экземпляр игрока
     entities = pygame.sprite.Group()  # Группа всех спрайтов
     platforms = []  # Список платформ
 
     entities.add(hero)  # Добавляем игрока в группу спрайтов
 
     # Определение уровня в виде строк
-    level = [
-        "00000000063700000",
-        "00000000040500000",
-        "00000000040500000",
-        "00000000040500000",
-        "00000000040500000",
-        "000000633r0500000",
-        "00000040000500000",
-        "000000400w2800000",
-        "000000400e7000000",
-        "00000040005000000",
-        "00000092q05000000",
-        "00000000405000000",
-        "00000000405000000",
-        "00000063r0e370000",
-        "00000040000050000",
-        "0000004000u050000",
-        "0000004000p050000",
-        "0000004000p050000",
-        "000633txy2s050000",
-        "00040000504050000",
-        "00040wq0e3r050000",
-        "00040540000050000",
-        "633r0etxxxyca3337",
-        "4000000000er00005",
-        "40000w22q00000005",
-        "400005009cxxz0005",
-        "40000500040000005",
-        "92--2800040000005",
-        "00000000040000005",
-        "00000000092----28",
-    ]
+    level = load_level_from_file(os.path.join("levels", SELECT_LEVEL))
 
-    x = y = 0  # Начальные координаты для размещения платформ
-    for row in level:
-        for col in row:
-            if col != "0":  # Если символ не '0', значит это стена
-                image_path = get_wall_image_path(col)  # Получаем путь к изображению стены
-                pf = Platform(image_path, x, y)  # Создаем платформу
+    if not level:
+        print("Ошибка: Не удалось загрузить уровень.")
+        return  # Прекращаем выполнение функции, так как уровень не загружен
+
+    # Заполнение платформ и объектов из level_1.txt
+    for y, row in enumerate(level):
+        for x, col in enumerate(row):
+            if col in WALL_IMAGES:
+                image_path = get_wall_image_path(col)  # Пример получения изображения для стены
+                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)  # Создаем платформу
                 entities.add(pf)  # Добавляем платформу в группу спрайтов
                 platforms.append(pf)  # Добавляем платформу в список платформ
-
-            x += PLATFORM_WIDTH  # Обновляем координату x площадки
-        y += PLATFORM_HEIGHT  # Обновляем координату y площадки
-        x = 0  # Сбрасываем x для следующей строки
+            elif col == '$':  # Монета
+                coin = Coin(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                entities.add(coin)  # Добавляем монету в группу спрайтов
+            elif col == '+':  # Опыт
+                xp = XP(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                entities.add(xp)  # Добавляем опыт в группу спрайтов
+            elif col == '*':  # Звезда
+                star = Star(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                entities.add(star)  # Добавляем звезду в группу спрайтов
+            elif col == 'F':  # Объект Finish
+                finish = Finish(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                entities.add(finish)  # Добавляем объект Finish в группу спрайтов
 
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
@@ -273,13 +332,34 @@ def main():
         # Обновляем игрока
         hero.update(platforms)
 
+        # Обновляем монеты и другие объекты (кроме игрока)
+        for entity in entities:
+            if not isinstance(entity, Player):  # Не обновляем игрока здесь
+                entity.update()  # Вызываем update для монет, опыта и звезд
+
+        # Проверка столкновений с объектами
+        collided_objects = pygame.sprite.spritecollide(hero, entities, dokill=False)
+        for obj in collided_objects:
+            if isinstance(obj, Coin):
+                print("Монета собрана!")
+                entities.remove(obj)  # Удаляем монету
+            elif isinstance(obj, XP):
+                print("Опыт получен!")
+                entities.remove(obj)  # Удаляем опыт
+            elif isinstance(obj, Star):
+                print("Звезда собрана!")
+                entities.remove(obj)  # Удаляем звезду
+            elif isinstance(obj, Finish):
+                print("Поздравляю! Вы достигли финиша!")  # Сообщение о достижении финиша
+
+        # Отображение заднего фона и всех сущностей
         screen.blit(bg, (0, 0))  # Отображаем фон
         camera.update(hero)  # Обновляем камеру
         for spr in entities:
             screen.blit(spr.image, camera.apply(spr))
 
         pygame.display.update()  # Обновляем экран
-        pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 60
+        pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
 
 # Запуск основной функции

@@ -11,25 +11,26 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [['0'] * width for _ in range(height)]
+        self.board = [[' '] * width for _ in range(height)]
 
         self.cell_size = cell_size
         self.colors = {
-            '0': '#000000',  # пустота
+            ' ': '#000000',  # пустота
             '-': '#d44042',  # стена
             '#': '#43f6cb',  # шипы
             '@': '#000000',  # трап
             '^': '#000000',  # трамплин
-            '+': '#000000',  # xp
-            '$': '#000000',  # монета
-            '*': '#000000',  # звезда
+
+            '+': '#00f5f0',  # xp
+            '$': '#f5f000',  # монета
+            '*': '#f000f5',  # звезда
             'F': '#000000',  # финиш
             'S': '#000000'  # старт
         }
 
         # self.left_color_order = ['-', '#', '@', '^', '0']  # Порядок для левой кнопки
-        self.left_color_order = ['-', '#', '0']
-        self.right_color_order = ['+', '$', '*', 'F', 'S']  # Порядок для правой кнопки
+        self.left_color_order = ['-', '#', ' ']
+        self.right_color_order = ['+', '$', '*', ' ']  # Порядок для правой кнопки
 
         self.offset_x = 0
         self.offset_y = 0
@@ -50,21 +51,20 @@ class Board:
 
             self.board[grid_y][grid_x] = self.left_color_order[new_index]
 
-    # def set_color_right(self, x, y):  # обработка при нажатии правой кнопки мыши
-    #     if 0 <= x < self.width * self.cell_size and 0 <= y < self.height * self.cell_size:
-    #         grid_x, grid_y = (x - self.offset_x) // self.cell_size, (y - self.offset_y) // self.cell_size
-    #         current_symbol = self.board[grid_y][grid_x]
-    #         if current_symbol in self.right_color_order:
-    #             current_index = self.right_color_order.index(current_symbol)
-    #             new_index = (current_index + 1) % len(self.right_color_order)
-    #             self.board[grid_y][grid_x] = self.right_color_order[new_index]
+    def set_color_right(self, x, y):  # обработка при нажатии правой кнопки мыши
+        if 0 <= x < self.width * self.cell_size and 0 <= y < self.height * self.cell_size:
+            grid_x, grid_y = (x - self.offset_x) // self.cell_size, (y - self.offset_y) // self.cell_size
+            current_symbol = self.board[grid_y][grid_x]
+            current_index = self.right_color_order.index(current_symbol)
+            new_index = (current_index + 1) % len(self.right_color_order)
+            self.board[grid_y][grid_x] = self.right_color_order[new_index]
 
     def get_borders(self):
         """Находит границы ненулевой части матрицы"""
         top, bottom, left, right = None, None, None, None
         for y in range(self.height):
             for x in range(self.width):
-                if self.board[y][x] != '0':
+                if self.board[y][x] != ' ':
                     if top is None:
                         top = y
                     bottom = y
@@ -77,7 +77,6 @@ class Board:
         return None
 
     def calculate_next_level_number(self):
-        """Вычисляет следующий номер уровня на основе существующих файлов"""
         max_level = -1
         pattern = r"level_(\d+)\.txt"
         for filename in os.listdir('.'):
@@ -88,14 +87,14 @@ class Board:
         return max_level
 
     def corner_cells(self, x, y):  # расставить угловые клетки на поле
-        if self.board[y][x] == '0':  # Проверка, является ли текущая клетка '-'
+        if self.board[y][x] in ' +*$':  # Проверка, является ли текущая клетка '-'
             return
 
         up, down, left, right = False, False, False, False
         for dx, dy in [(-1, 0), (0, -1), (0, 1), (1, 0)]:
             nx, ny = x + dx, y + dy
             if 0 <= ny < self.height and 0 <= nx < self.width:
-                if self.board[ny][nx] != '0':
+                if self.board[ny][nx] not in ' +*$':
                     if dx == -1:
                         left = True
                     if dx == 1:
@@ -106,37 +105,37 @@ class Board:
                         up = True
 
         if down and up and left and right:
-            self.board[y][x] = '1'
+            self.board[y][x] = '□'
 
         elif down and right:
-            self.board[y][x] = '6'
-            self.board[y][x + 1] = '3'
-            self.board[y + 1][x] = '4'
+            self.board[y][x] = '╔'
+            self.board[y][x + 1] = '▁'
+            self.board[y + 1][x] = '▕'
 
         elif down and left:
-            self.board[y][x] = '7'
-            self.board[y][x - 1] = '3'
-            self.board[y + 1][x] = '5'
+            self.board[y][x] = '╗'
+            self.board[y][x - 1] = '▁'
+            self.board[y + 1][x] = '▎'
 
         elif up and left:
-            self.board[y][x] = '8'
-            self.board[y][x - 1] = '2'
-            self.board[y - 1][x] = '5'
+            self.board[y][x] = '╝'
+            self.board[y][x - 1] = '▔'
+            self.board[y - 1][x] = '▎'
 
         elif up and right:
-            self.board[y][x] = '9'
-            self.board[y][x + 1] = '2'
-            self.board[y - 1][x] = '4'
+            self.board[y][x] = '╚'
+            self.board[y][x + 1] = '▔'
+            self.board[y - 1][x] = '▕'
 
         elif up and down:
-            if self.board[y + 1][x] in '469' or self.board[y - 1][x] in '469':
-                self.board[y][x] = '4'
+            if self.board[y + 1][x] in '▕╔╝' or self.board[y - 1][x] in '▕╔╝':
+                self.board[y][x] = '▕'
             else:
-                self.board[y][x] = '5'
+                self.board[y][x] = '▎'
 
         elif left and right:
-            if self.board[y][x + 1] in '367' or self.board[y][x - 1] in '367':
-                self.board[y][x] = '3'
+            if self.board[y][x + 1] in '▁╔╗' or self.board[y][x - 1] in '▁╔╗':
+                self.board[y][x] = '▁'
 
     def save_level(self):
         borders = self.get_borders()  # Получаем границы ненулевой части матрицы
@@ -149,16 +148,15 @@ class Board:
                     if self.board[row][col] == '-':
                         self.corner_cells(col, row)
 
-            with open(level_file, "w") as file:
-                file.write("level = [\n")
+            with open(level_file, "w", encoding='utf-8') as file:
+
                 for row in range(top, bottom + 1):
                     new_line = []
                     for col in range(left, right + 1):
                         new_line.append(self.board[row][col])  # Оставляем другие символы без изменений
 
                     line = ''.join(new_line)  # Собираем строку из измененных символов
-                    file.write(f'    "{line}",\n')  # Записываем строку в формате с кавычками
-                file.write("]\n")
+                    file.write(f'|{line}\n')  # Записываем строку в формате с кавычками
 
     def render(self, screen):
         for i in range(self.width):
@@ -203,7 +201,7 @@ while True:
 
             if event.button == 3:
                 x, y = event.pos
-                # board.set_color_right(x, y)
+                board.set_color_right(x, y)
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_button_down = False
