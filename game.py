@@ -1,24 +1,29 @@
+# Импортирование необходимых библиотек
+from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN
 import pygame
-from pygame import *
-import os
 import pickle
+import os
 
 # Установка размеров окна и платформы
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) = 1200, 800
 PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
 
+# Скорость передвижения и ограничение кадров
 MOVE_STEP = 21
 FPS = 120
 
-STATE = {'coins': 0,
-         'levels': [0, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-         'music': None,
-         'sound': None}
-
+# Цвет заднего фона
 BACKGROUND_COLOR = "#00000000"
 
-# Получение директории для изображений
-ICON_DIR = os.path.dirname(__file__)
+# Переменные для представления уровня
+ENTITIES = sprite.Group()  # Группа всех спрайтов
+PLATFORMS = []  # Список платформ
+
+# Сохраняемые данные
+STATE = {'coins': 0,               # Монеты
+         'levels': [0] + [-1] * 9, # Прогресс ур-й
+         'music': None,            # Состояние музыки
+         'sound': None}            # Состояние звуковых эффектов
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
@@ -27,7 +32,8 @@ WALL_IMAGES = {
     '⊓': 'wall_10.png', '⊏': 'wall_11.png', '⊔': 'wall_12.png', '⊐': 'wall_13.png', '=': 'wall_14.png',
     '║': 'wall_15.png', '┓': 'wall_16.png', '┛': 'wall_17.png', '┗': 'wall_18.png', '┏': 'wall_19.png',
     'q': 'wall_20.png', 'w': 'wall_21.png', 'e': 'wall_22.png', 'r': 'wall_23.png', 't': 'wall_24.png',
-    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png', 'o': 'wall_28.png',
+    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png', 'o': 'wall_28.png', 'p': 'wall_29.png',
+    '[': 'wall_30.png', 'A': 'wall_A.png', ']': 'wall_31.png', '"': 'wall_32.png'
 }
 
 # Словарь с изображениями шипов
@@ -36,17 +42,34 @@ SPIKE_IMAGES = {
     'b': 'spike_4.png', 'n': 'spike_5.png', 'm': 'spike_6.png', ',': 'spike_7.png',
 }
 
+# Словарь с изображениями ловушек
+TRAP_IMAGES = {
+    'a': 'trap_1.png', 's': 'trap_2.png', 'd': 'trap_3.png',
+    'f': 'trap_4.png', 'g': 'trap_5.png', 'h': 'trap_6.png',
+    'j': 'trap_7.png', 'k': 'trap_8.png', 'l': 'trap_9.png',
+}
 
-# Класс для представления платформ
+
 class Platform(sprite.Sprite):
+    """Класс для представления платформы (стен).
+    При инициализации объекта принимаются необходимые координаты
+    расположения на карте и имя файла для наложения текстуры."""
     def __init__(self, image_path, x, y):
         super().__init__()
-        self.image = image.load(image_path)  # Загружаем изображение платформы
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для платформы
+        self.image = image.load(image_path)  # Загружаем изображение платформы
 
 
-# Класс для представления игрока
 class Player(sprite.Sprite):
+    """Класс для представления игрока.
+    Управляет анимацией движения персонажа, обработкой ввода
+    с клавиатуры и взаимодействием с платформами.
+
+    При инициализации объекта устанавливаются начальные значения
+    для направления, изображения и анимации игрока.
+    Обеспечивает перемещение игрока с учётом столкновений с
+    платформами и обновляет отображение анимации в зависимости от
+    направления движения."""
     def __init__(self, x, y):
         super().__init__()
 
@@ -59,19 +82,16 @@ class Player(sprite.Sprite):
 
         # Загружаем кадры для различных направлений
         self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botleft")
-        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       "man_botright")
+        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_botright")
         self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_leftbot")
         self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_lefttop")
-        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       "man_rightbot")
+        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,"man_rightbot")
         self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_righttop")
         self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topleft")
         self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topright")
 
         # Загружаем кадры анимации движения
         self.flight_frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 4, "man_move")
-
         self.frames = self.frames_down_right  # Начальные кадры - смотрим вниз вправо
         self.index = 0  # Индекс текущего кадра
         self.image = self.frames[self.index]  # Начальное изображение
@@ -104,7 +124,7 @@ class Player(sprite.Sprite):
                 self.frame_counter = 0
                 self.index = (self.index + 1) % len(self.flight_frames)
                 self.image = self.flight_frames[self.index]
-        else:  # Если не движется, используем основную анимацию
+        else:  # Если не движится, используем основную анимацию
             self.frame_counter += 1
             if self.frame_counter >= self.frame_rate:
                 self.frame_counter = 0
@@ -155,7 +175,7 @@ class Player(sprite.Sprite):
 
         # Проверка коллизий с платформами
         for platform in platforms:
-            if self.rect.colliderect(platform.rect):
+            if isinstance(platform, Platform) and self.rect.colliderect(platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -169,8 +189,10 @@ class Player(sprite.Sprite):
         return True  # Перемещение прошло успешно
 
 
-# Новый класс для монет
 class Coin(sprite.Sprite):
+    """Класс для представления монеты.
+    Загружает анимацию монеты и управляет её отображением
+    на экране. Монета анимируется при обновлении объекта."""
     def __init__(self, x, y):
         super().__init__()
         self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'coin'), 4, "coin")
@@ -189,24 +211,28 @@ class Coin(sprite.Sprite):
             self.image = self.frames[self.index]
 
 
-# Новый класс для опыта
 class XP(sprite.Sprite):
+    """Класс для представления опыта.
+    Загружает и отображает изображение опыта на экране."""
     def __init__(self, x, y):
         super().__init__()
         self.image = image.load(os.path.join(os.path.dirname(__file__), 'xp', 'xp_0.png'))
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
 
-# Новый класс для звезд
 class Star(sprite.Sprite):
+    """Класс для представления звезды.
+    Загружает и отображает изображение звезды на экране."""
     def __init__(self, x, y):
         super().__init__()
         self.image = image.load(os.path.join(os.path.dirname(__file__), 'star', 'star_0.png'))
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
 
-# Новый класс для финиша
 class Finish(sprite.Sprite):
+    """Класс для представления финиша.
+    Загружает анимацию финиша и управляет его отображением.
+    При достижении игроком финиша, активирует меню перехода."""
     def __init__(self, x, y):
         super().__init__()
         self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'exit'), 2, "exit")
@@ -224,14 +250,12 @@ class Finish(sprite.Sprite):
             self.index = (self.index + 1) % len(self.frames)
             self.image = self.frames[self.index]
 
-    def activate_menu(self):
-        # Возвращаемся в меню
-        from lobby import Lobby  # Импорт класса Lobby для перехода обратно
-        Lobby()  # Инициализируем меню
 
-
-# Новый класс для шипов
 class Spike(sprite.Sprite):
+    """Класс для представления колючек.
+    Загружает изображение шипа в зависимости от направления и
+    управляет его отображением на экране. При соприкосновении
+    персонажа с колючкой герой погибает и активируется окно проигрыша. """
     def __init__(self, x, y, spike_type):
         super().__init__()
         self.image = image.load(Spike.get_spike_image_path(spike_type))  # Исправлено: добавлено 'Spike.'
@@ -240,14 +264,106 @@ class Spike(sprite.Sprite):
     def get_spike_image_path(key):
         return os.path.join(os.path.dirname(__file__), "spike", SPIKE_IMAGES[key])  # Получаем путь
 
-    def activate_menu(self):
-        # Возвращаемся в меню
-        from lobby import Lobby  # Импорт класса Lobby для перехода обратно
-        Lobby()  # Инициализируем меню
+
+class Trap(sprite.Sprite):
+    """Класс для представления ловушки.
+    Загружает изображение ловушки и создает механизм активации
+    шипов вокруг неё, когда игрок входит в её область видимости."""
+    def __init__(self, x, y, trap_type):
+        super().__init__()
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'trap', TRAP_IMAGES[trap_type]))
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+    def update(self, hero):
+        if (self.rect.x, self.rect.y + 42) == (hero.rect.x, hero.rect.y):
+            thorn = Thorn(self.rect.x, self.rect.y, self.rect.width, self.rect.height, 'down')
+            ENTITIES.add(thorn)
+        elif (self.rect.x, self.rect.y - 42) == (hero.rect.x, hero.rect.y):
+            thorn = Thorn(self.rect.x, self.rect.y, self.rect.width, self.rect.height, 'up')
+            ENTITIES.add(thorn)
+        elif (self.rect.x + 42, self.rect.y) == (hero.rect.x, hero.rect.y):
+            thorn = Thorn(self.rect.x, self.rect.y, self.rect.width, self.rect.height, 'right')
+            ENTITIES.add(thorn)
+        elif (self.rect.x - 42, self.rect.y) == (hero.rect.x, hero.rect.y):
+            thorn = Thorn(self.rect.x, self.rect.y, self.rect.width, self.rect.height, 'left')
+            ENTITIES.add(thorn)
 
 
-# Класс для представления камеры
+class Thorn(sprite.Sprite):
+    """Класс для представления шипа ловушки.
+    Активируется в зависимости от нахождения игрока и анимирует
+    отображение шипа в течение определенного времени."""
+    def __init__(self, x, y, width, height, trap_name):
+        super().__init__()
+        self.trap_name = trap_name
+        self.thorn_timer = 0
+        self.activation_timer = 0  # Таймер для активации объекта
+        self.image_name = None  # Добавляем новый атрибут
+        self.image = None
+        self.x = x
+        self.y = y
+
+        if trap_name == 'down':
+            self.y += 42
+        elif trap_name == 'up':
+            self.y -= 42
+        elif trap_name == 'left':
+            self.x -= 42
+        elif trap_name == 'right':
+            self.x += 42
+        self.rect = Rect(self.x, self.y, width, height)
+
+    def update(self):
+        if self.thorn_timer == 0:
+            self.image_name = f'thorn_{self.trap_name}_1.png'  # Устанавливаем имя
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+
+        elif self.thorn_timer == 30:
+            self.image_name = f'thorn_{self.trap_name}_2.png'  # Устанавливаем имя
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+
+        elif self.thorn_timer == 60:
+            self.image_name = f'thorn_{self.trap_name}_3.png'  # Устанавливаем имя
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+
+        elif self.thorn_timer == 120:
+            self.image_name = f'thorn_{self.trap_name}_2.png'  # Устанавливаем имя
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+
+        elif self.thorn_timer == 130:
+            self.kill()
+            self.thorn_timer = 0
+
+        self.thorn_timer += 1
+
+
+class Fish(sprite.Sprite):
+    """Класс для представления рыбы-фугу.
+    Загружает анимацию движения рыбы и управляет её отображением
+    на экране, а также поддерживает механизм анимации."""
+    def __init__(self, x, y):
+        super().__init__()
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'fish'), 16, "fish")
+        self.index = 0  # Индекс текущего кадра
+        self.image = self.frames[self.index]  # Начальное изображение
+        self.image_name = f'fish_{self.index}.png'
+        self.rect = Rect(x, y, PLATFORM_WIDTH * 3, PLATFORM_HEIGHT * 3)
+        self.frame_rate = 10  # Частота смены кадров
+        self.frame_counter = 0  # Счетчик кадров для управления анимацией
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+
+        self.image_name = f'fish_{self.index}.png'
+
+
 class Camera:
+    """Класс для представления камеры.
+    Управляет отображением игрового мира относительно положения персонажа."""
     def __init__(self, camera_func, width, height):
         self.camera_func = camera_func
         self.state = Rect(0, 0, width, height)  # Устанавливаем начальные параметры камеры
@@ -259,17 +375,16 @@ class Camera:
         self.state = self.camera_func(self.state, target.rect)  # Обновляем состояние камеры
 
 
-# Функция для получения пути к изображению стены
+# Функция для получения пути к изображению платформы (стены)
 def get_wall_image_path(key):
     return os.path.join(os.path.dirname(__file__), "blocks", WALL_IMAGES[key])
 
 
-# Функция для конфигурирования камеры
+# Функция для настройки положения камеры
 def camera_configure(camera, target_rect):
     l, t, _, _ = target_rect
     _, _, w, h = camera
     l, t = -l + WIN_WIDTH // 2, -t + WIN_HEIGHT // 2  # Центрируем камеру на игроке
-
     return Rect(l, t, w, h)
 
 
@@ -282,15 +397,16 @@ def load_animation_frames(path, count, prefix):
     return frames
 
 
+# Функция для загрузки уровня из txt файла
 def load_level_from_file(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             level = file.readlines()
         if not level:
-            raise ValueError("Файл уровня пуст.")
+            raise ValueError('Файл уровня пуст.')
         return [line.strip() for line in level]  # Возвращаем строки уровня без изменений
     except FileNotFoundError:
-        print(f"Ошибка: Файл не найден: {filename}")
+        print(f'Ошибка: Файл не найден: {filename}')
         return []
     except ValueError as e:
         print(e)
@@ -310,70 +426,112 @@ def load_game():
     return state
 
 
+# Функцию для закрытия окна игры и открытия лобби
+def activate_menu():
+    from lobby import Lobby
+    Lobby()
+
+
 # Основная функция игры
 def main(name_file, start_x, start_y):
-    pygame.mixer.music.stop()  # Останавливаем текущую музыку
+    # Очищаем данные перед загрузкой нового уровня
+    ENTITIES.empty()   # удаляем все спрайты
+    PLATFORMS.clear()  # Удаляем все платформы
 
-    pygame.mixer.init()
-    pygame.mixer.music.load('music and sounds/game.mp3')
-    pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
-    pygame.mixer.music.set_volume(0.1)  # Установка громкости на 10%
+    count_star = 0  # Обнуляем звезды, собранные за уровень
+    count_coin = 0  # Обнуляем монеты, собранные за уровень
 
+
+    # Создаем дисплей для расположения всех объектов
     pygame.init()  # Инициализация Pygame
     screen = pygame.display.set_mode(DISPLAY)  # Создание окна игры
     pygame.display.set_caption("Тайны подземелий")  # Установка заголовка окна
+
     bg = Surface(DISPLAY)  # Создаем поверхность для фона
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
-    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)  # Создаем экземпляр игрока
-    entities = pygame.sprite.Group()  # Группа всех спрайтов
-    platforms = []  # Список платформ
 
-    entities.add(hero)  # Добавляем игрока в группу спрайтов
-    count_star = 0
-    count_coin = 0
+    # Запуск музыки
+    pygame.mixer.music.stop()  # Останавливаем музыку из меню
+    pygame.mixer.music.load('music and sounds/game.mp3')  # Загружаем музыку для воспроизведения во время игры
+    pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
+    pygame.mixer.music.set_volume(0.01)  # Установка громкости на 1%
+
+
+    # Создаем экземпляр игрока
+    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)
+    ENTITIES.add(hero)  # Добавляем игрока в группу спрайтов
+
 
     # Определение уровня в виде строк
     level = load_level_from_file(os.path.join("levels", name_file))
 
-    if not level:
+    if not level:  # Если уровень оказался пустым
         print("Ошибка: Не удалось загрузить уровень.")
-        return  # Прекращаем выполнение функции, так как уровень не загружен
+        activate_menu()  # Активируем меню
+        pygame.quit()  # Закрываем текущее игровое окно
 
-    # Заполнение платформ и объектов из level_1.txt
+
+    # Заполнение платформ и объектов из level_n.txt
     for y, row in enumerate(level):
         for x, col in enumerate(row):
-            if col in WALL_IMAGES:
-                image_path = get_wall_image_path(col)  # Пример получения изображения для стены
-                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)  # Создаем платформу
-                entities.add(pf)  # Добавляем платформу в группу спрайтов
-                platforms.append(pf)  # Добавляем платформу в список платформ
-            elif col == '$':  # Монета
+            if col == 'A':  # Создание рыбы-фугу
+                fish = Fish(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                ENTITIES.add(fish)
+
+                image_path = get_wall_image_path(col)
+                pf = Platform(image_path, x * PLATFORM_WIDTH + PLATFORM_WIDTH,
+                              y * PLATFORM_HEIGHT + PLATFORM_HEIGHT)  # Создаем невидимую платформу
+                ENTITIES.add(pf)
+                PLATFORMS.append(pf)
+
+            elif col in WALL_IMAGES:  # Создание платформы (стены)
+                image_path = get_wall_image_path(col)  # Получаем изображение для стены
+                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                ENTITIES.add(pf)
+                PLATFORMS.append(pf)
+
+            elif col == '$':  # Создание монеты
                 coin = Coin(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
-                entities.add(coin)  # Добавляем монету в группу спрайтов
-            elif col == '+':  # Опыт
+                ENTITIES.add(coin)
+
+            elif col == '+':  # Создание опыта
                 xp = XP(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
-                entities.add(xp)  # Добавляем опыт в группу спрайтов
-            elif col == '*':  # Звезда
+                ENTITIES.add(xp)
+
+            elif col == '*':  # Создание звезды
                 star = Star(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
-                entities.add(star)  # Добавляем звезду в группу спрайтов
-            elif col == 'F':  # Объект Finish
+                ENTITIES.add(star)
+
+            elif col == 'F':  # Создаем финиш
                 finish = Finish(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
-                entities.add(finish)  # Добавляем объект Finish в группу спрайтов
-            elif col in SPIKE_IMAGES:  # Шипы
-                spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)  # Передаем символ
-                entities.add(spike)
+                ENTITIES.add(finish)
+
+            elif col in SPIKE_IMAGES:  # Создаем колючку
+                spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)
+                ENTITIES.add(spike)
+
+            elif col in TRAP_IMAGES:  # Создаем ловушку
+                trap = Trap(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)
+                ENTITIES.add(trap)
+
+                image_path = get_wall_image_path('A')  # Создаем невидимую платформу
+                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                PLATFORMS.append(pf)
 
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
     total_level_height = len(level) * PLATFORM_HEIGHT
-    camera = Camera(camera_configure, total_level_width, total_level_height)  # Создаем камеру
+
+    # Создаем камеру
+    camera = Camera(camera_configure, total_level_width, total_level_height)
 
     while True:
         keys = pygame.key.get_pressed()  # Получаем состояние клавиш
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
+
             elif event.type == KEYDOWN:  # Обработка нажатий клавиш
                 if event.key == K_LEFT:
                     hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'left')
@@ -384,35 +542,41 @@ def main(name_file, start_x, start_y):
                 elif event.key == K_DOWN:
                     hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
 
-        # Обновляем игрока
-        hero.update(platforms)
 
-        # Обновляем монеты и другие объекты (кроме игрока)
-        for entity in entities:
-            if not isinstance(entity, Player):  # Не обновляем игрока здесь
-                entity.update()  # Вызываем update для монет, опыта и звезд
+        # Обновляем все объекты
+        hero.update(PLATFORMS)
+        for entity in ENTITIES:
+            if isinstance(entity, Trap):
+                entity.update(hero)
+            elif not isinstance(entity, Player):
+                entity.update()
+
 
         # Проверка столкновений с объектами
-        collided_objects = pygame.sprite.spritecollide(hero, entities, dokill=False)
+        collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
         for obj in collided_objects:
-            # Проверка столкновения игрока с шипами
-            if isinstance(obj, Spike):
+            # Проверка столкновения игрока со смертельно опасными объектами
+            if isinstance(obj, Spike) or (
+                    isinstance(obj, Thorn) and obj.image_name is not None and ('2' in obj.image_name or '3' in obj.image_name)) or (
+                    isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15))):
                 print("Вы погибли!")
-                pygame.quit()  # Закрываем текущее игровое окно
-                obj.activate_menu()  # Активируем меню
+                activate_menu()  # Активируем меню
                 pygame.quit()  # Закрываем текущее игровое окно
 
             if isinstance(obj, Coin):
                 print("Монета собрана!")
                 count_coin += 1
-                entities.remove(obj)  # Удаляем монету
+                ENTITIES.remove(obj)
+
             elif isinstance(obj, XP):
                 print("Опыт получен!")
-                entities.remove(obj)  # Удаляем опыт
+                ENTITIES.remove(obj)
+
             elif isinstance(obj, Star):
                 print("Звезда собрана!")
-                entities.remove(obj)  # Удаляем звезду
+                ENTITIES.remove(obj)
                 count_star += 1
+
             elif isinstance(obj, Finish):
                 print("Поздравляю! Вы достигли финиша!")
 
@@ -420,15 +584,16 @@ def main(name_file, start_x, start_y):
                 STATE['coins'] += count_coin
                 save_game(STATE)
 
-                obj.activate_menu()  # Активируем меню
+                activate_menu()  # Активируем меню
                 pygame.quit()  # Закрываем текущее игровое окно
-                return  # Завершаем выполнение игры
 
         # Отображение заднего фона и всех сущностей
         screen.blit(bg, (0, 0))  # Отображаем фон
         camera.update(hero)  # Обновляем камеру
-        for spr in entities:
-            screen.blit(spr.image, camera.apply(spr))
+
+        for spr in ENTITIES:
+            if spr.image is not None:  # Проверка, что изображение не равно None
+                screen.blit(spr.image, camera.apply(spr))
 
         pygame.display.update()  # Обновляем экран
         pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120

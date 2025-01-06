@@ -27,4 +27,6 @@ WALL_IMAGES = {
     'y': 'wall_25.png',
     'u': 'wall_26.png',
     'i': 'wall_27.png',
+    'p': 'wall_29.png',
+    '[': 'wall_30.png',
 }
