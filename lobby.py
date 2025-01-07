@@ -50,6 +50,7 @@ class Achivements(pygame.sprite.Sprite):  # Кнопка достижений
         super().__init__()
 
         self.image = pygame.image.load('images/menu_achievements1.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (1160, 30)  # Позиционирование спрайта в центре экрана
 
@@ -59,6 +60,7 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         super().__init__()
 
         self.image = pygame.image.load('images/menu_settings1.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
 
@@ -178,7 +180,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         pygame.mixer.init()
         pygame.mixer.music.load('music and sounds/menu.mp3')
         pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
-        pygame.mixer.music.set_volume(0.02)  # Установка громкости на 2%
+        pygame.mixer.music.set_volume(0.1)  # Установка громкости на 2%
 
         self.BLACK = (0, 0, 0)
 
