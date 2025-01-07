@@ -200,7 +200,7 @@ class Player(sprite.Sprite):
 
         # Проверка коллизий с платформами
         for platform in platforms:
-            if isinstance(platform, Platform) and self.rect.colliderect(platform.rect):
+            if (isinstance(platform, Platform) or isinstance(platform, Dart)) and self.rect.colliderect(platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -398,6 +398,7 @@ class Bat(sprite.Sprite):
     """Класс для представления летучей мыши.
     Летучая мышь летает из стороны в сторону.
     Соприкосновение игрока с мышью убивает его."""
+
     def __init__(self, bat_type, x, y):  # ♖♜
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -454,6 +455,79 @@ class Bat(sprite.Sprite):
                     self.direction = 'down'
                 elif self.direction == 'down':
                     self.direction = 'up'
+
+
+class Dart(sprite.Sprite):  # ⇐⇑⇒⇓
+    def __init__(self, dart_type, x, y):
+        super().__init__()
+        self.dart_type, self.x, self.y = dart_type, x, y
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+        if dart_type == '⇐':
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_left")
+            self.x -= 42
+        elif dart_type == '⇑':
+            self.y -= 42
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_up")
+        elif dart_type == '⇒':
+            self.x += 42
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_right")
+        elif dart_type == '⇓':
+            self.y += 42
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_down")
+
+        self.image = self.frames[0]  # Начальное изображение
+        self.frame_counter = 0  # Счетчик кадров для управления анимацией
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter == 80:
+            self.image = self.frames[1]  # Начальное изображение
+            arrow = Arrow(self.dart_type, self.x, self.y)
+            ENTITIES.add(arrow)
+
+        elif self.frame_counter == 95:
+            self.image = self.frames[0]  # Начальное изображение
+            self.frame_counter = 0
+
+
+class Arrow(sprite.Sprite):
+    def __init__(self, arror_type, x, y):
+        super().__init__()
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.arror_type = arror_type
+
+        if arror_type == '⇐':
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_left")
+        elif arror_type == '⇑':
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_up")
+        elif arror_type == '⇒':
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_right")
+        elif arror_type == '⇓':
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_down")
+        self.image = self.frames[0]  # Начальное изображение
+
+    def update(self, platforms):
+        dx = dy = 0
+        if self.arror_type == '⇒':
+            dx += 4
+        elif self.arror_type == '⇐':
+            dx -= 4
+        elif self.arror_type == '⇑':
+            dy -= 4
+        elif self.arror_type == '⇓':
+            dy += 4
+
+        self.rect.x += dx
+        self.rect.y += dy
+        # Проверка коллизий с платформами
+        for platform in platforms:
+            if isinstance(platform, Platform) and self.rect.colliderect(platform.rect):
+                if dx < 0:  # Движение влево
+                    self.rect.left = platform.rect.right
+                elif dx > 0:  # Движение вправо
+                    self.rect.right = platform.rect.left
+                self.kill()
 
 
 class Camera:
@@ -751,6 +825,11 @@ def main(name_file, start_x, start_y):
                 bat = Bat(col, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
                 ENTITIES.add(bat)
 
+            elif col in '⇑⇒⇓⇐':
+                dart = Dart(col, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                PLATFORMS.append(dart)
+                ENTITIES.add(dart)
+
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
     total_level_height = len(level) * PLATFORM_HEIGHT
@@ -781,7 +860,7 @@ def main(name_file, start_x, start_y):
                 for entity in ENTITIES:
                     if isinstance(entity, Trap) or isinstance(entity, Trampoline):
                         entity.update(hero)
-                    elif isinstance(entity, Bat):
+                    elif isinstance(entity, Bat) or isinstance(entity, Arrow):
                         entity.update(PLATFORMS)
                     elif not isinstance(entity, Player):
                         entity.update()
