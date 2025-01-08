@@ -561,37 +561,34 @@ class Trampoline(sprite.Sprite):
     def __init__(self, trampoline_type, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для трамплина
-        self.image = image.load(self.get_trampoline_image_path(trampoline_type))  # Загружаем изображение трамплина
+        self.image = image.load(trampoline_type)  # Загружаем изображение трамплина
         self.direction = trampoline_type
 
     def update(self, hero):
         if (self.rect.x, self.rect.y) == (hero.rect.x, hero.rect.y):
-            if self.direction == '↙':
+            if '1' in self.direction:
                 if hero.direction == 'down':
                     hero.direction = 'right'
                 elif hero.direction == 'left':
                     hero.direction = 'up'
 
-            elif self.direction == '↘':
+            elif '2' in self.direction:
                 if hero.direction == 'down':
                     hero.direction = 'left'
                 elif hero.direction == 'right':
                     hero.direction = 'up'
 
-            elif self.direction == '↖':
+            elif '4' in self.direction:
                 if hero.direction == 'up':
                     hero.direction = 'right'
                 elif hero.direction == 'left':
                     hero.direction = 'down'
 
-            elif self.direction == '↗':
+            elif '3' in self.direction:
                 if hero.direction == 'up':
                     hero.direction = 'left'
                 elif hero.direction == 'right':
                     hero.direction = 'down'
-
-    def get_trampoline_image_path(self, key):
-        return os.path.join(os.path.dirname(__file__), 'trampoline', TRAMPOLINE_IMAGE[key])
 
 
 class GameOver(pygame.sprite.Sprite):
@@ -932,6 +929,7 @@ def main(name_file, start_x, start_y):
     # Создаем кнопку паузы и переменную с состоянием ее нажатия
     pause_button = PauseButton()
     global paused
+    paused = False
 
     while True:
         if not game_over_active and not paused:  # Проверка состояния игры

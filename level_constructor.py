@@ -4,7 +4,7 @@ import re
 from pygame import KEYDOWN, K_ESCAPE
 
 # Размеры окна
-screen_size = width, height = 325, 1000
+screen_size = width, height = 1920, 1080
 cell_size = 25
 
 # Определение пути к изображениям
