@@ -322,7 +322,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl9):
                     print('9')
                 elif isinstance(sprite, Lvl10):
-                    print('10')
+                    game.main("arcade_1.txt", 7, 91)
 
     def achivements_function(self):
         print("Список достижений открыт!")

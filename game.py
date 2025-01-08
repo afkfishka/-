@@ -1,5 +1,6 @@
 # Импортирование необходимых библиотек
-from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN
+from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN, K_w, K_a, K_s, \
+    K_d, MOUSEBUTTONDOWN
 import pygame
 import pickle
 import os
@@ -20,38 +21,39 @@ ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 
 # Сохраняемые данные
-STATE = {'coins': 0,  # Монеты
+STATE = {'coins': 0,                # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
-         'music': None,  # Состояние музыки
-         'sound': None}  # Состояние звуковых эффектов
+         'music': None,             # Состояние музыки
+         'sound': None}             # Состояние звуковых эффектов
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
-    '□': 'wall_1.png', '▔': 'wall_2.png', '▁': 'wall_3.png', '▕': 'wall_4.png', '▎': 'wall_5.png',
-    '╔': 'wall_6.png', '╗': 'wall_7.png', '╚': 'wall_8.png', '╝': 'wall_9.png', '-': 'wall_2.png',
-    '⊓': 'wall_10.png', '⊏': 'wall_11.png', '⊔': 'wall_12.png', '⊐': 'wall_13.png', '=': 'wall_14.png',
-    '║': 'wall_15.png', '┓': 'wall_16.png', '┛': 'wall_17.png', '┗': 'wall_18.png', '┏': 'wall_19.png',
-    'q': 'wall_20.png', 'w': 'wall_21.png', 'e': 'wall_22.png', 'r': 'wall_23.png', 't': 'wall_24.png',
-    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png', 'o': 'wall_28.png', 'p': 'wall_29.png',
-    '[': 'wall_30.png', 'A': 'wall_A.png', ']': 'wall_31.png', '"': 'wall_32.png'
+    '□': 'blocks\wall_1.png',  '▔': 'blocks\wall_2.png',  '▁': 'blocks\wall_3.png',  '▕': 'blocks\wall_4.png',  '▎': 'blocks\wall_5.png',
+    '╔': 'blocks\wall_6.png',  '╗': 'blocks\wall_7.png',  '╚': 'blocks\wall_8.png',  '╝': 'blocks\wall_9.png',  '-': 'blocks\wall_2.png',
+    '⊓': 'blocks\wall_10.png', '⊏': 'blocks\wall_11.png', '⊔': 'blocks\wall_12.png', '⊐': 'blocks\wall_13.png', '=': 'blocks\wall_14.png',
+    '║': 'blocks\wall_15.png', '┓': 'blocks\wall_16.png', '┛': 'blocks\wall_17.png', '┗': 'blocks\wall_18.png', '┏': 'blocks\wall_19.png',
+    'q': 'blocks\wall_20.png', 'w': 'blocks\wall_21.png', 'e': 'blocks\wall_22.png', 'r': 'blocks\wall_23.png', 't': 'blocks\wall_24.png',
+    'y': 'blocks\wall_25.png', 'u': 'blocks\wall_26.png', 'i': 'blocks\wall_27.png', 'o': 'blocks\wall_28.png', 'p': 'blocks\wall_29.png',
+    '[': 'blocks\wall_30.png', 'A': 'blocks\wall_A.png',  ']': 'blocks\wall_31.png', '"': 'blocks\wall_32.png', ';': 'blocks\wall_33.png',
+    ':': 'blocks\wall_34.png', ',': 'blocks\wall_35.png', '<': 'blocks\wall_36.png'
 }
 
 # Словарь с изображениями шипов
 SPIKE_IMAGES = {
-    'z': 'spike_0.png', 'x': 'spike_1.png', 'c': 'spike_2.png', 'v': 'spike_3.png',
-    'b': 'spike_4.png', 'n': 'spike_5.png', 'm': 'spike_6.png', ',': 'spike_7.png',
+    'z': 'spike\spike_0.png', 'x': 'spike\spike_1.png', 'c': 'spike\spike_2.png', 'v': 'spike\spike_3.png',
+    'b': 'spike\spike_4.png', 'n': 'spike\spike_5.png', 'm': 'spike\spike_6.png', ',': 'spike\spike_7.png',
 }
 
 # Словарь с изображениями ловушек
 TRAP_IMAGES = {
-    'a': 'trap_1.png', 's': 'trap_2.png', 'd': 'trap_3.png',
-    'f': 'trap_4.png', 'g': 'trap_5.png', 'h': 'trap_6.png',
-    'j': 'trap_7.png', 'k': 'trap_8.png', 'l': 'trap_9.png',
+    'a': 'trap\\trap_1.png', 's': 'trap\\trap_2.png', 'd': 'trap\\trap_3.png',
+    'f': 'trap\\trap_4.png', 'g': 'trap\\trap_5.png', 'h': 'trap\\trap_6.png',
+    'j': 'trap\\trap_7.png', 'k': 'trap\\trap_8.png', 'l': 'trap\\trap_9.png',
 }
 
 # Словарь для изображений трамплина
 TRAMPOLINE_IMAGE = {
-    '↙': 'trampoline_1.png', '↘': 'trampoline_2.png', '↗': 'trampoline_3.png', '↖': 'trampoline_4.png'
+    '↙': 'trampoline\\trampoline_1.png', '↘': 'trampoline\\trampoline_2.png', '↗': 'trampoline\\trampoline_3.png', '↖': 'trampoline\\trampoline_4.png'
 }
 
 pygame.init()  # Инициализация Pygame
@@ -63,19 +65,20 @@ SOUNDS = {
     'xp': pygame.mixer.Sound('music and sounds/xp.wav'),
     'star': pygame.mixer.Sound('music and sounds/star_1.wav'),
     'death': pygame.mixer.Sound('music and sounds/death.wav'),
+    'ice box': pygame.mixer.Sound('music and sounds/ice box.wav')
 }
 
 coin_channel = pygame.mixer.Channel(0)
 death_channel = pygame.mixer.Channel(1)
 xp_channel = pygame.mixer.Channel(2)
 star_channel = pygame.mixer.Channel(3)
+ice_channel = pygame.mixer.Channel(4)
 
 
 class Platform(sprite.Sprite):
     """Класс для представления платформы (стен).
     При инициализации объекта принимаются необходимые координаты
     расположения на карте и имя файла для наложения текстуры."""
-
     def __init__(self, image_path, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для платформы
@@ -257,6 +260,13 @@ class Star(sprite.Sprite):
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
 
+class IceBox(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'ice box', 'ice_box_0.png'))
+
+
 class Finish(sprite.Sprite):
     """Класс для представления финиша.
     Загружает анимацию финиша и управляет его отображением.
@@ -288,7 +298,7 @@ class Spike(sprite.Sprite):
 
     def __init__(self, x, y, spike_type):
         super().__init__()
-        self.image = image.load(Spike.get_spike_image_path(spike_type))  # Исправлено: добавлено 'Spike.'
+        self.image = image.load(spike_type)  # Загружаем изображение платформы
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для шипа
 
     def get_spike_image_path(key):
@@ -302,7 +312,7 @@ class Trap(sprite.Sprite):
 
     def __init__(self, x, y, trap_type):
         super().__init__()
-        self.image = image.load(os.path.join(os.path.dirname(__file__), 'trap', TRAP_IMAGES[trap_type]))
+        self.image = image.load(trap_type)
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
     def update(self, hero):
@@ -440,7 +450,7 @@ class Bat(sprite.Sprite):
         self.rect.y += dy
         # Проверка коллизий с платформами
         for platform in platforms:
-            if isinstance(platform, Platform) and self.rect.colliderect(platform.rect):
+            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -522,7 +532,7 @@ class Arrow(sprite.Sprite):
         self.rect.y += dy
         # Проверка коллизий с платформами
         for platform in platforms:
-            if isinstance(platform, Platform) and self.rect.colliderect(platform.rect):
+            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -608,6 +618,14 @@ class Home(pygame.sprite.Sprite):
         self.rect.center = (684, 488)  # Позиционирование спрайта в центре экрана
 
 
+class Resume(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/resume.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (517, 488)  # Позиционирование спрайта в центре экрана
+
+
 class Death:
     def __init__(self, screen, name_file, start_x, start_y):
         self.name_file = name_file
@@ -676,9 +694,80 @@ class Death:
                     pygame.quit()  # Закрываем текущее игровое окно
 
 
-# Функция для получения пути к изображению платформы (стены)
-def get_wall_image_path(key):
-    return os.path.join(os.path.dirname(__file__), "blocks", WALL_IMAGES[key])
+class Pause:
+    def __init__(self, screen, name_file):
+        self.screen = screen
+        self.name_file = name_file
+
+        self.clock = pygame.time.Clock()
+        self.running = True
+
+        self.font_path = 'fonts/zx_spectrum_7_bold.ttf'
+        self.font_size = 60
+        self.font = pygame.font.Font(self.font_path, self.font_size)
+
+        self.b_font = pygame.font.Font(self.font_path, 100)
+        self.font80 = pygame.font.Font(self.font_path, 80)
+        self.m_font = pygame.font.Font(self.font_path, 30)
+
+        self.game_pause = pygame.sprite.Group()
+
+        self.game_pause.add(GameOver())
+        self.game_pause.add(Resume())
+        self.game_pause.add(Home())
+
+        self.main_menu()
+
+    def draw_text(self, text, font, surface, x, y, color):
+        textobj = font.render(text, True, color)
+        textrect = textobj.get_rect()
+        textrect.center = (x, y)
+        surface.blit(textobj, textrect)
+
+    def main_menu(self):
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    # пишем свой код
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    self.check_click(pos)
+            # обновляем значения
+            # self.screen.fill((0, 0, 0))
+
+            self.game_pause.draw(self.screen)
+            self.draw_text("Продолжить", self.m_font, self.screen, 532, 487, "black")
+            self.draw_text("Меню", self.m_font, self.screen, 697, 487, "black")
+            self.draw_text("Pause", self.font80, self.screen, 600, 390, "black")
+            self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
+            self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+
+            # рисуем
+            pygame.display.flip()
+            self.clock.tick(30)
+        pygame.quit()
+
+    def check_click(self, pos):
+        for sprite in self.game_pause:
+            if sprite.rect.collidepoint(pos):
+                if isinstance(sprite, Resume):
+                    print('resume')
+                    pygame.quit()  # Закрываем текущее игровое окно
+                elif isinstance(sprite, Home):
+                    print('back to lobby')
+                    activate_menu()  # Активируем меню
+                    pygame.quit()  # Закрываем текущее игровое окно
+
+
+
+class PauseButton(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/menu_pause.png')
+        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (WIN_WIDTH - 60, 20)
 
 
 # Функция для настройки положения камеры
@@ -732,6 +821,7 @@ def activate_menu():
     from lobby import Lobby
     Lobby()
 
+paused = False
 
 # Основная функция игры
 def main(name_file, start_x, start_y):
@@ -774,8 +864,7 @@ def main(name_file, start_x, start_y):
     for y, row in enumerate(level):
         for x, col in enumerate(row):
             if col in WALL_IMAGES and col != 'A':  # Создание платформы (стены)
-                image_path = get_wall_image_path(col)  # Получаем изображение для стены
-                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                pf = Platform(WALL_IMAGES[col], x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
                 ENTITIES.add(pf)
                 PLATFORMS.append(pf)
 
@@ -796,27 +885,25 @@ def main(name_file, start_x, start_y):
                 ENTITIES.add(finish)
 
             elif col in SPIKE_IMAGES:  # Создаем колючку
-                spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)
+                spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, SPIKE_IMAGES[col])
                 ENTITIES.add(spike)
 
             elif col in TRAP_IMAGES:  # Создаем ловушку
-                trap = Trap(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)
+                trap = Trap(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, TRAP_IMAGES[col])
                 ENTITIES.add(trap)
 
-                image_path = get_wall_image_path('A')  # Создаем невидимую платформу
-                pf = Platform(image_path, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                pf = Platform(WALL_IMAGES['A'], x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
                 PLATFORMS.append(pf)
 
             elif col in TRAMPOLINE_IMAGE:  # Создает трамплин
-                tramp = Trampoline(col, x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)  # Передаем тип трамплина
+                tramp = Trampoline(TRAMPOLINE_IMAGE[col], x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)  # Передаем тип трамплина
                 ENTITIES.add(tramp)
 
             elif col == 'A':  # Создание рыбы-фугу
                 fish = Fish(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
                 ENTITIES.add(fish)
 
-                image_path = get_wall_image_path(col)
-                pf = Platform(image_path, x * PLATFORM_WIDTH + PLATFORM_WIDTH,
+                pf = Platform(WALL_IMAGES['A'], x * PLATFORM_WIDTH + PLATFORM_WIDTH,
                               y * PLATFORM_HEIGHT + PLATFORM_HEIGHT)  # Создаем невидимую платформу
                 ENTITIES.add(pf)
                 PLATFORMS.append(pf)
@@ -830,6 +917,11 @@ def main(name_file, start_x, start_y):
                 PLATFORMS.append(dart)
                 ENTITIES.add(dart)
 
+            elif col == '⊞':
+                ice_box = IceBox(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)
+                ENTITIES.add(ice_box)
+                PLATFORMS.append(ice_box)
+
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
     total_level_height = len(level) * PLATFORM_HEIGHT
@@ -837,28 +929,40 @@ def main(name_file, start_x, start_y):
     # Создаем камеру
     camera = Camera(camera_configure, total_level_width, total_level_height)
 
+    # Создаем кнопку паузы и переменную с состоянием ее нажатия
+    pause_button = PauseButton()
+    global paused
+
     while True:
-        if not game_over_active:
+        if not game_over_active and not paused:  # Проверка состояния игры
             keys = pygame.key.get_pressed()  # Получаем состояние клавиш
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
 
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    pos = pygame.mouse.get_pos()
+                    if pause_button.rect.collidepoint(pos):
+                        paused = not paused
+                    print("Paused:", paused)
+
+
                 elif event.type == KEYDOWN:  # Обработка нажатий клавиш
-                    if event.key == K_LEFT:
+                    if event.key == K_LEFT or event.key == K_a:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'left')
-                    elif event.key == K_RIGHT:
+                    elif event.key == K_RIGHT or event.key == K_d:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'right')
-                    elif event.key == K_UP:
+                    elif event.key == K_UP or event.key == K_w:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
-                    elif event.key == K_DOWN:
+                    elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
+
 
             # Обновляем все объекты
             if not game_over_active:
                 hero.update(PLATFORMS)
                 for entity in ENTITIES:
-                    if isinstance(entity, Trap) or isinstance(entity, Trampoline):
+                    if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox):
                         entity.update(hero)
                     elif isinstance(entity, Bat) or isinstance(entity, Arrow):
                         entity.update(PLATFORMS)
@@ -873,7 +977,7 @@ def main(name_file, start_x, start_y):
                             isinstance(obj, Thorn) and obj.image_name is not None and (
                             '2' in obj.image_name or '3' in obj.image_name)) or (
                             isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
-                            isinstance(obj, Bat))):
+                            isinstance(obj, Bat)) or isinstance(obj, Arrow)):
                         print("Вы погибли!")
                         death_channel.play(SOUNDS['death'])
                         death_channel.set_volume(0.2)
@@ -901,6 +1005,13 @@ def main(name_file, start_x, start_y):
                         ENTITIES.remove(obj)
                         count_star += 1
 
+                    elif isinstance(obj, IceBox):
+                        print('Ice Box разбит')
+                        star_channel.play(SOUNDS['ice box'])
+                        star_channel.set_volume(0.05)
+                        ENTITIES.remove(obj)
+                        PLATFORMS.remove(obj)
+
                     elif isinstance(obj, Finish):
                         print("Поздравляю! Вы достигли финиша!")
 
@@ -920,8 +1031,14 @@ def main(name_file, start_x, start_y):
                     if spr.image is not None:  # Проверка, что изображение не равно None
                         screen.blit(spr.image, camera.apply(spr))
 
+                # Рисуем кнопку паузы
+                screen.blit(pause_button.image, pause_button.rect)
+
                 pygame.display.update()  # Обновляем экран
                 pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+        elif paused:
+            Pause(screen, name_file)
+            paused = False
 
         else:
             pygame.mixer.music.stop()  # Останавливаем музыку

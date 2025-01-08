@@ -1,32 +1,25 @@
 WALL_IMAGES = {
-    '□': 'wall_1.png',
-    '▔': 'wall_2.png',
-    '▁': 'wall_3.png',
-    '▕': 'wall_4.png',
-    '▎': 'wall_5.png',
-    '╔': 'wall_6.png',
-    '╗': 'wall_7.png',
-    '╚': 'wall_8.png',
-    '╝': 'wall_9.png',
-    '-': 'wall_2.png',
-    '⊓': 'wall_10.png',
-    '⊏': 'wall_11.png',
-    '⊔': 'wall_12.png',
-    '⊐': 'wall_13.png',
-    '=': 'wall_14.png',
-    '║': 'wall_15.png',
-    '┓': 'wall_16.png',
-    '┛': 'wall_17.png',
-    '┗': 'wall_18.png',
-    '┏': 'wall_19.png',
-    'q': 'wall_20.png',
-    'w': 'wall_21.png',
-    'e': 'wall_22.png',
-    'r': 'wall_23.png',
-    't': 'wall_24.png',
-    'y': 'wall_25.png',
-    'u': 'wall_26.png',
-    'i': 'wall_27.png',
-    'p': 'wall_29.png',
-    '[': 'wall_30.png',
+    '□': 'wall_1.png', '▔': 'wall_2.png', '▁': 'wall_3.png', '▕': 'wall_4.png', '▎': 'wall_5.png',
+    '╔': 'wall_6.png', '╗': 'wall_7.png', '╚': 'wall_8.png', '╝': 'wall_9.png', '-': 'wall_2.png',
+    '⊓': 'wall_10.png', '⊏': 'wall_11.png', '⊔': 'wall_12.png', '⊐': 'wall_13.png', '=': 'wall_14.png',
+    '║': 'wall_15.png', '┓': 'wall_16.png', '┛': 'wall_17.png', '┗': 'wall_18.png', '┏': 'wall_19.png',
+    'q': 'wall_20.png', 'w': 'wall_21.png', 'e': 'wall_22.png', 'r': 'wall_23.png', 't': 'wall_24.png',
+    'y': 'wall_25.png', 'u': 'wall_26.png', 'i': 'wall_27.png', 'o': 'wall_28.png', 'p': 'wall_29.png',
+    '[': 'wall_30.png', 'A': 'wall_A.png', ']': 'wall_31.png', '"': 'wall_32.png', ';': 'wall_33.png',
+    ':': 'wall_34.png', ',': 'wall_35.png', '<': 'wall_36.png'
+}
+
+SPIKE_IMAGES = {
+    'z': 'spike_0.png', 'x': 'spike_1.png', 'c': 'spike_2.png', 'v': 'spike_3.png',
+    'b': 'spike_4.png', 'n': 'spike_5.png', 'm': 'spike_6.png', ',': 'spike_7.png',
+}
+
+TRAP_IMAGES = {
+    'a': 'trap_1.png', 's': 'trap_2.png', 'd': 'trap_3.png',
+    'f': 'trap_4.png', 'g': 'trap_5.png', 'h': 'trap_6.png',
+    'j': 'trap_7.png', 'k': 'trap_8.png', 'l': 'trap_9.png',
+}
+
+TRAMPOLINE_IMAGE = {
+    '↙': 'trampoline_1.png', '↘': 'trampoline_2.png', '↗': 'trampoline_3.png', '↖': 'trampoline_4.png'
 }
