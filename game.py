@@ -246,8 +246,21 @@ class XP(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = image.load(os.path.join(os.path.dirname(__file__), 'xp', 'xp_0.png'))
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'xp'), 2, "xp")
+        self.index = 0
+        self.image = self.frames[self.index]
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.frame_rate = 30
+        self.frame_counter = 0
+
+
+    def update(self):
+        # Логика анимации монеты
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
 
 
 class Star(sprite.Sprite):
