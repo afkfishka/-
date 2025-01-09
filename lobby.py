@@ -314,7 +314,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl5):
                     game.main("level_5.txt", 13, 27)
                 elif isinstance(sprite, Lvl6):
-                    game.main("level_6.txt", 12, 26)
+                    game.main("level_6.txt", 15, 26)
                 elif isinstance(sprite, Lvl7):
                     print('7')
                 elif isinstance(sprite, Lvl8):

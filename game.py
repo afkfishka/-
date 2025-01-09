@@ -35,14 +35,15 @@ WALL_IMAGES = {
     'q': 'blocks\wall_20.png', 'w': 'blocks\wall_21.png', 'e': 'blocks\wall_22.png', 'r': 'blocks\wall_23.png', 't': 'blocks\wall_24.png',
     'y': 'blocks\wall_25.png', 'u': 'blocks\wall_26.png', 'i': 'blocks\wall_27.png', 'o': 'blocks\wall_28.png', 'p': 'blocks\wall_29.png',
     '[': 'blocks\wall_30.png', 'A': 'blocks\wall_A.png',  ']': 'blocks\wall_31.png', '"': 'blocks\wall_32.png', ';': 'blocks\wall_33.png',
-    ':': 'blocks\wall_34.png', ',': 'blocks\wall_35.png', '<': 'blocks\wall_36.png', '/': 'blocks\wall_37.png', '?': 'blocks\wall_38.png'
+    ':': 'blocks\wall_34.png', ',': 'blocks\wall_35.png', '<': 'blocks\wall_36.png', '/': 'blocks\wall_37.png', '?': 'blocks\wall_38.png',
+    'б': 'blocks\wall_39.png',  'в': 'blocks\wall_40.png', 'г': 'blocks\wall_41.png',
 }
 
 # Словарь с изображениями шипов
 SPIKE_IMAGES = {
     'z': 'spike\spike_0.png', 'x': 'spike\spike_1.png', 'c': 'spike\spike_2.png', 'v': 'spike\spike_3.png',
     'b': 'spike\spike_4.png', 'n': 'spike\spike_5.png', 'm': 'spike\spike_6.png', ',': 'spike\spike_7.png',
-    '@': 'spike\spike_8.png', '#': 'spike\spike_9.png'
+    '@': 'spike\spike_8.png', '#': 'spike\spike_9.png', 'д': 'spike\spike_10.png', 'ё': 'spike\spike_11.png',
 }
 
 # Словарь с изображениями ловушек
