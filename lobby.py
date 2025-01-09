@@ -314,23 +314,24 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl5):
                     game.main("level_5.txt", 13, 27)
                 elif isinstance(sprite, Lvl6):
-                    print('6')
+                    game.main("level_6.txt", 12, 26)
                 elif isinstance(sprite, Lvl7):
                     print('7')
                 elif isinstance(sprite, Lvl8):
                     print('8')
                 elif isinstance(sprite, Lvl9):
-                    print('9')
-                elif isinstance(sprite, Lvl10):
                     game.main("arcade_1.txt", 7, 91)
+                elif isinstance(sprite, Lvl10):
+                    game.main("arcade_2.txt", 7, 116)
 
-    def achivements_function(self):
+
+def achivements_function(self):
         print("Список достижений открыт!")
         pygame.time.delay(2000)  # Имитация задержки
 
-    def settings_function(self):
-        print("Запуск настроек!")
-        pygame.time.delay(2000)  # Имитация задержки
+def settings_function(self):
+    print("Запуск настроек!")
+    pygame.time.delay(2000)  # Имитация задержки
 
 
 Lobby()

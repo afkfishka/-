@@ -35,13 +35,14 @@ WALL_IMAGES = {
     'q': 'blocks\wall_20.png', 'w': 'blocks\wall_21.png', 'e': 'blocks\wall_22.png', 'r': 'blocks\wall_23.png', 't': 'blocks\wall_24.png',
     'y': 'blocks\wall_25.png', 'u': 'blocks\wall_26.png', 'i': 'blocks\wall_27.png', 'o': 'blocks\wall_28.png', 'p': 'blocks\wall_29.png',
     '[': 'blocks\wall_30.png', 'A': 'blocks\wall_A.png',  ']': 'blocks\wall_31.png', '"': 'blocks\wall_32.png', ';': 'blocks\wall_33.png',
-    ':': 'blocks\wall_34.png', ',': 'blocks\wall_35.png', '<': 'blocks\wall_36.png'
+    ':': 'blocks\wall_34.png', ',': 'blocks\wall_35.png', '<': 'blocks\wall_36.png', '/': 'blocks\wall_37.png', '?': 'blocks\wall_38.png'
 }
 
 # Словарь с изображениями шипов
 SPIKE_IMAGES = {
     'z': 'spike\spike_0.png', 'x': 'spike\spike_1.png', 'c': 'spike\spike_2.png', 'v': 'spike\spike_3.png',
     'b': 'spike\spike_4.png', 'n': 'spike\spike_5.png', 'm': 'spike\spike_6.png', ',': 'spike\spike_7.png',
+    '@': 'spike\spike_8.png', '#': 'spike\spike_9.png'
 }
 
 # Словарь с изображениями ловушек
@@ -49,6 +50,7 @@ TRAP_IMAGES = {
     'a': 'trap\\trap_1.png', 's': 'trap\\trap_2.png', 'd': 'trap\\trap_3.png',
     'f': 'trap\\trap_4.png', 'g': 'trap\\trap_5.png', 'h': 'trap\\trap_6.png',
     'j': 'trap\\trap_7.png', 'k': 'trap\\trap_8.png', 'l': 'trap\\trap_9.png',
+    '&': 'trap\\trap_10.png', '(': 'trap\\trap_11.png'
 }
 
 # Словарь для изображений трамплина
@@ -756,14 +758,14 @@ class Pause:
             # рисуем
             pygame.display.flip()
             self.clock.tick(30)
-        pygame.quit()
+        # pygame.quit()
 
     def check_click(self, pos):
         for sprite in self.game_pause:
             if sprite.rect.collidepoint(pos):
                 if isinstance(sprite, Resume):
                     print('resume')
-                    pygame.quit()  # Закрываем текущее игровое окно
+                    self.running = False
                 elif isinstance(sprite, Home):
                     print('back to lobby')
                     activate_menu()  # Активируем меню
@@ -1048,8 +1050,10 @@ def main(name_file, start_x, start_y):
                 pygame.display.update()  # Обновляем экран
                 pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
         elif paused:
+            pygame.mixer.music.pause()
             Pause(screen, name_file)
             paused = False
+            pygame.mixer.music.unpause()
 
         else:
             pygame.mixer.music.stop()  # Останавливаем музыку
