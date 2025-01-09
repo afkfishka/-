@@ -302,7 +302,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
     def click_lvl_map(self, pos):
         for sprite in self.map_sprites:
-            if sprite.rect.collidepoint(pos):
+            if sprite.rect.collidepoint(pos) and flag_map:
                 if isinstance(sprite, Lvl1):
                     game.main("level_1.txt", 13, 28)
                 elif isinstance(sprite, Lvl2):
