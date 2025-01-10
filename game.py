@@ -19,6 +19,7 @@ BACKGROUND_COLOR = "#00000000"
 # Переменные для представления уровня
 ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
+PORTALS = []  # Список координат порталов
 
 # Сохраняемые данные
 STATE = {'coins': 0,                # Монеты
@@ -556,6 +557,50 @@ class Arrow(sprite.Sprite):
                 self.kill()
 
 
+class Teleport(sprite.Sprite):
+    def __init__(self, x, y, portal_id):
+        super().__init__()
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'portal'), 11, "portal")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.frame_rate = 10
+        self.frame_counter = 0
+        self.portal_id = int(portal_id)
+
+    def update(self, hero):
+        # Проверяем столкновение с персонажем
+        if self.rect.colliderect(hero.rect):
+            # Находим соответствующий портал
+            if self.portal_id % 2 == 0:  # Если портал 0, 2, 4, 6, 8
+                next_id = self.portal_id + 1
+            else:  # Если портал 1, 3, 5, 7, 9
+                next_id = self.portal_id - 1
+
+            new_cord = PORTALS[next_id][1]
+
+            dx = dy = 0
+            if hero.direction == 'up':
+                dy -= 42
+            elif hero.direction == 'down':
+                dy += 42
+            elif hero.direction == 'left':
+                dx -= 42
+            elif hero.direction == 'right':
+                dx += 42
+
+            hero.rect.x , hero.rect.y = new_cord[0] + dx, new_cord[1] + dy
+
+
+
+        # Анимация телепорта
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+
+
 class Camera:
     """Класс для представления камеры.
     Управляет отображением игрового мира относительно положения персонажа."""
@@ -700,7 +745,7 @@ class Death:
             if sprite.rect.collidepoint(pos):
                 if isinstance(sprite, Restart):
                     print('restart')
-                    main(self.name_file, self.start_x, self.start_y)
+                    level(self.name_file, self.start_x, self.start_y)
                 elif isinstance(sprite, Home):
                     print('back to lobby')
                     activate_menu()  # Активируем меню
@@ -773,7 +818,6 @@ class Pause:
                     pygame.quit()  # Закрываем текущее игровое окно
 
 
-
 class PauseButton(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -837,12 +881,13 @@ def activate_menu():
 paused = False
 
 # Основная функция игры
-def main(name_file, start_x, start_y):
+def level(name_file, start_x, start_y):
     game_over_active = False
 
     # Очищаем данные перед загрузкой нового уровня
     ENTITIES.empty()  # удаляем все спрайты
     PLATFORMS.clear()  # Удаляем все платформы
+    PORTALS.clear()
 
     count_star = 0  # Обнуляем звезды, собранные за уровень
     count_coin = 0  # Обнуляем монеты, собранные за уровень
@@ -935,6 +980,15 @@ def main(name_file, start_x, start_y):
                 ENTITIES.add(ice_box)
                 PLATFORMS.append(ice_box)
 
+            elif col in '0123456789':
+                teleport = Teleport(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, col)
+                ENTITIES.add(teleport)
+                PLATFORMS.append(teleport)
+                PORTALS.append((col, (x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)))
+                print((col, (x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)))
+
+    PORTALS.sort(key=lambda x: x[0])
+
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
     total_level_height = len(level) * PLATFORM_HEIGHT
@@ -976,7 +1030,7 @@ def main(name_file, start_x, start_y):
             if not game_over_active:
                 hero.update(PLATFORMS)
                 for entity in ENTITIES:
-                    if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox):
+                    if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox) or isinstance(entity, Teleport):
                         entity.update(hero)
                     elif isinstance(entity, Bat) or isinstance(entity, Arrow):
                         entity.update(PLATFORMS)
@@ -1059,3 +1113,7 @@ def main(name_file, start_x, start_y):
         else:
             pygame.mixer.music.stop()  # Останавливаем музыку
             Death(screen, name_file, start_x, start_y)
+
+
+def arcade():
+    pass

@@ -4,13 +4,14 @@ import re
 from pygame import KEYDOWN, K_ESCAPE
 
 # Размеры окна
-screen_size = width, height = 1920, 1080
-cell_size = 25
+screen_size = width, height = 1000, 1000
+# screen_size = width, height = 325, 1000
+cell_size = 40
 
 # Определение пути к изображениям
 image_paths = {
-    '-': 'blocks/wall_1.png',
-    'c': 'spike/spike_2.png',
+    '□': 'blocks/wall_1.png',
+    '#': 'spike/spike_9.png',
     'a': 'trap/trap_1.png',
     '↙': 'trampoline/trampoline_1.png',
     'A': 'fish/fish_icon.png',
@@ -45,7 +46,7 @@ class Board:
                 self.images[symbol] = None  # Пустое поле
 
         # Порядок символов для левой и правой кнопок
-        self.left_color_order = ['-', 'c', 'a', '↙', 'A', '♜', '⇑', ' ']
+        self.left_color_order = ['□', '#', 'a', '↙', 'A', '♜', '⇑', ' ']
         self.right_color_order = ['+', '$', '*', '⊞', 'F', ' ']
 
     def set_color_left(self, x, y, flag=False):
