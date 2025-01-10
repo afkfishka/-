@@ -65,6 +65,16 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
 
 
+class Arcade:
+    def __init__(self):
+        super().__init__()
+
+        self.image = pygame.image.load('images/right.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
+
+
 class draw_lvl(pygame.sprite.Sprite):
     def __init__(self, position):
         super().__init__()
@@ -195,6 +205,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
         self.all_sprites = pygame.sprite.Group()
         self.map_sprites = pygame.sprite.Group()
+        self.arcade_sprites = pygame.sprite.Group()
 
         self.all_sprites.add(ShopSprites())
         self.all_sprites.add(SkinsSprites())
@@ -225,6 +236,8 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(draw_gorizontall_line((660, 470)))
         self.map_sprites.add(draw_gorizontall_line((870, 310)))
 
+        self.arcade_sprites.add(Arcade())
+
         self.main_menu()
 
     def draw_text(self, text, font, surface, x, y, color):
@@ -254,6 +267,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("8", self.b_font, self.screen, 810, 310, (0, 0, 0))
                 self.draw_text("9", self.b_font, self.screen, 1020, 310, (0, 0, 0))
                 self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0))
+
+            if flag_arcade:
+                self.arcade_sprites.draw(self.screen)
 
             # Обработка событий
             for event in pygame.event.get():
