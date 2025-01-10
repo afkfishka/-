@@ -1,6 +1,7 @@
 import pygame
 import sys
 import game
+import os
 
 STATE = game.load_game()
 
@@ -11,6 +12,14 @@ flag_arcade = False  # флаг для отрисовки аркады
 
 
 # уровни все
+
+
+def load_animation_frames(path, count, prefix):
+    frames = []
+    for i in range(count):
+        image_path = os.path.join(path, f'{prefix}_{i}.png')  # Загружаем кадры анимации
+        frames.append(pygame.image.load(image_path))
+    return frames
 
 
 class ShopSprites(pygame.sprite.Sprite):  # Кнопка магазина
@@ -55,6 +64,47 @@ class Achivements(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect.center = (1160, 30)  # Позиционирование спрайта в центре экрана
 
 
+class Pink_line(pygame.sprite.Sprite):  # Кнопка достижений
+    def __init__(self):
+        super().__init__()
+
+        self.image = pygame.image.load('images/pink_line.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (900, 450)  # Позиционирование спрайта в центре экрана
+
+class Pink_line2(pygame.sprite.Sprite):  # Кнопка достижений
+    def __init__(self):
+        super().__init__()
+
+        self.image = pygame.image.load('images/pink_line.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (300, 450)  # Позиционирование спрайта в центре экрана
+
+
+
+
+class ArcadeDoor(pygame.sprite.Sprite):
+    def __init__(self):
+        x, y = (445, 350)
+        a = 5
+        width, height = (62 * a, 34 * a)
+        super().__init__()
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'arcade'), 4, "arcade_animate")
+        self.index = 0
+        self.image = pygame.transform.scale(self.frames[self.index], (width, height))
+        self.rect = pygame.Rect(x, y, width, height)
+        self.frame_rate = 60
+        self.frame_counter = 0
+
+    def update(self):
+        # Логика анимации аркады
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = pygame.transform.scale(self.frames[self.index], (self.rect.width, self.rect.height))
+
+
 class Settings(pygame.sprite.Sprite):  # Кнопка достижений
     def __init__(self):
         super().__init__()
@@ -64,15 +114,30 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
 
-
-class Arcade:
+class Arcade_right(pygame.sprite.Sprite):  # Кнопка карты
     def __init__(self):
         super().__init__()
-
-        self.image = pygame.image.load('images/right.png')  # Загрузка изображения
-        self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
+        self.image = pygame.image.load('images/rignt.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
+        self.rect.center = (775, 245)  # Позиционирование спрайта
+
+
+
+
+class Arcade_left(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/left.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (400, 245)  # Позиционирование спрайта
+
+
+class Arcade_button(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/play_in_arcade.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (600, 600)  # Позиционирование спрайта
 
 
 class draw_lvl(pygame.sprite.Sprite):
@@ -236,7 +301,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(draw_gorizontall_line((660, 470)))
         self.map_sprites.add(draw_gorizontall_line((870, 310)))
 
-        self.arcade_sprites.add(Arcade())
+        self.arcade_sprites.add(Arcade_right())
+        self.arcade_sprites.add(Arcade_left())
+        self.arcade_sprites.add(ArcadeDoor())
+        self.arcade_sprites.add(Pink_line())
+        self.arcade_sprites.add(Pink_line2())
+        self.arcade_sprites.add(Arcade_button())
 
         self.main_menu()
 
@@ -271,6 +341,14 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_arcade:
                 self.arcade_sprites.draw(self.screen)
 
+                self.draw_text("Аркада", self.b_font, self.screen, self.screen_size[0] // 2,
+                               self.screen_size[1] // 10 * 3, "Yellow")
+                self.draw_text("Играть", self.b_font, self.screen, self.screen_size[0] // 2,
+                               587, "black")
+                self.arcade_sprites.update()
+
+
+
             # Обработка событий
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -280,6 +358,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                     pos = pygame.mouse.get_pos()
                     self.check_click(pos)
                     self.click_lvl_map(pos)
+                    self.click_arcade(pos)
 
             pygame.display.flip()
 
@@ -316,6 +395,14 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Settings):
                     pass
 
+
+
+    def click_arcade(self, pos):
+        for sprite in self.arcade_sprites:
+            if sprite.rect.collidepoint(pos) and flag_arcade:
+                if isinstance(sprite, Arcade_button):
+                    print('это сообщение находится в 403 строчке!!!!!!!!!!')
+
     def click_lvl_map(self, pos):
         for sprite in self.map_sprites:
             if sprite.rect.collidepoint(pos) and flag_map:
@@ -342,8 +429,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
 
 def achivements_function(self):
-        print("Список достижений открыт!")
-        pygame.time.delay(2000)  # Имитация задержки
+    print("Список достижений открыт!")
+    pygame.time.delay(2000)  # Имитация задержки
+
 
 def settings_function(self):
     print("Запуск настроек!")
