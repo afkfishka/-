@@ -407,25 +407,25 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         for sprite in self.map_sprites:
             if sprite.rect.collidepoint(pos) and flag_map:
                 if isinstance(sprite, Lvl1):
-                    game.main("level_1.txt", 13, 28)
+                    game.level("level_1.txt", 13, 28)
                 elif isinstance(sprite, Lvl2):
-                    game.main("level_2.txt", 12, 4)
+                    game.level("level_2.txt", 12, 4)
                 elif isinstance(sprite, Lvl3):
-                    game.main("level_3.txt", 17, 25)
+                    game.level("level_3.txt", 17, 25)
                 elif isinstance(sprite, Lvl4):
-                    game.main("level_4.txt", 11, 4)
+                    game.level("level_4.txt", 11, 4)
                 elif isinstance(sprite, Lvl5):
-                    game.main("level_5.txt", 13, 27)
+                    game.level("level_5.txt", 13, 27)
                 elif isinstance(sprite, Lvl6):
-                    game.main("level_6.txt", 15, 26)
+                    game.level("level_6.txt", 15, 26)
                 elif isinstance(sprite, Lvl7):
-                    print('7')
+                    game.level("level_7.txt", 4, 8)
                 elif isinstance(sprite, Lvl8):
                     print('8')
                 elif isinstance(sprite, Lvl9):
-                    game.main("arcade_1.txt", 7, 91)
+                    game.level("arcade_1.txt", 7, 91)
                 elif isinstance(sprite, Lvl10):
-                    game.main("arcade_2.txt", 7, 116)
+                    game.level("arcade_2.txt", 7, 116)
 
 
 def achivements_function(self):
