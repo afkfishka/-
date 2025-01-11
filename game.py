@@ -675,13 +675,12 @@ class GameOver(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (600, 400)  # Позиционирование спрайта в центре экрана
 
-
 class Restart(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/restart.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (517, 488)  # Позиционирование спрайта в центре экрана
+        self.rect.center = (495, 510)  # Позиционирование спрайта в центре экрана
 
 
 class Home(pygame.sprite.Sprite):
@@ -689,15 +688,14 @@ class Home(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('images/home.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (684, 488)  # Позиционирование спрайта в центре экрана
-
+        self.rect.center = (710, 510)  # Позиционирование спрайта в центре экрана
 
 class Resume(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/resume.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (517, 488)  # Позиционирование спрайта в центре экрана
+        self.rect.center = (495, 510)  # Позиционирование спрайта в центре экрана
 
 
 class Death:
@@ -716,6 +714,7 @@ class Death:
 
         self.b_font = pygame.font.Font(self.font_path, 100)
         self.font80 = pygame.font.Font(self.font_path, 80)
+        self.font40 = pygame.font.Font(self.font_path, 40)
         self.m_font = pygame.font.Font(self.font_path, 30)
 
         self.game_over = pygame.sprite.Group()
@@ -745,14 +744,13 @@ class Death:
             # self.screen.fill((0, 0, 0))
 
             self.game_over.draw(self.screen)
-            self.draw_text("Рестарт", self.m_font, self.screen, 532, 487, "black")
-            self.draw_text("Меню", self.m_font, self.screen, 697, 487, "black")
-            self.draw_text("Game over", self.font80, self.screen, 600, 390, "black")
+            self.draw_text("Рестарт", self.font40, self.screen, 520, 505, "black")
+            self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
+            self.draw_text("Game over", self.b_font, self.screen, 600, 390, "black")
             if self.name_file:
-                self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
-                self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+                self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
             else:
-                self.draw_text('Аркада', self.font, self.screen, 600, 305, "black")
+                self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
 
             # рисуем
             pygame.display.flip()
@@ -789,6 +787,8 @@ class Pause:
         self.b_font = pygame.font.Font(self.font_path, 100)
         self.font80 = pygame.font.Font(self.font_path, 80)
         self.m_font = pygame.font.Font(self.font_path, 30)
+        self.font40 = pygame.font.Font(self.font_path, 40)
+
 
         self.game_pause = pygame.sprite.Group()
 
@@ -817,14 +817,13 @@ class Pause:
             # self.screen.fill((0, 0, 0))
 
             self.game_pause.draw(self.screen)
-            self.draw_text("Продолжить", self.m_font, self.screen, 532, 487, "black")
-            self.draw_text("Меню", self.m_font, self.screen, 697, 487, "black")
-            self.draw_text("Pause", self.font80, self.screen, 600, 390, "black")
+            self.draw_text("Далее", self.font40, self.screen, 520, 505, "black")
+            self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
+            self.draw_text("Pause", self.b_font, self.screen, 600, 390, "black")
             if self.name_file:
-                self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
-                self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+                self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
             else:
-                self.draw_text('Аркада', self.font, self.screen, 600, 305, "black")
+                self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
 
             # рисуем
             pygame.display.flip()
