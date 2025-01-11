@@ -1,6 +1,7 @@
 # Импортирование необходимых библиотек
 from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN, K_w, K_a, K_s, \
     K_d, MOUSEBUTTONDOWN
+from random import shuffle
 import pygame
 import pickle
 import os
@@ -20,24 +21,38 @@ BACKGROUND_COLOR = "#00000000"
 ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 PORTALS = []  # Список координат порталов
+ARCADE = ['arcade_1.txt', 'arcade_2.txt', 'arcade_3.txt']
+
+# Переменные для подсчета собранных бонусов за время игры
+COUNT_XP = 0
+COUNT_COIN = 0
+COUNT_STAR = 0
 
 # Сохраняемые данные
-STATE = {'coins': 0,                # Монеты
+STATE = {'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
-         'music': None,             # Состояние музыки
-         'sound': None}             # Состояние звуковых эффектов
+         'music': None,  # Состояние музыки
+         'sound': None}  # Состояние звуковых эффектов
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
-    '□': 'blocks\\wall_1.png',  '▔': 'blocks\\wall_2.png',  '▁': 'blocks\\wall_3.png',  '▕': 'blocks\\wall_4.png',  '▎': 'blocks\\wall_5.png',
-    '╔': 'blocks\\wall_6.png',  '╗': 'blocks\\wall_7.png',  '╚': 'blocks\\wall_8.png',  '╝': 'blocks\\wall_9.png',  '-': 'blocks\\wall_2.png',
-    '⊓': 'blocks\\wall_10.png', '⊏': 'blocks\\wall_11.png', '⊔': 'blocks\\wall_12.png', '⊐': 'blocks\\wall_13.png', '=': 'blocks\\wall_14.png',
-    '║': 'blocks\\wall_15.png', '┓': 'blocks\\wall_16.png', '┛': 'blocks\\wall_17.png', '┗': 'blocks\\wall_18.png', '┏': 'blocks\\wall_19.png',
-    'q': 'blocks\\wall_20.png', 'w': 'blocks\\wall_21.png', 'e': 'blocks\\wall_22.png', 'r': 'blocks\\wall_23.png', 't': 'blocks\\wall_24.png',
-    'y': 'blocks\\wall_25.png', 'u': 'blocks\\wall_26.png', 'i': 'blocks\\wall_27.png', 'o': 'blocks\\wall_28.png', 'p': 'blocks\\wall_29.png',
-    '[': 'blocks\\wall_30.png', 'A': 'blocks\\wall_A.png',  ']': 'blocks\\wall_31.png', '"': 'blocks\\wall_32.png', ';': 'blocks\\wall_33.png',
-    ':': 'blocks\\wall_34.png', ',': 'blocks\\wall_35.png', '<': 'blocks\\wall_36.png', '/': 'blocks\\wall_37.png', '?': 'blocks\\wall_38.png',
-    'б': 'blocks\\wall_39.png',  'в': 'blocks\\wall_40.png', 'г': 'blocks\\wall_41.png',
+    '□': 'blocks\\wall_1.png', '▔': 'blocks\\wall_2.png', '▁': 'blocks\\wall_3.png', '▕': 'blocks\\wall_4.png',
+    '▎': 'blocks\\wall_5.png',
+    '╔': 'blocks\\wall_6.png', '╗': 'blocks\\wall_7.png', '╚': 'blocks\\wall_8.png', '╝': 'blocks\\wall_9.png',
+    '-': 'blocks\\wall_2.png',
+    '⊓': 'blocks\\wall_10.png', '⊏': 'blocks\\wall_11.png', '⊔': 'blocks\\wall_12.png', '⊐': 'blocks\\wall_13.png',
+    '=': 'blocks\\wall_14.png',
+    '║': 'blocks\\wall_15.png', '┓': 'blocks\\wall_16.png', '┛': 'blocks\\wall_17.png', '┗': 'blocks\\wall_18.png',
+    '┏': 'blocks\\wall_19.png',
+    'q': 'blocks\\wall_20.png', 'w': 'blocks\\wall_21.png', 'e': 'blocks\\wall_22.png', 'r': 'blocks\\wall_23.png',
+    't': 'blocks\\wall_24.png',
+    'y': 'blocks\\wall_25.png', 'u': 'blocks\\wall_26.png', 'i': 'blocks\\wall_27.png', 'o': 'blocks\\wall_28.png',
+    'p': 'blocks\\wall_29.png',
+    '[': 'blocks\\wall_30.png', 'A': 'blocks\\wall_A.png', ']': 'blocks\\wall_31.png', '"': 'blocks\\wall_32.png',
+    ';': 'blocks\\wall_33.png',
+    ':': 'blocks\\wall_34.png', ',': 'blocks\\wall_35.png', '<': 'blocks\\wall_36.png', '/': 'blocks\\wall_37.png',
+    '?': 'blocks\\wall_38.png',
+    'б': 'blocks\\wall_39.png', 'в': 'blocks\\wall_40.png', 'г': 'blocks\\wall_41.png', 'ж': 'blocks\\wall_42.png',
 }
 
 # Словарь с изображениями шипов
@@ -57,7 +72,8 @@ TRAP_IMAGES = {
 
 # Словарь для изображений трамплина
 TRAMPOLINE_IMAGE = {
-    '↙': 'trampoline\\trampoline_1.png', '↘': 'trampoline\\trampoline_2.png', '↗': 'trampoline\\trampoline_3.png', '↖': 'trampoline\\trampoline_4.png'
+    '↙': 'trampoline\\trampoline_1.png', '↘': 'trampoline\\trampoline_2.png', '↗': 'trampoline\\trampoline_3.png',
+    '↖': 'trampoline\\trampoline_4.png'
 }
 
 pygame.init()  # Инициализация Pygame
@@ -83,6 +99,7 @@ class Platform(sprite.Sprite):
     """Класс для представления платформы (стен).
     При инициализации объекта принимаются необходимые координаты
     расположения на карте и имя файла для наложения текстуры."""
+
     def __init__(self, image_path, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)  # Определяем прямоугольник для платформы
@@ -256,7 +273,6 @@ class XP(sprite.Sprite):
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
         self.frame_rate = 30
         self.frame_counter = 0
-
 
     def update(self):
         # Логика анимации монеты
@@ -467,7 +483,8 @@ class Bat(sprite.Sprite):
         self.rect.y += dy
         # Проверка коллизий с платформами
         for platform in platforms:
-            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(platform.rect):
+            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(
+                    platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -549,7 +566,8 @@ class Arrow(sprite.Sprite):
         self.rect.y += dy
         # Проверка коллизий с платформами
         for platform in platforms:
-            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(platform.rect):
+            if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(
+                    platform.rect):
                 if dx < 0:  # Движение влево
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
@@ -589,9 +607,7 @@ class Teleport(sprite.Sprite):
             elif hero.direction == 'right':
                 dx += 42
 
-            hero.rect.x , hero.rect.y = new_cord[0] + dx, new_cord[1] + dy
-
-
+            hero.rect.x, hero.rect.y = new_cord[0] + dx, new_cord[1] + dy
 
         # Анимация телепорта
         self.frame_counter += 1
@@ -685,7 +701,7 @@ class Resume(pygame.sprite.Sprite):
 
 
 class Death:
-    def __init__(self, screen, name_file, start_x, start_y):
+    def __init__(self, screen, start_x=None, start_y=None, name_file=None):
         self.name_file = name_file
         self.start_x = start_x
         self.start_y = start_y
@@ -732,8 +748,11 @@ class Death:
             self.draw_text("Рестарт", self.m_font, self.screen, 532, 487, "black")
             self.draw_text("Меню", self.m_font, self.screen, 697, 487, "black")
             self.draw_text("Game over", self.font80, self.screen, 600, 390, "black")
-            self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
-            self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+            if self.name_file:
+                self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
+                self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+            else:
+                self.draw_text('Аркада', self.font, self.screen, 600, 305, "black")
 
             # рисуем
             pygame.display.flip()
@@ -745,7 +764,10 @@ class Death:
             if sprite.rect.collidepoint(pos):
                 if isinstance(sprite, Restart):
                     print('restart')
-                    level(self.name_file, self.start_x, self.start_y)
+                    if self.name_file:
+                        map_level(self.name_file, self.start_x, self.start_y)
+                    else:
+                        arcade()
                 elif isinstance(sprite, Home):
                     print('back to lobby')
                     activate_menu()  # Активируем меню
@@ -753,7 +775,7 @@ class Death:
 
 
 class Pause:
-    def __init__(self, screen, name_file):
+    def __init__(self, screen, name_file=None):
         self.screen = screen
         self.name_file = name_file
 
@@ -798,8 +820,11 @@ class Pause:
             self.draw_text("Продолжить", self.m_font, self.screen, 532, 487, "black")
             self.draw_text("Меню", self.m_font, self.screen, 697, 487, "black")
             self.draw_text("Pause", self.font80, self.screen, 600, 390, "black")
-            self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
-            self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+            if self.name_file:
+                self.draw_text("Уровень", self.font, self.screen, 570, 305, "black")
+                self.draw_text(str(self.name_file[6:-4]), self.font, self.screen, 680, 305, "black")
+            else:
+                self.draw_text('Аркада', self.font, self.screen, 600, 305, "black")
 
             # рисуем
             pygame.display.flip()
@@ -825,6 +850,17 @@ class PauseButton(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect()
         self.rect.topleft = (WIN_WIDTH - 60, 20)
+
+
+class Water(sprite.Sprite):
+    def __init__(self, level, hero):
+        super().__init__()
+        self.rect = Rect(PLATFORM_WIDTH * 2, hero.rect.y + 500, PLATFORM_WIDTH * 11, PLATFORM_HEIGHT * 11)
+        self.image = Surface((PLATFORM_WIDTH * 11, PLATFORM_HEIGHT * 11))
+        self.image.fill(Color('#66ffe3'))
+
+    def update(self):
+        self.rect.y -= 2.5
 
 
 # Функция для настройки положения камеры
@@ -878,47 +914,26 @@ def activate_menu():
     from lobby import Lobby
     Lobby()
 
-paused = False
 
-# Основная функция игры
-def level(name_file, start_x, start_y):
-    game_over_active = False
+def set_background_music():
+    pygame.mixer.music.load('music and sounds/game.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.01)
 
-    # Очищаем данные перед загрузкой нового уровня
+
+def reset_bonuses():
+    global COUNT_XP, COUNT_COIN, COUNT_STAR
+    COUNT_XP, COUNT_COIN, COUNT_STAR = 0, 0, 0
+
+
+def reset_level():
+    global ENTITIES, PLATFORMS, PORTALS
     ENTITIES.empty()  # удаляем все спрайты
     PLATFORMS.clear()  # Удаляем все платформы
     PORTALS.clear()
 
-    count_star = 0  # Обнуляем звезды, собранные за уровень
-    count_coin = 0  # Обнуляем монеты, собранные за уровень
 
-    # Создаем дисплей для расположения всех объектов
-    pygame.init()  # Инициализация Pygame
-    screen = pygame.display.set_mode(DISPLAY)  # Создание окна игры
-    pygame.display.set_caption("Тайны подземелий")  # Установка заголовка окна
-
-    bg = Surface(DISPLAY)  # Создаем поверхность для фона
-    bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
-
-    # Запуск музыки
-    pygame.mixer.music.stop()  # Останавливаем музыку из меню
-    pygame.mixer.music.load('music and sounds/game.mp3')  # Загружаем музыку для воспроизведения во время игры
-    pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
-    pygame.mixer.music.set_volume(0.01)  # Установка громкости на 1%
-
-    # Создаем экземпляр игрока
-    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)
-    ENTITIES.add(hero)  # Добавляем игрока в группу спрайтов
-
-    # Определение уровня в виде строк
-    level = load_level_from_file(os.path.join("levels", name_file))
-
-    if not level:  # Если уровень оказался пустым
-        print("Ошибка: Не удалось загрузить уровень.")
-        activate_menu()  # Активируем меню
-        pygame.quit()  # Закрываем текущее игровое окно
-
-    # Заполнение платформ и объектов из level_n.txt
+def load_platform(level):
     for y, row in enumerate(level):
         for x, col in enumerate(row):
             if col in WALL_IMAGES and col != 'A':  # Создание платформы (стены)
@@ -954,7 +969,8 @@ def level(name_file, start_x, start_y):
                 PLATFORMS.append(pf)
 
             elif col in TRAMPOLINE_IMAGE:  # Создает трамплин
-                tramp = Trampoline(TRAMPOLINE_IMAGE[col], x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)  # Передаем тип трамплина
+                tramp = Trampoline(TRAMPOLINE_IMAGE[col], x * PLATFORM_WIDTH,
+                                   y * PLATFORM_HEIGHT)  # Передаем тип трамплина
                 ENTITIES.add(tramp)
 
             elif col == 'A':  # Создание рыбы-фугу
@@ -986,8 +1002,94 @@ def level(name_file, start_x, start_y):
                 PLATFORMS.append(teleport)
                 PORTALS.append((col, (x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)))
                 print((col, (x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT)))
-
     PORTALS.sort(key=lambda x: x[0])
+
+
+def update_entity(hero):
+    hero.update(PLATFORMS)
+    for entity in ENTITIES:
+        if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox) or isinstance(
+                entity, Teleport):
+            entity.update(hero)
+        elif isinstance(entity, Bat) or isinstance(entity, Arrow):
+            entity.update(PLATFORMS)
+        elif not isinstance(entity, Player):
+            entity.update()
+
+
+def check_collided(collided_objects):
+    for obj in collided_objects:
+        # Проверка столкновения игрока со смертельно опасными объектами
+        if isinstance(obj, Spike) or (isinstance(obj, Thorn) and obj.image_name is not None and (
+                '2' in obj.image_name or '3' in obj.image_name)) or (
+                isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
+                isinstance(obj, Bat)) or isinstance(obj, Arrow) or isinstance(obj, Water)):
+            print("Вы погибли!")
+            death_channel.play(SOUNDS['death'])
+            death_channel.set_volume(0.2)
+            return True
+        if isinstance(obj, Coin):
+            print("Монета собрана!")
+            coin_channel.play(SOUNDS['coin'])
+            coin_channel.set_volume(0.1)
+            ENTITIES.remove(obj)
+        elif isinstance(obj, XP):
+            print("Опыт получен!")
+            xp_channel.play(SOUNDS['xp'])
+            xp_channel.set_volume(0.05)
+            ENTITIES.remove(obj)
+        elif isinstance(obj, Star):
+            print("Звезда собрана!")
+            star_channel.play(SOUNDS['star'])
+            star_channel.set_volume(0.1)
+            ENTITIES.remove(obj)
+        elif isinstance(obj, IceBox):
+            print('Ice Box разбит')
+            star_channel.play(SOUNDS['ice box'])
+            star_channel.set_volume(0.05)
+            ENTITIES.remove(obj)
+            PLATFORMS.remove(obj)
+        elif isinstance(obj, Finish):
+            print("Поздравляю! Вы достигли финиша!")
+            SOUNDS['coin'].set_volume(0.05)
+            save_game(STATE)
+            activate_menu()  # Активируем меню
+            pygame.quit()  # Закрываем текущее игровое окно
+
+
+# Основная функция игры
+def map_level(name_file, start_x, start_y):
+    game_over_active = False
+    paused = False
+
+    # Очищаем данные перед загрузкой нового уровня
+    reset_bonuses()
+    reset_level()
+
+    # Запуск музыки
+    set_background_music()
+
+    # Создаем дисплей для расположения всех объектов
+    pygame.init()  # Инициализация Pygame
+    screen = pygame.display.set_mode(DISPLAY)  # Создание окна игры
+
+    bg = Surface(DISPLAY)  # Создаем поверхность для фона
+    bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
+
+    # Создаем экземпляр игрока
+    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)
+    ENTITIES.add(hero)  # Добавляем игрока в группу спрайтов
+
+    # Определение уровня в виде строк
+    level = load_level_from_file(os.path.join("levels", name_file))
+
+    if not level:  # Если уровень оказался пустым
+        print("Ошибка: Не удалось загрузить уровень.")
+        activate_menu()  # Активируем меню
+        pygame.quit()  # Закрываем текущее игровое окно
+
+    # Заполнение платформ и объектов из level_n.txt
+    load_platform(level)
 
     # Определяем размеры уровня
     total_level_width = len(level[0]) * PLATFORM_WIDTH
@@ -996,10 +1098,8 @@ def level(name_file, start_x, start_y):
     # Создаем камеру
     camera = Camera(camera_configure, total_level_width, total_level_height)
 
-    # Создаем кнопку паузы и переменную с состоянием ее нажатия
+    # Создаем кнопку паузы
     pause_button = PauseButton()
-    global paused
-    paused = False
 
     while True:
         if not game_over_active and not paused:  # Проверка состояния игры
@@ -1007,14 +1107,11 @@ def level(name_file, start_x, start_y):
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
-
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
                     pos = pygame.mouse.get_pos()
                     if pause_button.rect.collidepoint(pos):
                         paused = not paused
                     print("Paused:", paused)
-
-
                 elif event.type == KEYDOWN:  # Обработка нажатий клавиш
                     if event.key == K_LEFT or event.key == K_a:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'left')
@@ -1025,85 +1122,27 @@ def level(name_file, start_x, start_y):
                     elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
 
-
             # Обновляем все объекты
-            if not game_over_active:
-                hero.update(PLATFORMS)
-                for entity in ENTITIES:
-                    if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox) or isinstance(entity, Teleport):
-                        entity.update(hero)
-                    elif isinstance(entity, Bat) or isinstance(entity, Arrow):
-                        entity.update(PLATFORMS)
-                    elif not isinstance(entity, Player):
-                        entity.update()
+            update_entity(hero)
 
-                # Проверка столкновений с объектами
-                collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
-                for obj in collided_objects:
-                    # Проверка столкновения игрока со смертельно опасными объектами
-                    if isinstance(obj, Spike) or (
-                            isinstance(obj, Thorn) and obj.image_name is not None and (
-                            '2' in obj.image_name or '3' in obj.image_name)) or (
-                            isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
-                            isinstance(obj, Bat)) or isinstance(obj, Arrow)):
-                        print("Вы погибли!")
-                        death_channel.play(SOUNDS['death'])
-                        death_channel.set_volume(0.2)
+            # Проверка столкновений с объектами
+            collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
+            game_over_active = check_collided(collided_objects)
 
-                        game_over_active = True
-                        break
+            # Отображение заднего фона и всех сущностей
+            screen.blit(bg, (0, 0))  # Отображаем фон
+            camera.update(hero)  # Обновляем камеру
 
-                    if isinstance(obj, Coin):
-                        print("Монета собрана!")
-                        coin_channel.play(SOUNDS['coin'])
-                        coin_channel.set_volume(0.1)
-                        count_coin += 1
-                        ENTITIES.remove(obj)
+            for spr in ENTITIES:
+                if spr.image is not None:  # Проверка, что изображение не равно None
+                    screen.blit(spr.image, camera.apply(spr))
 
-                    elif isinstance(obj, XP):
-                        print("Опыт получен!")
-                        xp_channel.play(SOUNDS['xp'])
-                        xp_channel.set_volume(0.05)
-                        ENTITIES.remove(obj)
+            # Рисуем кнопку паузы
+            screen.blit(pause_button.image, pause_button.rect)
 
-                    elif isinstance(obj, Star):
-                        print("Звезда собрана!")
-                        star_channel.play(SOUNDS['star'])
-                        star_channel.set_volume(0.1)
-                        ENTITIES.remove(obj)
-                        count_star += 1
+            pygame.display.update()  # Обновляем экран
+            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
-                    elif isinstance(obj, IceBox):
-                        print('Ice Box разбит')
-                        star_channel.play(SOUNDS['ice box'])
-                        star_channel.set_volume(0.05)
-                        ENTITIES.remove(obj)
-                        PLATFORMS.remove(obj)
-
-                    elif isinstance(obj, Finish):
-                        print("Поздравляю! Вы достигли финиша!")
-
-                        STATE['levels'][int(name_file[-5]) - 1] = count_star
-                        STATE['coins'] += count_coin
-                        SOUNDS['coin'].set_volume(0.05)
-                        save_game(STATE)
-
-                        activate_menu()  # Активируем меню
-                        pygame.quit()  # Закрываем текущее игровое окно
-
-                # Отображение заднего фона и всех сущностей
-                screen.blit(bg, (0, 0))  # Отображаем фон
-                camera.update(hero)  # Обновляем камеру
-
-                for spr in ENTITIES:
-                    if spr.image is not None:  # Проверка, что изображение не равно None
-                        screen.blit(spr.image, camera.apply(spr))
-
-                # Рисуем кнопку паузы
-                screen.blit(pause_button.image, pause_button.rect)
-
-                pygame.display.update()  # Обновляем экран
-                pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
         elif paused:
             pygame.mixer.music.pause()
             Pause(screen, name_file)
@@ -1112,8 +1151,160 @@ def level(name_file, start_x, start_y):
 
         else:
             pygame.mixer.music.stop()  # Останавливаем музыку
-            Death(screen, name_file, start_x, start_y)
+            Death(screen, start_x, start_y, name_file)
 
 
+# Основная функция аркады
 def arcade():
-    pass
+    game_over_active = False
+    paused = False
+    block = False
+    first_movement = False
+
+    # Очищаем данные перед загрузкой нового уровня
+    reset_bonuses()
+    reset_level()
+
+    # Запуск музыки
+    set_background_music()
+
+    # Создаем дисплей для расположения всех объектов
+    pygame.init()  # Инициализация Pygame
+    screen = pygame.display.set_mode(DISPLAY)  # Создание окна игры
+
+    bg = Surface(DISPLAY)  # Создаем поверхность для фона
+    bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
+
+    # Генерируем карту из элементов
+    arcades = [('arcade_1.txt', (7, 91)), ('arcade_2.txt', (7, 116)), ('arcade_3.txt', (7, 138))]
+    shuffle(arcades)
+
+    id_arcade = 0
+    name_file = arcades[0][0]
+    start_x, start_y = arcades[0][1]
+
+    # Создаем экземпляр игрока
+    hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)
+    ENTITIES.add(hero)  # Добавляем игрока в группу спрайтов
+
+    # Определение уровня в виде строк
+    level = load_level_from_file(os.path.join("levels", arcades[0][0]))
+
+    if not level:  # Если уровень оказался пустым
+        print("Ошибка: Не удалось загрузить уровень.")
+        activate_menu()  # Активируем меню
+        pygame.quit()  # Закрываем текущее игровое окно
+
+    # Заполнение платформ и объектов из level_n.txt
+    load_platform(level)
+
+    # Определяем размеры уровня
+    total_level_width = len(level[0]) * PLATFORM_WIDTH
+    total_level_height = len(level) * PLATFORM_HEIGHT
+
+    # Создаем камеру
+    camera = Camera(camera_configure, total_level_width, total_level_height)
+
+    # Создаем кнопку паузы и переменную с состоянием ее нажатия
+    pause_button = PauseButton()
+
+    water = Water(level, hero)
+    ENTITIES.add(water)
+
+    while True:
+        if not game_over_active and not paused:  # Проверка состояния игры
+            keys = pygame.key.get_pressed()  # Получаем состояние клавиш
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    exit()
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    pos = pygame.mouse.get_pos()
+                    if pause_button.rect.collidepoint(pos):
+                        paused = not paused
+                    print("Paused:", paused)
+                elif event.type == KEYDOWN:  # Обработка нажатий клавиш
+                    first_movement = True
+                    if event.key == K_LEFT or event.key == K_a:
+                        hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'left')
+                    elif event.key == K_RIGHT or event.key == K_d:
+                        hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'right')
+                    elif event.key == K_UP or event.key == K_w:
+                        hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
+                    elif event.key == K_DOWN or event.key == K_s:
+                        hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
+
+            # Обновляем все объекты
+            update_entity(hero)
+
+            # Проверка столкновений с объектами
+            collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
+            game_over_active = check_collided(collided_objects)
+
+            # Отображение заднего фона и всех сущностей
+            screen.blit(bg, (0, 0))  # Отображаем фон
+            camera.update(hero)  # Обновляем камеру
+
+            for spr in ENTITIES:
+                if spr.image is not None:  # Проверка, что изображение не равно None
+                    screen.blit(spr.image, camera.apply(spr))
+
+            # Рисуем кнопку паузы
+            screen.blit(pause_button.image, pause_button.rect)
+
+            pygame.display.update()  # Обновляем экран
+            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+
+        if hero.rect.y <= 500:
+            block = False
+            id_arcade += 1
+
+            # Очищаем данные перед загрузкой нового уровня
+            reset_level()
+
+            # Определение уровня в виде строк
+            level = load_level_from_file(os.path.join("levels", arcades[id_arcade][0]))
+
+            start_x, start_y = 7, len(level) - 12
+
+            # Создаем экземпляр игрока
+            hero = Player(start_x * PLATFORM_WIDTH, start_y * PLATFORM_HEIGHT)
+            hero.direction = 'up'
+            ENTITIES.add(hero)  # Добавляем игрока в группу спрайтов
+
+            if not level:  # Если уровень оказался пустым
+                print("Ошибка: Не удалось загрузить уровень.")
+                activate_menu()  # Активируем меню
+                pygame.quit()  # Закрываем текущее игровое окно
+
+            # Заполнение платформ и объектов из level_n.txt
+            load_platform(level)
+
+            # Определяем размеры уровня
+            total_level_width = len(level[0]) * PLATFORM_WIDTH
+            total_level_height = len(level) * PLATFORM_HEIGHT
+
+            # Создаем камеру
+            camera = Camera(camera_configure, total_level_width, total_level_height)
+
+        if not hero.direction and not block:
+            for i in range(2, 13):
+                pf = Platform(WALL_IMAGES['□'], i * PLATFORM_WIDTH, (hero.rect.y + 300))
+                ENTITIES.add(pf)
+                PLATFORMS.append(pf)
+
+                water = Water(level, hero)
+                ENTITIES.add(water)
+
+
+            block = True
+
+        if paused:
+            pygame.mixer.music.pause()
+            Pause(screen)
+            paused = False
+            pygame.mixer.music.unpause()
+
+        if game_over_active:
+            game_over_active = False
+            Death(screen)
+            pygame.mixer.music.stop()  # Останавливаем музыку

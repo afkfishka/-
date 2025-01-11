@@ -4,9 +4,9 @@ import re
 from pygame import KEYDOWN, K_ESCAPE
 
 # Размеры окна
-screen_size = width, height = 1000, 1000
-# screen_size = width, height = 325, 1000
-cell_size = 40
+# screen_size = width, height = 1000, 1000
+screen_size = width, height = 325, 1000
+cell_size = 25
 
 # Определение пути к изображениям
 image_paths = {
@@ -125,7 +125,7 @@ class Board:
         """Определяет номер следующего уровня для сохранения."""
         max_level = -1
         pattern = r"level_(\d+)\.txt"
-        for filename in os.listdir('.'):
+        for filename in os.listdir('../../OneDrive/Рабочий стол'):
             match = re.match(pattern, filename)
             if match:
                 level_number = int(match.group(1))
