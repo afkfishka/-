@@ -1,9 +1,10 @@
 # Импортирование необходимых библиотек
 from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN, K_w, K_a, K_s, \
-    K_d, MOUSEBUTTONDOWN
+    K_d, MOUSEBUTTONDOWN, K_1, K_2, K_3, K_4, K_5
 from random import shuffle
 import pygame
 import pickle
+import time
 import os
 
 # Установка размеров окна и платформы
@@ -21,6 +22,7 @@ BACKGROUND_COLOR = "#00000000"
 ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 PORTALS = []  # Список координат порталов
+BONUSES = [] # Список действующих бонусов
 ARCADE = ['arcade_1.txt', 'arcade_2.txt', 'arcade_3.txt']
 
 # Переменные для подсчета собранных бонусов за время игры
@@ -32,7 +34,14 @@ COUNT_STAR = 0
 STATE = {'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': None,  # Состояние музыки
-         'sound': None}  # Состояние звуковых эффектов
+         'sound': None,  # Состояние звуковых эффектов
+         'freezing': 10,
+         'shield': 10,
+         'doubled coins': 10,
+         'doubled xp': 10,
+         'magnet': 10,
+}
+
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
@@ -148,6 +157,12 @@ class Player(sprite.Sprite):
         self.frame_rate = 8  # Частота смены кадров
         self.frame_counter = 0  # Счетчик кадров для управления анимацией
 
+        # Переменные для щита
+        self.shielded = False  # Активен ли щит
+        self.shielded_start = None  # Время начала щита
+        self.invulnerable = False  # Неуязвим ли игрок
+        self.invulnerability_start = None  # Время начала неуязвимости
+
     def start_move(self, left, right, up, down, direction):
         # Установка направления движения на основе нажатых клавиш
         if not self.direction:
@@ -166,6 +181,14 @@ class Player(sprite.Sprite):
                 self.up = False
 
     def update(self, platforms):
+        if self.shielded and (time.time() - self.shielded_start >= 10):
+            self.shielded = False
+            print('Щит диактивирован!')
+
+        if self.invulnerable and (time.time() - self.invulnerability_start >= 2):
+            self.invulnerable = False
+            print('Неуязвимость закончилась!')
+
         # Проверяем, движется ли игрок
         if self.direction:  # Если персонаж движется, используем анимацию
             self.frame_counter += 1
@@ -236,6 +259,22 @@ class Player(sprite.Sprite):
                 return False  # Столкновение произошло
 
         return True  # Перемещение прошло успешно
+
+    def activate_shield(self):
+        """Активация щита."""
+        self.shielded = True
+        print("Щит активирован!")
+
+    def collide_with_enemy(self):
+        """Обработка столкновения с врагом."""
+        if self.shielded:
+            print("Вы врезались в врага, щит заблокировал атаку!")
+            self.invulnerable = True
+            self.invulnerability_start = time.time()  # Запоминаем время начала неуязвимости
+            self.shielded = False  # Сбрасываем щит после использования
+        elif not self.invulnerable:
+            print("Вы погибли!")
+            return True
 
 
 class Coin(sprite.Sprite):
@@ -675,6 +714,7 @@ class GameOver(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (600, 400)  # Позиционирование спрайта в центре экрана
 
+
 class Restart(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -689,6 +729,7 @@ class Home(pygame.sprite.Sprite):
         self.image = pygame.image.load('images/home.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (710, 510)  # Позиционирование спрайта в центре экрана
+
 
 class Resume(pygame.sprite.Sprite):
     def __init__(self):
@@ -862,6 +903,42 @@ class Water(sprite.Sprite):
         self.rect.y -= 2.5
 
 
+class Magnet(sprite.Sprite):
+    def __init__(self, hero):
+        super().__init__()
+        self.rect = Rect(hero.rect.x - PLATFORM_WIDTH * 1.5, hero.rect.y - PLATFORM_HEIGHT * 1.5, PLATFORM_WIDTH * 4, PLATFORM_HEIGHT * 4)
+        self.start_time  = time.time()
+
+
+    def update(self, hero): # 695
+        self.rect.x = hero.rect.x - PLATFORM_WIDTH
+        self.rect.y = hero.rect.y - PLATFORM_HEIGHT
+
+        if time.time() - self.start_time >= 10:
+            print('stop magnet')
+            BONUSES.remove(self)
+            self.kill()
+
+        # Проверка столкновения с монетами, опытом и звездами
+        collided_entities = pygame.sprite.spritecollide(self, ENTITIES, dokill=False)
+        for entity in collided_entities:
+            if isinstance(entity, Coin):
+                print("Монета собрана магнитом!")
+                coin_channel.play(SOUNDS['coin'])
+                coin_channel.set_volume(0.1)
+                ENTITIES.remove(entity)
+            elif isinstance(entity, XP):
+                print("Опыт собран магнитом!")
+                xp_channel.play(SOUNDS['xp'])
+                xp_channel.set_volume(0.05)
+                ENTITIES.remove(entity)
+            elif isinstance(entity, Star):
+                print("Звезда собрана магнитом!")
+                star_channel.play(SOUNDS['star'])
+                star_channel.set_volume(0.1)
+                ENTITIES.remove(entity)
+
+
 # Функция для настройки положения камеры
 def camera_configure(camera, target_rect):
     l, t, _, _ = target_rect
@@ -929,6 +1006,7 @@ def reset_level():
     global ENTITIES, PLATFORMS, PORTALS
     ENTITIES.empty()  # удаляем все спрайты
     PLATFORMS.clear()  # Удаляем все платформы
+    BONUSES.clear()
     PORTALS.clear()
 
 
@@ -1004,29 +1082,35 @@ def load_platform(level):
     PORTALS.sort(key=lambda x: x[0])
 
 
-def update_entity(hero):
+def update_entity(hero, freezing):
     hero.update(PLATFORMS)
-    for entity in ENTITIES:
-        if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox) or isinstance(
-                entity, Teleport):
-            entity.update(hero)
-        elif isinstance(entity, Bat) or isinstance(entity, Arrow):
-            entity.update(PLATFORMS)
-        elif not isinstance(entity, Player):
-            entity.update()
+    if not freezing:
+        for entity in ENTITIES:
+            if isinstance(entity, Trap) or isinstance(entity, Trampoline) or isinstance(entity, IceBox) or isinstance(
+                    entity, Teleport):
+                entity.update(hero)
+            elif isinstance(entity, Bat) or isinstance(entity, Arrow):
+                entity.update(PLATFORMS)
+            elif not isinstance(entity, Player):
+                entity.update()
 
 
-def check_collided(collided_objects):
+def update_bonuse(hero):
+    for bonus in BONUSES:
+        bonus.update(hero)
+
+
+def check_collided(collided_objects, hero):
     for obj in collided_objects:
         # Проверка столкновения игрока со смертельно опасными объектами
         if isinstance(obj, Spike) or (isinstance(obj, Thorn) and obj.image_name is not None and (
                 '2' in obj.image_name or '3' in obj.image_name)) or (
                 isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
                 isinstance(obj, Bat)) or isinstance(obj, Arrow) or isinstance(obj, Water)):
-            print("Вы погибли!")
-            death_channel.play(SOUNDS['death'])
-            death_channel.set_volume(0.2)
-            return True
+            if hero.collide_with_enemy():
+                death_channel.play(SOUNDS['death'])
+                death_channel.set_volume(0.2)
+                return True
         if isinstance(obj, Coin):
             print("Монета собрана!")
             coin_channel.play(SOUNDS['coin'])
@@ -1055,11 +1139,12 @@ def check_collided(collided_objects):
             activate_menu()  # Активируем меню
             pygame.quit()  # Закрываем текущее игровое окно
 
-
 # Основная функция игры
 def map_level(name_file, start_x, start_y):
     game_over_active = False
     paused = False
+    freezing = False
+    freezing_start = None
 
     # Очищаем данные перед загрузкой нового уровня
     reset_bonuses()
@@ -1120,13 +1205,34 @@ def map_level(name_file, start_x, start_y):
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
                     elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
+                    elif event.key == K_1:
+                        magnet = Magnet(hero)
+                        BONUSES.append(magnet)
+                        print('start magnet')
+                    elif event.key == K_2:
+                        freezing = True
+                        print('start freez')
+                    elif event.key == K_3:
+                        hero.shielded = True
+                        hero.shielded_start = time.time()
+                        print('start shield')
 
-            # Обновляем все объекты
-            update_entity(hero)
+            if freezing:
+                if not freezing_start:
+                    freezing_start = time.time()
+                elif time.time() - freezing_start >= 10:
+                    print('stop freezing')
+                    freezing = False
+                    freezing_start = None
+
+
+            # Обновляем все объекты и бонусы
+            update_entity(hero, freezing)
+            update_bonuse(hero)
 
             # Проверка столкновений с объектами
             collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
-            game_over_active = check_collided(collided_objects)
+            game_over_active = check_collided(collided_objects, hero)
 
             # Отображение заднего фона и всех сущностей
             screen.blit(bg, (0, 0))  # Отображаем фон
@@ -1152,13 +1258,14 @@ def map_level(name_file, start_x, start_y):
             pygame.mixer.music.stop()  # Останавливаем музыку
             Death(screen, start_x, start_y, name_file)
 
-
 # Основная функция аркады
 def arcade():
     game_over_active = False
     paused = False
     block = False
     first_movement = False
+    freezing = False
+    freezing_start = None
 
     # Очищаем данные перед загрузкой нового уровня
     reset_bonuses()
@@ -1231,13 +1338,33 @@ def arcade():
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
                     elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
+                    elif event.key == K_1:
+                        magnet = Magnet(hero)
+                        BONUSES.append(magnet)
+                        print('start magnet')
+                    elif event.key == K_2:
+                        freezing = True
+                        print('start freez')
+                    elif event.key == K_3:
+                        hero.shielded = True
+                        hero.shielded_start = time.time()
+                        print('start shield')
+
+            if freezing:
+                if not freezing_start:
+                    freezing_start = time.time()
+                elif time.time() - freezing_start >= 10:
+                    print('stop freezing')
+                    freezing = False
+                    freezing_start = None
 
             # Обновляем все объекты
-            update_entity(hero)
+            update_entity(hero, freezing)
+            update_bonuse(hero)
 
             # Проверка столкновений с объектами
             collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
-            game_over_active = check_collided(collided_objects)
+            game_over_active = check_collided(collided_objects, hero)
 
             # Отображение заднего фона и всех сущностей
             screen.blit(bg, (0, 0))  # Отображаем фон
