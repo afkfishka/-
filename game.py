@@ -241,6 +241,9 @@ class Player(sprite.Sprite):
             elif self.right:
                 self.frames = self.frames_down_right
 
+        line = Fire(self)
+        ENTITIES.add(line)
+
         # Обновляем позицию игрока
         self.rect.x += dx
         self.rect.y += dy
@@ -275,6 +278,42 @@ class Player(sprite.Sprite):
         elif not self.invulnerable:
             print("Вы погибли!")
             return True
+
+
+class Fire(sprite.Sprite):
+    def __init__(self, hero):
+        super().__init__()
+        x, y = hero.rect.x, hero.rect.y
+        self.direction = hero.direction
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+        if self.direction in 'left right':
+            if self.direction == 'left':
+                x += 21
+            else:
+                x -= 21
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_lr")
+        elif self.direction in 'up down':
+            if self.direction == 'up':
+                y += 21
+            else:
+                y -= 21
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_tb")
+
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.time = 0
+
+    def update(self):
+        self.time += 1
+        if self.time == 5:
+            self.image = self.frames[1]
+        elif self.time == 10:
+            self.image = self.frames[2]
+        elif self.time == 15:
+            self.kill()
 
 
 class Coin(sprite.Sprite):
@@ -1244,7 +1283,7 @@ def map_level(name_file, start_x, start_y):
 
             # Рисуем кнопку паузы
             screen.blit(pause_button.image, pause_button.rect)
-
+            screen.blit(hero.image,  camera.apply(hero))
             pygame.display.update()  # Обновляем экран
             pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
@@ -1376,7 +1415,7 @@ def arcade():
 
             # Рисуем кнопку паузы
             screen.blit(pause_button.image, pause_button.rect)
-
+            screen.blit(hero.image, camera.apply(hero))
             pygame.display.update()  # Обновляем экран
             pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
