@@ -288,16 +288,10 @@ class Fire(sprite.Sprite):
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
         if self.direction in 'left right':
-            if self.direction == 'left':
-                x += 21
-            else:
-                x -= 21
+
             self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_lr")
         elif self.direction in 'up down':
-            if self.direction == 'up':
-                y += 21
-            else:
-                y -= 21
+
             self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_tb")
 
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
