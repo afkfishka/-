@@ -23,7 +23,7 @@ ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 PORTALS = []  # Список координат порталов
 BONUSES = [] # Список действующих бонусов
-ARCADE = ['arcade_1.txt', 'arcade_2.txt', 'arcade_3.txt']
+ARCADE = ['arcade_4.txt'] # , 'arcade_2.txt', 'arcade_3.txt'
 
 # Переменные для подсчета собранных бонусов за время игры
 COUNT_XP = 0
@@ -76,8 +76,8 @@ TRAP_IMAGES = {
     'a': 'trap\\trap_1.png', 's': 'trap\\trap_2.png', 'd': 'trap\\trap_3.png',
     'f': 'trap\\trap_4.png', 'g': 'trap\\trap_5.png', 'h': 'trap\\trap_6.png',
     'j': 'trap\\trap_7.png', 'k': 'trap\\trap_8.png', 'l': 'trap\\trap_9.png',
-    '&': 'trap\\trap_10.png', '(': 'trap\\trap_11.png', 'л': 'trap\\trap_12.png'
-}
+    '&': 'trap\\trap_10.png', '(': 'trap\\trap_11.png', 'л': 'trap\\trap_12.png', 'з': 'trap\\trap_13.png'
+ }
 
 # Словарь для изображений трамплина
 TRAMPOLINE_IMAGE = {
@@ -1315,7 +1315,7 @@ def arcade():
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
     # Генерируем карту из элементов
-    arcades = [('arcade_1.txt', (7, 91)), ('arcade_2.txt', (7, 116)), ('arcade_3.txt', (7, 138))]
+    arcades = [('arcade_1.txt', (7, 91)), ('arcade_2.txt', (7, 116)), ('arcade_3.txt', (7, 138)), ("arcade_4.txt", (7, 146))]
     shuffle(arcades)
 
     id_arcade = 0
