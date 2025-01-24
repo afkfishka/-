@@ -3,7 +3,7 @@ import sys
 import game
 import os
 
-STATE = game.load_game()
+STATE = game.STATE['levels']
 
 flag_shop = False  # флаг для отрисовки магазина
 flag_skins = False  # флаг для отрисовки меню скинов
@@ -72,6 +72,7 @@ class Pink_line(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (900, 450)  # Позиционирование спрайта в центре экрана
 
+
 class Pink_line2(pygame.sprite.Sprite):  # Кнопка достижений
     def __init__(self):
         super().__init__()
@@ -79,8 +80,6 @@ class Pink_line2(pygame.sprite.Sprite):  # Кнопка достижений
         self.image = pygame.image.load('images/pink_line.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (300, 450)  # Позиционирование спрайта в центре экрана
-
-
 
 
 class ArcadeDoor(pygame.sprite.Sprite):
@@ -114,14 +113,13 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
 
+
 class Arcade_right(pygame.sprite.Sprite):  # Кнопка карты
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/rignt.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (775, 245)  # Позиционирование спрайта
-
-
 
 
 class Arcade_left(pygame.sprite.Sprite):  # Кнопка карты
@@ -152,7 +150,7 @@ class Lvl1(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[0] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(120, 270))  # Устанавливаем позицию
 
 
@@ -160,7 +158,7 @@ class Lvl2(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[0] > 0 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(120, 430))  # Устанавливаем позицию
 
 
@@ -168,7 +166,7 @@ class Lvl3(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[1] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(330, 430))  # Устанавливаем позицию
 
 
@@ -176,7 +174,7 @@ class Lvl4(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[2] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(330, 270))  # Устанавливаем позицию
 
 
@@ -184,7 +182,7 @@ class Lvl5(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[3] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(540, 270))  # Устанавливаем позицию
 
 
@@ -192,7 +190,7 @@ class Lvl6(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[4] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(540, 430))  # Устанавливаем позицию
 
 
@@ -200,7 +198,7 @@ class Lvl7(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[5] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(750, 430))  # Устанавливаем позицию
 
 
@@ -208,7 +206,7 @@ class Lvl8(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[6] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(750, 270))  # Устанавливаем позицию
 
 
@@ -216,7 +214,7 @@ class Lvl9(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[7] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(960, 270))  # Устанавливаем позицию
 
 
@@ -224,23 +222,23 @@ class Lvl10(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if STATE[8] != -1 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=(960, 430))  # Устанавливаем позицию
 
 
 class draw_vertikall_line(pygame.sprite.Sprite):
-    def __init__(self, position):
+    def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((20, 60))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[0] > 0 or id == 2 and STATE[2] > 0 or id == 3 and STATE[4] > 0 or id == 4 and STATE[6] > 0 or id == 5 and STATE[8] > 0 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
 class draw_gorizontall_line(pygame.sprite.Sprite):
-    def __init__(self, position):
+    def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((90, 20))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10))  # Заполняем красным цветом
+        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[1] > 0 or id == 2 and STATE[3] > 0 or id == 3 and STATE[5] > 0 or id == 4 and STATE[7] > 0 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
@@ -290,16 +288,16 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Lvl9())
         self.map_sprites.add(Lvl10())
 
-        self.map_sprites.add(draw_vertikall_line((170, 370)))
-        self.map_sprites.add(draw_vertikall_line((380, 370)))
-        self.map_sprites.add(draw_vertikall_line((590, 370)))
-        self.map_sprites.add(draw_vertikall_line((800, 370)))
-        self.map_sprites.add(draw_vertikall_line((1010, 370)))
+        self.map_sprites.add(draw_vertikall_line((170, 370), 1))
+        self.map_sprites.add(draw_vertikall_line((380, 370), 2))
+        self.map_sprites.add(draw_vertikall_line((590, 370), 3))
+        self.map_sprites.add(draw_vertikall_line((800, 370), 4))
+        self.map_sprites.add(draw_vertikall_line((1010, 370), 5))
 
-        self.map_sprites.add(draw_gorizontall_line((240, 470)))
-        self.map_sprites.add(draw_gorizontall_line((450, 310)))
-        self.map_sprites.add(draw_gorizontall_line((660, 470)))
-        self.map_sprites.add(draw_gorizontall_line((870, 310)))
+        self.map_sprites.add(draw_gorizontall_line((240, 470), 1))
+        self.map_sprites.add(draw_gorizontall_line((450, 310), 2))
+        self.map_sprites.add(draw_gorizontall_line((660, 470), 3))
+        self.map_sprites.add(draw_gorizontall_line((870, 310), 4))
 
         self.arcade_sprites.add(Arcade_right())
         self.arcade_sprites.add(Arcade_left())
@@ -327,16 +325,18 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
             if flag_map:  # отображение карты уровней
                 self.map_sprites.draw(self.screen)
-                self.draw_text("1", self.b_font, self.screen, 180, 310, (0, 0, 0))  # 6 4
-                self.draw_text("2", self.b_font, self.screen, 180, 470, (0, 0, 0))
-                self.draw_text("3", self.b_font, self.screen, 390, 470, (0, 0, 0))
-                self.draw_text("4", self.b_font, self.screen, 390, 310, (0, 0, 0))
-                self.draw_text("5", self.b_font, self.screen, 600, 310, (0, 0, 0))
-                self.draw_text("6", self.b_font, self.screen, 600, 470, (0, 0, 0))
-                self.draw_text("7", self.b_font, self.screen, 810, 470, (0, 0, 0))
-                self.draw_text("8", self.b_font, self.screen, 810, 310, (0, 0, 0))
-                self.draw_text("9", self.b_font, self.screen, 1020, 310, (0, 0, 0))
-                self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0))
+                self.draw_text("1", self.b_font, self.screen, 180, 310, (0, 0, 0))
+                self.draw_text("2", self.b_font, self.screen, 180, 470, (0, 0, 0)) if STATE[0] > 0 else None
+                self.draw_text("3", self.b_font, self.screen, 390, 470, (0, 0, 0)) if STATE[1] > 0 else None
+                self.draw_text("4", self.b_font, self.screen, 390, 310, (0, 0, 0)) if STATE[2] > 0 else None
+                self.draw_text("5", self.b_font, self.screen, 600, 310, (0, 0, 0)) if STATE[3] > 0 else None
+                self.draw_text("6", self.b_font, self.screen, 600, 470, (0, 0, 0)) if STATE[4] > 0 else None
+                self.draw_text("7", self.b_font, self.screen, 810, 470, (0, 0, 0)) if STATE[5] > 0 else None
+                self.draw_text("8", self.b_font, self.screen, 810, 310, (0, 0, 0)) if STATE[6] > 0 else None
+                self.draw_text("9", self.b_font, self.screen, 1020, 310, (0, 0, 0)) if STATE[7] > 0 else None
+                self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0)) if STATE[8] > 0 else None
+
+
 
             if flag_arcade:
                 self.arcade_sprites.draw(self.screen)
@@ -346,8 +346,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("Играть", self.b_font, self.screen, self.screen_size[0] // 2,
                                587, "black")
                 self.arcade_sprites.update()
-
-
 
             # Обработка событий
             for event in pygame.event.get():
@@ -406,23 +404,23 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if sprite.rect.collidepoint(pos) and flag_map:
                 if isinstance(sprite, Lvl1):
                     game.map_level("level_1.txt", 13, 28)
-                elif isinstance(sprite, Lvl2):
+                elif isinstance(sprite, Lvl2) and STATE[0] > 0:
                     game.map_level("level_2.txt", 12, 4)
-                elif isinstance(sprite, Lvl3):
+                elif isinstance(sprite, Lvl3) and STATE[1] > 0:
                     game.map_level("level_3.txt", 17, 25)
-                elif isinstance(sprite, Lvl4):
+                elif isinstance(sprite, Lvl4) and STATE[2] > 0:
                     game.map_level("level_4.txt", 11, 4)
-                elif isinstance(sprite, Lvl5):
+                elif isinstance(sprite, Lvl5) and STATE[3] > 0:
                     game.map_level("level_5.txt", 13, 27)
-                elif isinstance(sprite, Lvl6):
+                elif isinstance(sprite, Lvl6) and STATE[4] > 0:
                     game.map_level("level_6.txt", 15, 26)
-                elif isinstance(sprite, Lvl7):
+                elif isinstance(sprite, Lvl7) and STATE[5] > 0:
                     game.map_level("arcade_4.txt", 7, 146)
-                elif isinstance(sprite, Lvl8):
+                elif isinstance(sprite, Lvl8) and STATE[6] > 0:
                     pass
-                elif isinstance(sprite, Lvl9):
+                elif isinstance(sprite, Lvl9) and STATE[7] > 0:
                     pass
-                elif isinstance(sprite, Lvl10):
+                elif isinstance(sprite, Lvl10) and STATE[8] > 0:
                     pass
 
 

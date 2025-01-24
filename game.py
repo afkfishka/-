@@ -22,8 +22,8 @@ BACKGROUND_COLOR = "#00000000"
 ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 PORTALS = []  # Список координат порталов
-BONUSES = [] # Список действующих бонусов
-ARCADE = ['arcade_4.txt'] # , 'arcade_2.txt', 'arcade_3.txt'
+BONUSES = []  # Список действующих бонусов
+ARCADE = ['arcade_4.txt']  # , 'arcade_2.txt', 'arcade_3.txt'
 
 # Переменные для подсчета собранных бонусов за время игры
 COUNT_XP = 0
@@ -40,7 +40,7 @@ STATE = {'coins': 0,  # Монеты
          'doubled coins': 10,
          'doubled xp': 10,
          'magnet': 10,
-}
+         }
 
 
 # Словарь с изображениями стен
@@ -77,7 +77,7 @@ TRAP_IMAGES = {
     'f': 'trap\\trap_4.png', 'g': 'trap\\trap_5.png', 'h': 'trap\\trap_6.png',
     'j': 'trap\\trap_7.png', 'k': 'trap\\trap_8.png', 'l': 'trap\\trap_9.png',
     '&': 'trap\\trap_10.png', '(': 'trap\\trap_11.png', 'л': 'trap\\trap_12.png', 'з': 'trap\\trap_13.png'
- }
+}
 
 # Словарь для изображений трамплина
 TRAMPOLINE_IMAGE = {
@@ -863,7 +863,6 @@ class Pause:
         self.m_font = pygame.font.Font(self.font_path, 30)
         self.font40 = pygame.font.Font(self.font_path, 40)
 
-
         self.game_pause = pygame.sprite.Group()
 
         self.game_pause.add(GameOver())
@@ -939,11 +938,11 @@ class Water(sprite.Sprite):
 class Magnet(sprite.Sprite):
     def __init__(self, hero):
         super().__init__()
-        self.rect = Rect(hero.rect.x - PLATFORM_WIDTH * 1.5, hero.rect.y - PLATFORM_HEIGHT * 1.5, PLATFORM_WIDTH * 4, PLATFORM_HEIGHT * 4)
-        self.start_time  = time.time()
+        self.rect = Rect(hero.rect.x - PLATFORM_WIDTH * 1.5, hero.rect.y - PLATFORM_HEIGHT * 1.5, PLATFORM_WIDTH * 4,
+                         PLATFORM_HEIGHT * 4)
+        self.start_time = time.time()
 
-
-    def update(self, hero): # 695
+    def update(self, hero):  # 695
         self.rect.x = hero.rect.x - PLATFORM_WIDTH
         self.rect.y = hero.rect.y - PLATFORM_HEIGHT
 
@@ -1013,9 +1012,11 @@ def save_game(state):
 
 # функция для загрузки сохраненной игры
 def load_game():
-    with open('savegame.pkl', 'rb') as f:
-        state = pickle.load(f)
-    return state
+    if os.path.exists('savegame.pkl'):
+        with open('savegame.pkl', 'rb') as f:
+            state = pickle.load(f)
+        return state
+    return None
 
 
 # Функцию для закрытия окна игры и открытия лобби
@@ -1133,7 +1134,8 @@ def update_bonuse(hero):
         bonus.update(hero)
 
 
-def check_collided(collided_objects, hero):
+def check_collided(collided_objects, hero, name_file=None):
+    global COUNT_COIN, COUNT_XP, COUNT_STAR, STATE
     for obj in collided_objects:
         # Проверка столкновения игрока со смертельно опасными объектами
         if isinstance(obj, Spike) or (isinstance(obj, Thorn) and obj.image_name is not None and (
@@ -1146,16 +1148,19 @@ def check_collided(collided_objects, hero):
                 return True
         if isinstance(obj, Coin):
             print("Монета собрана!")
+            COUNT_COIN += 1
             coin_channel.play(SOUNDS['coin'])
             coin_channel.set_volume(0.1)
             ENTITIES.remove(obj)
         elif isinstance(obj, XP):
             print("Опыт получен!")
+            COUNT_XP += 1
             xp_channel.play(SOUNDS['xp'])
             xp_channel.set_volume(0.05)
             ENTITIES.remove(obj)
         elif isinstance(obj, Star):
             print("Звезда собрана!")
+            COUNT_STAR += 1
             star_channel.play(SOUNDS['star'])
             star_channel.set_volume(0.1)
             ENTITIES.remove(obj)
@@ -1168,11 +1173,22 @@ def check_collided(collided_objects, hero):
         elif isinstance(obj, Finish):
             print("Поздравляю! Вы достигли финиша!")
             SOUNDS['coin'].set_volume(0.05)
+            STATE['levels'][int(name_file[6:-4]) - 1] = COUNT_STAR
+            STATE['coins'] += COUNT_COIN
+            print(STATE['coins'])
+            print(STATE['levels'])
+
             save_game(STATE)
             activate_menu()  # Активируем меню
             pygame.quit()  # Закрываем текущее игровое окно
 
-# Основная функция игры
+            # Основная функция игры
+
+# Попытка загрузить сохранение
+loaded_state = load_game()
+if loaded_state is not None:
+    STATE = loaded_state
+
 def map_level(name_file, start_x, start_y):
     game_over_active = False
     paused = False
@@ -1258,14 +1274,13 @@ def map_level(name_file, start_x, start_y):
                     freezing = False
                     freezing_start = None
 
-
             # Обновляем все объекты и бонусы
             update_entity(hero, freezing)
             update_bonuse(hero)
 
             # Проверка столкновений с объектами
             collided_objects = pygame.sprite.spritecollide(hero, ENTITIES, dokill=False)
-            game_over_active = check_collided(collided_objects, hero)
+            game_over_active = check_collided(collided_objects, hero, name_file)
 
             # Отображение заднего фона и всех сущностей
             screen.blit(bg, (0, 0))  # Отображаем фон
@@ -1277,7 +1292,7 @@ def map_level(name_file, start_x, start_y):
 
             # Рисуем кнопку паузы
             screen.blit(pause_button.image, pause_button.rect)
-            screen.blit(hero.image,  camera.apply(hero))
+            screen.blit(hero.image, camera.apply(hero))
             pygame.display.update()  # Обновляем экран
             pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
@@ -1290,6 +1305,7 @@ def map_level(name_file, start_x, start_y):
         else:
             pygame.mixer.music.stop()  # Останавливаем музыку
             Death(screen, start_x, start_y, name_file)
+
 
 # Основная функция аркады
 def arcade():
@@ -1315,7 +1331,8 @@ def arcade():
     bg.fill(Color(BACKGROUND_COLOR))  # Заливаем фон цветом
 
     # Генерируем карту из элементов
-    arcades = [('arcade_1.txt', (7, 91)), ('arcade_2.txt', (7, 116)), ('arcade_3.txt', (7, 138)), ("arcade_4.txt", (7, 146))]
+    arcades = [('arcade_1.txt', (7, 91)), ('arcade_2.txt', (7, 116)), ('arcade_3.txt', (7, 138)),
+               ("arcade_4.txt", (7, 146))]
     shuffle(arcades)
 
     id_arcade = 0
@@ -1453,7 +1470,6 @@ def arcade():
 
                 water = Water(level, hero)
                 ENTITIES.add(water)
-
 
             block = True
 
