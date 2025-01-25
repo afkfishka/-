@@ -31,7 +31,8 @@ COUNT_COIN = 0
 COUNT_STAR = 0
 
 # Сохраняемые данные
-STATE = {'coins': 0,  # Монеты
+STATE = {'skin': 'spectrum',
+         'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': None,  # Состояние музыки
          'sound': None,  # Состояние звуковых эффектов
@@ -136,16 +137,16 @@ class Player(sprite.Sprite):
         self.direction = None
 
         # Загружаем кадры для различных направлений
-        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botleft")
+        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_botleft")
         self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       "man_botright")
-        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_leftbot")
-        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_lefttop")
+                                                       f"{STATE['skin']}_botright")
+        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_leftbot")
+        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_lefttop")
         self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       "man_rightbot")
-        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_righttop")
-        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topleft")
-        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_topright")
+                                                       f"{STATE['skin']}_rightbot")
+        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_righttop")
+        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_topleft")
+        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_topright")
 
         # Загружаем кадры анимации движения
         self.flight_frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 4, "man_move")
