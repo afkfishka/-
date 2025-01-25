@@ -42,7 +42,6 @@ STATE = {'coins': 0,  # Монеты
          'magnet': 10,
          }
 
-
 # Словарь с изображениями стен
 WALL_IMAGES = {
     '□': 'blocks\\wall_1.png', '▔': 'blocks\\wall_2.png', '▁': 'blocks\\wall_3.png', '▕': 'blocks\\wall_4.png',
@@ -514,7 +513,7 @@ class Bat(sprite.Sprite):
     Летучая мышь летает из стороны в сторону.
     Соприкосновение игрока с мышью убивает его."""
 
-    def __init__(self, bat_type, x, y):  # ♖♜
+    def __init__(self, bat_type, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
@@ -533,6 +532,9 @@ class Bat(sprite.Sprite):
         self.frame_rate = 10  # Частота смены кадров
         self.frame_counter = 0  # Счетчик кадров для управления анимацией
 
+        self.stop = False
+        self.stop_time = 0  # Время остановки
+
     def update(self, platforms):
         # Анимация
         self.frame_counter += 1
@@ -542,17 +544,19 @@ class Bat(sprite.Sprite):
             self.image = self.frames[self.index]
 
         dx = dy = 0
-        if self.direction == 'right':
-            dx += 2
-        elif self.direction == 'left':
-            dx -= 2
-        elif self.direction == 'down':
-            dy += 2
-        elif self.direction == 'up':
-            dy -= 2
+        if not self.stop:
+            if self.direction == 'right':
+                dx += 2
+            elif self.direction == 'left':
+                dx -= 2
+            elif self.direction == 'down':
+                dy += 2
+            elif self.direction == 'up':
+                dy -= 2
 
-        self.rect.x += dx
-        self.rect.y += dy
+            self.rect.x += dx
+            self.rect.y += dy
+
         # Проверка коллизий с платформами
         for platform in platforms:
             if (isinstance(platform, Platform) or isinstance(platform, IceBox)) and self.rect.colliderect(
@@ -561,6 +565,12 @@ class Bat(sprite.Sprite):
                     self.rect.left = platform.rect.right
                 elif dx > 0:  # Движение вправо
                     self.rect.right = platform.rect.left
+                elif dy < 0:  # Движение вверх
+                    self.rect.top = platform.rect.bottom
+                elif dy > 0:  # Движение вниз
+                    self.rect.bottom = platform.rect.top
+
+                # Смена направления
                 if self.direction == 'right':
                     self.direction = 'left'
                     self.frames = self.frames_left
@@ -571,6 +581,15 @@ class Bat(sprite.Sprite):
                     self.direction = 'down'
                 elif self.direction == 'down':
                     self.direction = 'up'
+
+                self.stop = True
+                self.stop_time = time.time()  # Запоминаем время столкновения
+                break  # Выйти из цикла после первой коллизии
+
+        # Проверяем, нужно ли продолжить движение
+        if self.stop:
+            if time.time() - self.stop_time >= 0.2:
+                self.stop = False  # Сбрасываем статус остановки
 
 
 class Dart(sprite.Sprite):  # ⇐⇑⇒⇓
@@ -1184,10 +1203,12 @@ def check_collided(collided_objects, hero, name_file=None):
 
             # Основная функция игры
 
+
 # Попытка загрузить сохранение
 loaded_state = load_game()
 if loaded_state is not None:
     STATE = loaded_state
+
 
 def map_level(name_file, start_x, start_y):
     game_over_active = False
