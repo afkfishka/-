@@ -333,7 +333,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
 
         # ОТОБРАЖЕНИЕ звезд для 1 уровня (или замочка)
-        self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_1)) if STATE[0] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_1)) if STATE[0] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_1)) if STATE[0] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_1)) if STATE[0] == 3 else None
@@ -346,7 +345,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_2)) if STATE[1] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_2)) if STATE[1] == 3 else None
         self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_2[0] + 30, self.pos_lvl_2[1] - 70))) if \
-        STATE[0] == -1 else None
+        STATE[0] == 0 else None
 
 
         # ОТОБРАЖЕНИЕ звезд для 3 уровня
