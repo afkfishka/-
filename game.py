@@ -62,6 +62,7 @@ WALL_IMAGES = {
     ':': 'blocks\\wall_34.png', ',': 'blocks\\wall_35.png', '<': 'blocks\\wall_36.png', '/': 'blocks\\wall_37.png',
     '?': 'blocks\\wall_38.png',
     'б': 'blocks\\wall_39.png', 'в': 'blocks\\wall_40.png', 'г': 'blocks\\wall_41.png', 'ж': 'blocks\\wall_42.png',
+    'з': 'blocks\\wall_43.png','х': 'blocks\\wall_44.png',
 }
 
 # Словарь с изображениями шипов
