@@ -125,7 +125,7 @@ class Board:
         """Определяет номер следующего уровня для сохранения."""
         max_level = -1
         pattern = r"level_(\d+)\.txt"
-        for filename in os.listdir('../../OneDrive/Рабочий стол'):
+        for filename in os.listdir('../'):
             match = re.match(pattern, filename)
             if match:
                 level_number = int(match.group(1))
