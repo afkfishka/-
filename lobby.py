@@ -17,8 +17,20 @@ class Load_image(pygame.sprite.Sprite):
     def __init__(self, image_path, position):
         super().__init__()
         # Загрузка изображения
-        self.image = pygame.image.load(image_path).convert_alpha()  # Используйте convert_alpha() для поддержки прозрачности
+        self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
+
+
+
+
+class Load_lock(pygame.sprite.Sprite):
+    def __init__(self, image_path, position, scalled):
+        super().__init__()
+        # Загрузка изображения
+        self.image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(self.image, scalled)  # Масштабируем изображение до 40x40
+        self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
+
 
 
 
@@ -301,12 +313,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.pos_lvl_2 = (120, 430 + 90)
         self.pos_lvl_3 = (330, 430 + 90)
         self.pos_lvl_4 = (330, 270 + 90)
-        self.pos_lvl_5 = (540, 270 +  90)
+        self.pos_lvl_5 = (540, 270 + 90)
         self.pos_lvl_6 = (540, 430 + 90)
-        self.pos_lvl_7 = (750, 430 +  90)
-        self.pos_lvl_8 = (750, 270 +  90)
-        self.pos_lvl_9 = (960, 270 +  90)
-        self.pos_lvl_10 = (960, 430 +  90)
+        self.pos_lvl_7 = (750, 430 + 90)
+        self.pos_lvl_8 = (750, 270 + 90)
+        self.pos_lvl_9 = (960, 270 + 90)
+        self.pos_lvl_10 = (960, 430 + 90)
 
         self.map_sprites.add(Lvl1())
         self.map_sprites.add(Lvl2())
@@ -344,7 +356,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_2)) if STATE[1] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_2)) if STATE[1] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_2)) if STATE[1] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_2[0] + 30, self.pos_lvl_2[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_2[0] + 30, self.pos_lvl_2[1] - 70), (60, 60))) if \
         STATE[0] == 0 else None
 
 
@@ -353,7 +365,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_3)) if STATE[2] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_3)) if STATE[2] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_3)) if STATE[2] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_3[0] + 30, self.pos_lvl_3[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_3[0] + 30, self.pos_lvl_3[1] - 70), (60, 60))) if \
         STATE[1] == -1 else None
 
 
@@ -362,7 +374,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_4)) if STATE[3] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_4)) if STATE[3] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_4)) if STATE[3] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_4[0] + 30, self.pos_lvl_4[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_4[0] + 30, self.pos_lvl_4[1] - 70), (60, 60))) if \
         STATE[2] == -1 else None
 
 
@@ -371,7 +383,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_5)) if STATE[4] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_5)) if STATE[4] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_5)) if STATE[4] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_5[0] + 30, self.pos_lvl_5[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_5[0] + 30, self.pos_lvl_5[1] - 70), (60, 60))) if \
         STATE[3] == -1 else None
 
 
@@ -380,7 +392,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_6)) if STATE[5] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_6)) if STATE[5] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_6)) if STATE[5] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_6[0] + 30, self.pos_lvl_6[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_6[0] + 30, self.pos_lvl_6[1] - 70), (60, 60))) if \
         STATE[4] == -1 else None
 
 
@@ -389,7 +401,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_7)) if STATE[6] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_7)) if STATE[6] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_7)) if STATE[6] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_7[0] + 30, self.pos_lvl_7[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_7[0] + 30, self.pos_lvl_7[1] - 70), (60, 60))) if \
         STATE[5] == -1 else None
 
 
@@ -398,7 +410,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_8)) if STATE[7] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_8)) if STATE[7] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_8)) if STATE[7] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_8[0] + 30, self.pos_lvl_8[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_8[0] + 30, self.pos_lvl_8[1] - 70), (60, 60))) if \
         STATE[6] == -1 else None
 
 
@@ -407,7 +419,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_9)) if STATE[8] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_9)) if STATE[8] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_9)) if STATE[8] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_9[0] + 30, self.pos_lvl_9[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_9[0] + 30, self.pos_lvl_9[1] - 70), (60, 60))) if \
         STATE[7] == -1 else None
 
 
@@ -416,7 +428,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_10)) if STATE[9] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_10)) if STATE[9] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_10)) if STATE[9] == 3 else None
-        self.map_sprites.add(Load_image('images/lock_mini.png', (self.pos_lvl_10[0] + 30, self.pos_lvl_10[1] - 70))) if \
+        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_10[0] + 30, self.pos_lvl_10[1] - 70), (60, 60))) if \
         STATE[8] == -1 else None
 
 
