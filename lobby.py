@@ -552,7 +552,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl7) and STATE[5] > 0:
                     game.map_level("level_7.txt", 31, 30)
                 elif isinstance(sprite, Lvl8) and STATE[6] > 0:
-                    pass
+                    game.map_level("level_8.txt", 5, 37)
                 elif isinstance(sprite, Lvl9) and STATE[7] > 0:
                     pass
                 elif isinstance(sprite, Lvl10) and STATE[8] > 0:
