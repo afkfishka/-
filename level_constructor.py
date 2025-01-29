@@ -123,21 +123,28 @@ class Board:
 
     def calculate_next_level_number(self):
         """Определяет номер следующего уровня для сохранения."""
-        max_level = -1
-        pattern = r"level_(\d+)\.txt"
-        for filename in os.listdir('../'):
+        max_level = 0
+        pattern = r"new_lvl_(\d+)\.txt"
+        level_directory = 'levels'  # Папка для хранения уровней
+
+        # Проверяем, существует ли папка для уровней
+        if not os.path.exists(level_directory):
+            os.makedirs(level_directory)
+
+        for filename in os.listdir(level_directory):
             match = re.match(pattern, filename)
             if match:
                 level_number = int(match.group(1))
                 max_level = max(max_level, level_number)
-        return max_level
+
+        return max_level + 1  # Возвращаем следующий индекс
 
     def save_level(self):
         """Сохраняет уровень в файл."""
         borders = self.get_borders()  # Получаем границы ненулевой части матрицы
         if borders:  # Если границы найдены
             top, bottom, left, right = borders
-            level_file = f"level_{self.calculate_next_level_number() + 1}.txt"
+            level_file = f"levels/new_lvl_{self.calculate_next_level_number()}.txt"  # Подготовка имени файла
 
             with open(level_file, "w", encoding='utf-8') as file:
                 for row in range(top, bottom + 1):

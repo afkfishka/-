@@ -23,7 +23,6 @@ ENTITIES = sprite.Group()  # Группа всех спрайтов
 PLATFORMS = []  # Список платформ
 PORTALS = []  # Список координат порталов
 BONUSES = []  # Список действующих бонусов
-ARCADE = ['arcade_4.txt']  # , 'arcade_2.txt', 'arcade_3.txt'
 
 # Переменные для подсчета собранных бонусов за время игры
 COUNT_XP = 0
@@ -45,45 +44,48 @@ STATE = {'skin': 'spectrum',
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
-    '□': 'blocks\\wall_1.png', '▔': 'blocks\\wall_2.png', '▁': 'blocks\\wall_3.png', '▕': 'blocks\\wall_4.png',
-    '▎': 'blocks\\wall_5.png',
-    '╔': 'blocks\\wall_6.png', '╗': 'blocks\\wall_7.png', '╚': 'blocks\\wall_8.png', '╝': 'blocks\\wall_9.png',
-    '-': 'blocks\\wall_2.png',
-    '⊓': 'blocks\\wall_10.png', '⊏': 'blocks\\wall_11.png', '⊔': 'blocks\\wall_12.png', '⊐': 'blocks\\wall_13.png',
-    '=': 'blocks\\wall_14.png',
-    '║': 'blocks\\wall_15.png', '┓': 'blocks\\wall_16.png', '┛': 'blocks\\wall_17.png', '┗': 'blocks\\wall_18.png',
-    '┏': 'blocks\\wall_19.png',
-    'q': 'blocks\\wall_20.png', 'w': 'blocks\\wall_21.png', 'e': 'blocks\\wall_22.png', 'r': 'blocks\\wall_23.png',
-    't': 'blocks\\wall_24.png',
-    'y': 'blocks\\wall_25.png', 'u': 'blocks\\wall_26.png', 'i': 'blocks\\wall_27.png', 'o': 'blocks\\wall_28.png',
-    'p': 'blocks\\wall_29.png',
-    '[': 'blocks\\wall_30.png', 'A': 'blocks\\wall_A.png', ']': 'blocks\\wall_31.png', '"': 'blocks\\wall_32.png',
-    ';': 'blocks\\wall_33.png',
-    ':': 'blocks\\wall_34.png', ',': 'blocks\\wall_35.png', '<': 'blocks\\wall_36.png', '/': 'blocks\\wall_37.png',
-    '?': 'blocks\\wall_38.png',
-    'б': 'blocks\\wall_39.png', 'в': 'blocks\\wall_40.png', 'г': 'blocks\\wall_41.png', 'ж': 'blocks\\wall_42.png',
-    'з': 'blocks\\wall_43.png','х': 'blocks\\wall_44.png',
+    '□': 'textures\\blocks\\wall_1.png', '▔': 'textures\\blocks\\wall_2.png', '▁': 'textures\\blocks\\wall_3.png',
+    '▕': 'textures\\blocks\\wall_4.png', '▎': 'textures\\blocks\\wall_5.png', '╔': 'textures\\blocks\\wall_6.png',
+    '╗': 'textures\\blocks\\wall_7.png', '╚': 'textures\\blocks\\wall_8.png', '╝': 'textures\\blocks\\wall_9.png',
+    '-': 'textures\\blocks\\wall_2.png', '⊓': 'textures\\blocks\\wall_10.png', '⊏': 'textures\\blocks\\wall_11.png',
+    '⊔': 'textures\\blocks\\wall_12.png', '⊐': 'textures\\blocks\\wall_13.png', '=': 'textures\\blocks\\wall_14.png',
+    '║': 'textures\\blocks\\wall_15.png', '┓': 'textures\\blocks\\wall_16.png', '┛': 'textures\\blocks\\wall_17.png',
+    '┗': 'textures\\blocks\\wall_18.png', '┏': 'textures\\blocks\\wall_19.png', 'q': 'textures\\blocks\\wall_20.png',
+    'w': 'textures\\blocks\\wall_21.png', 'e': 'textures\\blocks\\wall_22.png', 'r': 'textures\\blocks\\wall_23.png',
+    't': 'textures\\blocks\\wall_24.png', 'y': 'textures\\blocks\\wall_25.png', 'u': 'textures\\blocks\\wall_26.png',
+    'i': 'textures\\blocks\\wall_27.png', 'o': 'textures\\blocks\\wall_28.png', 'p': 'textures\\blocks\\wall_29.png',
+    '[': 'textures\\blocks\\wall_30.png', 'A': 'textures\\blocks\\wall_A.png', ']': 'textures\\blocks\\wall_31.png',
+    '"': 'textures\\blocks\\wall_32.png', ';': 'textures\\blocks\\wall_33.png', ':': 'textures\\blocks\\wall_34.png',
+    ',': 'textures\\blocks\\wall_35.png', '<': 'textures\\blocks\\wall_36.png', '/': 'textures\\blocks\\wall_37.png',
+    '?': 'textures\\blocks\\wall_38.png', 'б': 'textures\\blocks\\wall_39.png', 'в': 'textures\\blocks\\wall_40.png',
+    'г': 'textures\\blocks\\wall_41.png', 'ж': 'textures\\blocks\\wall_42.png', 'з': 'textures\\blocks\\wall_43.png',
+    'х': 'textures\\blocks\\wall_44.png',
 }
 
 # Словарь с изображениями шипов
 SPIKE_IMAGES = {
-    'z': 'spike\\spike_0.png', 'x': 'spike\\spike_1.png', 'c': 'spike\\spike_2.png', 'v': 'spike\\spike_3.png',
-    'b': 'spike\\spike_4.png', 'n': 'spike\\spike_5.png', 'm': 'spike\\spike_6.png', ',': 'spike\\spike_7.png',
-    '@': 'spike\\spike_8.png', '#': 'spike\\spike_9.png', 'д': 'spike\\spike_10.png', 'ё': 'spike\\spike_11.png',
+    'z': 'textures\\spike\\spike_0.png', 'x': 'textures\\spike\\spike_1.png', 'c': 'textures\\spike\\spike_2.png',
+    'v': 'textures\\spike\\spike_3.png',
+    'b': 'textures\\spike\\spike_4.png', 'n': 'textures\\spike\\spike_5.png', 'm': 'textures\\spike\\spike_6.png',
+    ',': 'textures\\spike\\spike_7.png',
+    '@': 'textures\\spike\\spike_8.png', '#': 'textures\\spike\\spike_9.png', 'д': 'textures\\spike\\spike_10.png',
+    'ё': 'textures\\spike\\spike_11.png',
 }
 
 # Словарь с изображениями ловушек
 TRAP_IMAGES = {
-    'a': 'trap\\trap_1.png', 's': 'trap\\trap_2.png', 'd': 'trap\\trap_3.png',
-    'f': 'trap\\trap_4.png', 'g': 'trap\\trap_5.png', 'h': 'trap\\trap_6.png',
-    'j': 'trap\\trap_7.png', 'k': 'trap\\trap_8.png', 'l': 'trap\\trap_9.png',
-    '&': 'trap\\trap_10.png', '(': 'trap\\trap_11.png', 'л': 'trap\\trap_12.png', 'з': 'trap\\trap_13.png'
+    'a': 'textures\\trap\\trap_1.png', 's': 'textures\\trap\\trap_2.png', 'd': 'textures\\trap\\trap_3.png',
+    'f': 'textures\\trap\\trap_4.png', 'g': 'textures\\trap\\trap_5.png', 'h': 'textures\\trap\\trap_6.png',
+    'j': 'textures\\trap\\trap_7.png', 'k': 'textures\\trap\\trap_8.png', 'l': 'textures\\trap\\trap_9.png',
+    '&': 'textures\\trap\\trap_10.png', '(': 'textures\\trap\\trap_11.png', 'л': 'textures\\trap\\trap_12.png',
+    'з': 'textures\\trap\\trap_13.png'
 }
 
 # Словарь для изображений трамплина
 TRAMPOLINE_IMAGE = {
-    '↙': 'trampoline\\trampoline_1.png', '↘': 'trampoline\\trampoline_2.png', '↗': 'trampoline\\trampoline_3.png',
-    '↖': 'trampoline\\trampoline_4.png'
+    '↙': 'textures\\trampoline\\trampoline_1.png', '↘': 'textures\\trampoline\\trampoline_2.png',
+    '↗': 'textures\\trampoline\\trampoline_3.png',
+    '↖': 'textures\\trampoline\\trampoline_4.png'
 }
 
 pygame.init()  # Инициализация Pygame
@@ -138,16 +140,22 @@ class Player(sprite.Sprite):
         self.direction = None
 
         # Загружаем кадры для различных направлений
-        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_botleft")
+        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                      f"{STATE['skin']}_botleft")
         self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
                                                        f"{STATE['skin']}_botright")
-        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_leftbot")
-        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_lefttop")
+        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                      f"{STATE['skin']}_leftbot")
+        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                    f"{STATE['skin']}_lefttop")
         self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
                                                        f"{STATE['skin']}_rightbot")
-        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_righttop")
-        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_topleft")
-        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, f"{STATE['skin']}_topright")
+        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                     f"{STATE['skin']}_righttop")
+        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                    f"{STATE['skin']}_topleft")
+        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
+                                                     f"{STATE['skin']}_topright")
 
         # Загружаем кадры анимации движения
         self.flight_frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 4, "man_move")
@@ -290,10 +298,10 @@ class Fire(sprite.Sprite):
 
         if self.direction in 'left right':
 
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_lr")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/line'), 3, "line_lr")
         elif self.direction in 'up down':
 
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'line'), 3, "line_tb")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/line'), 3, "line_tb")
 
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
@@ -318,7 +326,7 @@ class Coin(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'coin'), 4, "coin")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/coin'), 4, "coin")
         self.index = 0
         self.image = self.frames[self.index]
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -340,7 +348,7 @@ class XP(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'xp'), 2, "xp")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/xp'), 2, "xp")
         self.index = 0
         self.image = self.frames[self.index]
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -362,7 +370,7 @@ class Star(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = image.load(os.path.join(os.path.dirname(__file__), 'star', 'star_0.png'))
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/star', 'star_0.png'))
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
 
@@ -370,7 +378,7 @@ class IceBox(sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
-        self.image = image.load(os.path.join(os.path.dirname(__file__), 'ice box', 'ice_box_0.png'))
+        self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/ice box', 'ice_box_0.png'))
 
 
 class Finish(sprite.Sprite):
@@ -380,7 +388,7 @@ class Finish(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'exit'), 2, "exit")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/exit'), 2, "exit")
         self.index = 0
         self.image = self.frames[self.index]
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -464,19 +472,19 @@ class Thorn(sprite.Sprite):
     def update(self):
         if self.thorn_timer == 0:
             self.image_name = f'thorn_{self.trap_name}_1.png'  # Устанавливаем имя
-            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/thorn', self.image_name))
 
         elif self.thorn_timer == 30:
             self.image_name = f'thorn_{self.trap_name}_2.png'  # Устанавливаем имя
-            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/thorn', self.image_name))
 
         elif self.thorn_timer == 60:
             self.image_name = f'thorn_{self.trap_name}_3.png'  # Устанавливаем имя
-            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/thorn', self.image_name))
 
         elif self.thorn_timer == 120:
             self.image_name = f'thorn_{self.trap_name}_2.png'  # Устанавливаем имя
-            self.image = image.load(os.path.join(os.path.dirname(__file__), 'thorn', self.image_name))
+            self.image = image.load(os.path.join(os.path.dirname(__file__), 'textures/thorn', self.image_name))
 
         elif self.thorn_timer == 130:
             self.kill()
@@ -492,7 +500,7 @@ class Fish(sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'fish'), 16, "fish")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/fish'), 16, "fish")
         self.index = 0  # Индекс текущего кадра
         self.image = self.frames[self.index]  # Начальное изображение
         self.image_name = f'fish_{self.index}.png'
@@ -519,8 +527,9 @@ class Bat(sprite.Sprite):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
-        self.frames_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'bat'), 5, "bat_left")
-        self.frames_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'bat'), 5, "bat_right")
+        self.frames_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/bat'), 5, "bat_left")
+        self.frames_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/bat'), 5,
+                                                  "bat_right")
         self.frames = self.frames_right
 
         if bat_type == '♖':
@@ -601,17 +610,20 @@ class Dart(sprite.Sprite):  # ⇐⇑⇒⇓
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 
         if dart_type == '⇐':
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_left")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 2,
+                                                "dart_left")
             self.x -= 42
         elif dart_type == '⇑':
             self.y -= 42
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_up")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 2, "dart_up")
         elif dart_type == '⇒':
             self.x += 42
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_right")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 2,
+                                                "dart_right")
         elif dart_type == '⇓':
             self.y += 42
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 2, "dart_down")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 2,
+                                                "dart_down")
 
         self.image = self.frames[0]  # Начальное изображение
         self.frame_counter = 0  # Счетчик кадров для управления анимацией
@@ -635,13 +647,16 @@ class Arrow(sprite.Sprite):
         self.arror_type = arror_type
 
         if arror_type == '⇐':
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_left")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 1,
+                                                "arrow_left")
         elif arror_type == '⇑':
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_up")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 1, "arrow_up")
         elif arror_type == '⇒':
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_right")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 1,
+                                                "arrow_right")
         elif arror_type == '⇓':
-            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'dart'), 1, "arrow_down")
+            self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/dart'), 1,
+                                                "arrow_down")
         self.image = self.frames[0]  # Начальное изображение
 
     def update(self, platforms):
@@ -671,7 +686,7 @@ class Arrow(sprite.Sprite):
 class Teleport(sprite.Sprite):
     def __init__(self, x, y, portal_id):
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'portal'), 11, "portal")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/portal'), 11, "portal")
         self.index = 0
         self.image = self.frames[self.index]
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)

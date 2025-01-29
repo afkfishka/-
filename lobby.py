@@ -11,16 +11,12 @@ flag_map = True  # флаг для отрисовки карты уровней
 flag_arcade = False  # флаг для отрисовки аркады
 
 
-
-
 class Load_image(pygame.sprite.Sprite):
     def __init__(self, image_path, position):
         super().__init__()
         # Загрузка изображения
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
-
-
 
 
 class Load_lock(pygame.sprite.Sprite):
@@ -30,10 +26,6 @@ class Load_lock(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_path).convert_alpha()
         self.image = pygame.transform.scale(self.image, scalled)  # Масштабируем изображение до 40x40
         self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
-
-
-
-
 
 
 # уровни все
@@ -113,7 +105,7 @@ class ArcadeDoor(pygame.sprite.Sprite):
         a = 5
         width, height = (62 * a, 34 * a)
         super().__init__()
-        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'arcade'), 4, "arcade_animate")
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/arcade'), 4, "arcade_animate")
         self.index = 0
         self.image = pygame.transform.scale(self.frames[self.index], (width, height))
         self.rect = pygame.Rect(x, y, width, height)
@@ -255,7 +247,9 @@ class draw_vertikall_line(pygame.sprite.Sprite):
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((20, 60))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[0] > 0 or id == 2 and STATE[2] > 0 or id == 3 and STATE[4] > 0 or id == 4 and STATE[6] > 0 or id == 5 and STATE[8] > 0 else self.image.fill(pygame.Color(214, 0, 254))
+        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[0] > 0 or id == 2 and STATE[
+            2] > 0 or id == 3 and STATE[4] > 0 or id == 4 and STATE[6] > 0 or id == 5 and STATE[
+                                                           8] > 0 else self.image.fill(pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
@@ -263,7 +257,9 @@ class draw_gorizontall_line(pygame.sprite.Sprite):
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((90, 20))  # Создаем поверхность
-        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[1] > 0 or id == 2 and STATE[3] > 0 or id == 3 and STATE[5] > 0 or id == 4 and STATE[7] > 0 else self.image.fill(pygame.Color(214, 0, 254))
+        self.image.fill(pygame.Color(254, 254, 10)) if id == 1 and STATE[1] > 0 or id == 2 and STATE[
+            3] > 0 or id == 3 and STATE[5] > 0 or id == 4 and STATE[7] > 0 else self.image.fill(
+            pygame.Color(214, 0, 254))
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
@@ -302,13 +298,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.all_sprites.add(Achivements())
         self.all_sprites.add(Settings())
 
-        self.image_path_stars_0 = 'star/stars_0.png'
-        self.image_path_stars_1 = 'star/stars_1.png'
-        self.image_path_stars_2 = 'star/stars_2.png'
-        self.image_path_stars_3 = 'star/stars_3.png'
+        self.image_path_stars_0 = 'textures/star/stars_0.png'
+        self.image_path_stars_1 = 'textures/star/stars_1.png'
+        self.image_path_stars_2 = 'textures/star/stars_2.png'
+        self.image_path_stars_3 = 'textures/star/stars_3.png'
 
-
-                    # Позиции для звезд
+        # Позиции для звезд
         self.pos_lvl_1 = (120, 270 + 90)
         self.pos_lvl_2 = (120, 430 + 90)
         self.pos_lvl_3 = (330, 430 + 90)
@@ -342,95 +337,91 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(draw_gorizontall_line((660, 470), 3))
         self.map_sprites.add(draw_gorizontall_line((870, 310), 4))
 
-
-
         # ОТОБРАЖЕНИЕ звезд для 1 уровня (или замочка)
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_1)) if STATE[0] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_1)) if STATE[0] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_1)) if STATE[0] == 3 else None
-
-
 
         # ОТОБРАЖЕНИЕ звезд для 2 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_2)) if STATE[1] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_2)) if STATE[1] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_2)) if STATE[1] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_2)) if STATE[1] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_2[0] + 30, self.pos_lvl_2[1] - 70), (60, 60))) if \
-        STATE[0] == 0 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_2[0] + 30, self.pos_lvl_2[1] - 70), (60, 60))) if \
+            STATE[0] == 0 else None
 
         # ОТОБРАЖЕНИЕ звезд для 3 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_3)) if STATE[2] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_3)) if STATE[2] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_3)) if STATE[2] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_3)) if STATE[2] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_3[0] + 30, self.pos_lvl_3[1] - 70), (60, 60))) if \
-        STATE[1] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_3[0] + 30, self.pos_lvl_3[1] - 70), (60, 60))) if \
+            STATE[1] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 4 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_4)) if STATE[3] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_4)) if STATE[3] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_4)) if STATE[3] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_4)) if STATE[3] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_4[0] + 30, self.pos_lvl_4[1] - 70), (60, 60))) if \
-        STATE[2] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_4[0] + 30, self.pos_lvl_4[1] - 70), (60, 60))) if \
+            STATE[2] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 5 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_5)) if STATE[4] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_5)) if STATE[4] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_5)) if STATE[4] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_5)) if STATE[4] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_5[0] + 30, self.pos_lvl_5[1] - 70), (60, 60))) if \
-        STATE[3] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_5[0] + 30, self.pos_lvl_5[1] - 70), (60, 60))) if \
+            STATE[3] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 6 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_6)) if STATE[5] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_6)) if STATE[5] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_6)) if STATE[5] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_6)) if STATE[5] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_6[0] + 30, self.pos_lvl_6[1] - 70), (60, 60))) if \
-        STATE[4] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_6[0] + 30, self.pos_lvl_6[1] - 70), (60, 60))) if \
+            STATE[4] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 7 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_7)) if STATE[6] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_7)) if STATE[6] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_7)) if STATE[6] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_7)) if STATE[6] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_7[0] + 30, self.pos_lvl_7[1] - 70), (60, 60))) if \
-        STATE[5] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_7[0] + 30, self.pos_lvl_7[1] - 70), (60, 60))) if \
+            STATE[5] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 8 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_8)) if STATE[7] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_8)) if STATE[7] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_8)) if STATE[7] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_8)) if STATE[7] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_8[0] + 30, self.pos_lvl_8[1] - 70), (60, 60))) if \
-        STATE[6] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_8[0] + 30, self.pos_lvl_8[1] - 70), (60, 60))) if \
+            STATE[6] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 9 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_9)) if STATE[8] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_9)) if STATE[8] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_9)) if STATE[8] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_9)) if STATE[8] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_9[0] + 30, self.pos_lvl_9[1] - 70), (60, 60))) if \
-        STATE[7] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_9[0] + 30, self.pos_lvl_9[1] - 70), (60, 60))) if \
+            STATE[7] == -1 else None
 
         # ОТОБРАЖЕНИЕ звезд для 10 уровня
         self.map_sprites.add(Load_image(self.image_path_stars_0, self.pos_lvl_10)) if STATE[9] == 0 else None
         self.map_sprites.add(Load_image(self.image_path_stars_1, self.pos_lvl_10)) if STATE[9] == 1 else None
         self.map_sprites.add(Load_image(self.image_path_stars_2, self.pos_lvl_10)) if STATE[9] == 2 else None
         self.map_sprites.add(Load_image(self.image_path_stars_3, self.pos_lvl_10)) if STATE[9] == 3 else None
-        self.map_sprites.add(Load_lock('images/lock.png', (self.pos_lvl_10[0] + 30, self.pos_lvl_10[1] - 70), (60, 60))) if \
-        STATE[8] == -1 else None
-
+        self.map_sprites.add(
+            Load_lock('images/lock.png', (self.pos_lvl_10[0] + 30, self.pos_lvl_10[1] - 70), (60, 60))) if \
+            STATE[8] == -1 else None
 
         print(STATE)
 
@@ -470,8 +461,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("8", self.b_font, self.screen, 810, 310, (0, 0, 0)) if STATE[6] > 0 else None
                 self.draw_text("9", self.b_font, self.screen, 1020, 310, (0, 0, 0)) if STATE[7] > 0 else None
                 self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0)) if STATE[8] > 0 else None
-
-
 
             if flag_arcade:
                 self.arcade_sprites.draw(self.screen)
