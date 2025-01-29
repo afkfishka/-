@@ -40,6 +40,8 @@ STATE = {'skin': 'spectrum',
          'doubled coins': 10,
          'doubled xp': 10,
          'magnet': 10,
+         'record': 0,
+         'score': 0
          }
 
 # Словарь с изображениями стен
@@ -59,7 +61,7 @@ WALL_IMAGES = {
     ',': 'textures\\blocks\\wall_35.png', '<': 'textures\\blocks\\wall_36.png', '/': 'textures\\blocks\\wall_37.png',
     '?': 'textures\\blocks\\wall_38.png', 'б': 'textures\\blocks\\wall_39.png', 'в': 'textures\\blocks\\wall_40.png',
     'г': 'textures\\blocks\\wall_41.png', 'ж': 'textures\\blocks\\wall_42.png', 'з': 'textures\\blocks\\wall_43.png',
-    'х': 'textures\\blocks\\wall_44.png',
+    'х': 'textures\\blocks\\wall_44.png', 'ъ': 'textures\\blocks\\wall_45.png',
 }
 
 # Словарь с изображениями шипов
@@ -105,6 +107,10 @@ death_channel = pygame.mixer.Channel(1)
 xp_channel = pygame.mixer.Channel(2)
 star_channel = pygame.mixer.Channel(3)
 ice_channel = pygame.mixer.Channel(4)
+
+font_path = 'fonts/zx_spectrum_7_bold.ttf'
+font_size = 80
+my_font = pygame.font.Font(font_path, font_size)
 
 
 class Platform(sprite.Sprite):
@@ -1080,6 +1086,12 @@ def reset_level():
     PORTALS.clear()
 
 
+def draw_text(text, font, surface, x, y, color):
+    textobj = font.render(text, True, color)
+    textrect = Rect(x, y, 100, 100)
+    surface.blit(textobj, textrect)
+
+
 def load_platform(level):
     for y, row in enumerate(level):
         for x, col in enumerate(row):
@@ -1181,22 +1193,23 @@ def check_collided(collided_objects, hero, name_file=None):
             if hero.collide_with_enemy():
                 death_channel.play(SOUNDS['death'])
                 death_channel.set_volume(0.2)
+                save_game(STATE)
                 return True
         if isinstance(obj, Coin):
-            print("Монета собрана!")
             COUNT_COIN += 1
+            print(f"Монета собрана! ({COUNT_COIN})")
             coin_channel.play(SOUNDS['coin'])
             coin_channel.set_volume(0.1)
             ENTITIES.remove(obj)
         elif isinstance(obj, XP):
-            print("Опыт получен!")
             COUNT_XP += 1
+            print(f"Опыт получен! ({COUNT_XP})")
             xp_channel.play(SOUNDS['xp'])
             xp_channel.set_volume(0.05)
             ENTITIES.remove(obj)
         elif isinstance(obj, Star):
-            print("Звезда собрана!")
             COUNT_STAR += 1
+            print(f"Звезда собрана! ({COUNT_STAR})")
             star_channel.play(SOUNDS['star'])
             star_channel.set_volume(0.1)
             ENTITIES.remove(obj)
@@ -1225,6 +1238,7 @@ def check_collided(collided_objects, hero, name_file=None):
 loaded_state = load_game()
 if loaded_state is not None:
     STATE = loaded_state
+STATE['score'] = 0
 
 
 def map_level(name_file, start_x, start_y):
@@ -1465,6 +1479,10 @@ def arcade():
             # Рисуем кнопку паузы
             screen.blit(pause_button.image, pause_button.rect)
             screen.blit(hero.image, camera.apply(hero))
+
+            # Отображение текущего счета
+            draw_text(text=('Счёт: ' + str(COUNT_XP)), font=my_font, surface=screen, x=30, y=-10, color=(254, 254, 10))
+
             pygame.display.update()  # Обновляем экран
             pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
 
@@ -1518,6 +1536,8 @@ def arcade():
             pygame.mixer.music.unpause()
 
         if game_over_active:
+            STATE['score'] = COUNT_XP
+            STATE['record'] = max(STATE['record'], COUNT_XP)
             game_over_active = False
             Death(screen)
             pygame.mixer.music.stop()  # Останавливаем музыку
