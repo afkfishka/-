@@ -136,6 +136,73 @@ class Shop_skin_3(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (775, 200)  # Позиционирование спрайта
 
 
+class Shop_skin_11(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "man_botright")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.frame_rate = 15
+        self.frame_counter = 0
+
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (236, 286)  # Позиционирование спрайта
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+            self.image = pygame.transform.scale(self.image, (128, 128))
+
+
+class Shop_skin_22(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6, "spectrum_botright")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.frame_rate = 15
+        self.frame_counter = 0
+
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (540, 286)  # Позиционирование спрайта
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+            self.image = pygame.transform.scale(self.image, (128, 128))
+
+
+class Shop_skin_33(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+
+        self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 5, "froggy_botright")
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.frame_rate = 20
+        self.frame_counter = 0
+
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (836, 286)  # Позиционирование спрайта
+
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_rate:
+            self.frame_counter = 0
+            self.index = (self.index + 1) % len(self.frames)
+            self.image = self.frames[self.index]
+            self.image = pygame.transform.scale(self.image, (128, 128))
+
+
 class Shop_spell_1(pygame.sprite.Sprite):  # Кнопка карты
     def __init__(self):
         super().__init__()
@@ -432,6 +499,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.shop_skins_sprites.add(Shop_skin_1())
         self.shop_skins_sprites.add(Shop_skin_2())
         self.shop_skins_sprites.add(Shop_skin_3())
+        self.shop_skin_11 = Shop_skin_11()
+        self.shop_skin_22 = Shop_skin_22()
+        self.shop_skin_33 = Shop_skin_33()
+        self.shop_skins_sprites.add(self.shop_skin_11)
+        self.shop_skins_sprites.add(self.shop_skin_22)
+        self.shop_skins_sprites.add(self.shop_skin_33)
         self.shop_skins_sprites.add(Shop_skin_button_1())
         self.shop_skins_sprites.add(Shop_skin_button_2())
         self.shop_skins_sprites.add(Shop_skin_button_3())
@@ -632,11 +705,12 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("планеты Татуин", self.font_30, self.screen, 900, 470, 'black')
 
                 self.draw_text("Бесплатно", self.font_50, self.screen, 300, 535, 'black')
-                self.draw_text("50", self.font, self.screen, 600, 535, 'black')
-                self.draw_text("70", self.font, self.screen, 900, 535, 'black')
+                self.draw_text("50$", self.font, self.screen, 600, 535, 'black')
+                self.draw_text("70$", self.font, self.screen, 900, 535, 'black')
 
-
-
+                self.shop_skin_11.update()
+                self.shop_skin_22.update()
+                self.shop_skin_33.update()
 
 
             if flag_shop:

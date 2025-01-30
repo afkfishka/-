@@ -46,6 +46,8 @@ STATE = {'skin': ['froggy', 5],
          'lang': 'ru'
          }
 
+SKINS = {'classic': (True, 6), 'spectrum': (False, 6), 'froggy': (False, 5)}
+
 # Словарь с изображениями стен
 WALL_IMAGES = {
     '□': 'textures\\blocks\\wall_1.png', '▔': 'textures\\blocks\\wall_2.png', '▁': 'textures\\blocks\\wall_3.png',
