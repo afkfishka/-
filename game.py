@@ -1,6 +1,6 @@
 # Импортирование необходимых библиотек
 from pygame import sprite, image, Rect, Surface, Color, QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, K_DOWN, K_w, K_a, K_s, \
-    K_d, MOUSEBUTTONDOWN, K_1, K_2, K_3, K_4, K_5
+    K_d, MOUSEBUTTONDOWN, K_1, K_2, K_3
 from random import shuffle
 import pygame
 import pickle
@@ -14,7 +14,7 @@ PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
 
 # Скорость передвижения и ограничение кадров
 MOVE_STEP = 21
-FPS = 120
+FPS_LIMIT = 120
 
 # Цвет заднего фона
 BACKGROUND_COLOR = "#00000000"
@@ -34,8 +34,8 @@ COUNT_STAR = 0
 STATE = {'skin': ['froggy', 5],
          'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
-         'music': None,  # Состояние музыки
-         'sound': None,  # Состояние звуковых эффектов
+         'music': True,  # Состояние музыки
+         'sound': True,  # Состояние звуковых эффектов
          'freezing': 10,
          'shield': 10,
          'doubled coins': 10,
@@ -803,7 +803,14 @@ class Restart(pygame.sprite.Sprite):
 class Music(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/settings_music.png')  # Загрузка изображения
+        self.image = pygame.image.load('images/settings_music.png') if STATE['music'] else pygame.image.load(
+            'images/settings_music0.png')  # Загрузка изображения# Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(400, 355))  # Установка координат кнопки
+
+    def update_image(self):
+        image_path = 'images/settings_music.png' if STATE['music'] else 'images/settings_music0.png'
+        self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
         self.rect = self.image.get_rect(topleft=(400, 355))  # Установка координат кнопки
 
@@ -811,7 +818,14 @@ class Music(pygame.sprite.Sprite):
 class Volume(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/settings_volume.png')  # Загрузка изображения
+        self.image = pygame.image.load('images/settings_volume.png') if STATE['sound'] else pygame.image.load(
+            'images/settings_volume0.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(505, 355))  # Установка координат кнопки
+
+    def update_image(self):
+        image_path = 'images/settings_volume.png' if STATE['sound'] else 'images/settings_volume0.png'
+        self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
         self.rect = self.image.get_rect(topleft=(505, 355))  # Установка координат кнопки
 
@@ -1070,9 +1084,17 @@ class Settings:
             if sprite.rect.collidepoint(pos):
                 if isinstance(sprite, Music):
                     print('mus')
+                    STATE['music'] = not STATE['music']
+                    sprite.update_image()
+                    print(STATE['music'])
+
+                    update_background_music()
 
                 elif isinstance(sprite, Volume):
                     print('vol')
+                    STATE['sound'] = not STATE['sound']
+                    sprite.update_image()
+                    print(STATE['sound'])
 
                 elif isinstance(sprite, Quit):
                     print('quit')
@@ -1207,9 +1229,21 @@ def activate_menu():
 
 
 def set_background_music():
-    pygame.mixer.music.load('music and sounds/game.mp3')
-    pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.01)
+    if STATE.get('music', False):  # Проверка состояния музыки
+        pygame.mixer.music.load('music and sounds/game.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.01)
+
+
+def update_background_music():
+    if STATE['music']:
+        if not pygame.mixer.get_init():  # Проверка, инициализирован ли модулями звука
+            pygame.mixer.init()
+        pygame.mixer.music.load('music and sounds/menu.mp3')
+        pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
+        pygame.mixer.music.set_volume(0.1)  # Установка громкости
+    else:
+        pygame.mixer.music.stop()  # Остановка музыки если 'music' выключен
 
 
 def reset_bonuses():
@@ -1330,37 +1364,43 @@ def check_collided(collided_objects, hero, name_file=None):
                 isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
                 isinstance(obj, Bat)) or isinstance(obj, Arrow) or isinstance(obj, Water)):
             if hero.collide_with_enemy():
-                death_channel.play(SOUNDS['death'])
-                death_channel.set_volume(0.2)
+                if STATE['sound']:
+                    death_channel.play(SOUNDS['death'])
+                    death_channel.set_volume(0.2)
                 save_game(STATE)
                 return True
         if isinstance(obj, Coin):
             COUNT_COIN += 1
             print(f"Монета собрана! ({COUNT_COIN})")
-            coin_channel.play(SOUNDS['coin'])
-            coin_channel.set_volume(0.1)
+            if STATE['sound']:
+                coin_channel.play(SOUNDS['coin'])
+                coin_channel.set_volume(0.1)
             ENTITIES.remove(obj)
         elif isinstance(obj, XP):
             COUNT_XP += 1
             print(f"Опыт получен! ({COUNT_XP})")
-            xp_channel.play(SOUNDS['xp'])
-            xp_channel.set_volume(0.05)
+            if STATE['sound']:
+                xp_channel.play(SOUNDS['xp'])
+                xp_channel.set_volume(0.05)
             ENTITIES.remove(obj)
         elif isinstance(obj, Star):
             COUNT_STAR += 1
             print(f"Звезда собрана! ({COUNT_STAR})")
-            star_channel.play(SOUNDS['star'])
-            star_channel.set_volume(0.1)
+            if STATE['sound']:
+                star_channel.play(SOUNDS['star'])
+                star_channel.set_volume(0.1)
             ENTITIES.remove(obj)
         elif isinstance(obj, IceBox):
             print('Ice Box разбит')
-            star_channel.play(SOUNDS['ice box'])
-            star_channel.set_volume(0.05)
+            if STATE['sound']:
+                star_channel.play(SOUNDS['ice box'])
+                star_channel.set_volume(0.05)
             ENTITIES.remove(obj)
             PLATFORMS.remove(obj)
         elif isinstance(obj, Finish):
             print("Поздравляю! Вы достигли финиша!")
-            SOUNDS['coin'].set_volume(0.05)
+            if STATE['sound']:
+                SOUNDS['coin'].set_volume(0.05)
             STATE['levels'][int(name_file[6:-4]) - 1] = COUNT_STAR
             STATE['coins'] += COUNT_COIN
             print(STATE['coins'])
@@ -1485,7 +1525,7 @@ def map_level(name_file, start_x, start_y):
             screen.blit(pause_button.image, pause_button.rect)
             screen.blit(hero.image, camera.apply(hero))
             pygame.display.update()  # Обновляем экран
-            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+            pygame.time.Clock().tick(FPS_LIMIT)  # Ограничиваем FPS игры до 120
 
         elif paused:
             pygame.mixer.music.pause()
@@ -1623,7 +1663,7 @@ def arcade():
             draw_text(text=('Счёт: ' + str(COUNT_XP)), font=my_font, surface=screen, x=30, y=-10, color=(254, 254, 10))
 
             pygame.display.update()  # Обновляем экран
-            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+            pygame.time.Clock().tick(FPS_LIMIT)  # Ограничиваем FPS игры до 120
 
         if hero.rect.y <= 500:
             block = False

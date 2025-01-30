@@ -376,17 +376,12 @@ class draw_gorizontall_line(pygame.sprite.Sprite):
 
 class Lobby(pygame.sprite.Sprite):  # Лобби
     def __init__(self):
-        print(game.STATE)
         pygame.init()
         self.screen_size = (1200, 800)
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption("Тайны подземелий")
 
         # Воспроизведение фоновой музыки
-        pygame.mixer.init()
-        pygame.mixer.music.load('music and sounds/menu.mp3')
-        pygame.mixer.music.play(-1)  # Воспроизводить бесконечно
-        pygame.mixer.music.set_volume(0.1)  # Установка громкости на 2%
 
         self.BLACK = (0, 0, 0)
 
@@ -605,6 +600,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.arcade_sprites.add(Pink_line2())
         self.arcade_sprites.add(Arcade_button())
 
+        game.update_background_music()
         self.main_menu()
 
     def draw_text(self, text, font, surface, x, y, color):
