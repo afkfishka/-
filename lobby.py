@@ -120,6 +120,102 @@ class ArcadeDoor(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.frames[self.index], (self.rect.width, self.rect.height))
 
 
+class Shop_skin_1(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (175, 200)  # Позиционирование спрайта
+
+
+class Shop_skin_2(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (475, 200)  # Позиционирование спрайта
+
+
+class Shop_skin_3(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (775, 200)  # Позиционирование спрайта
+
+
+class Shop_spell_1(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (175, 200)  # Позиционирование спрайта
+
+
+class Shop_spell_2(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (475, 200)  # Позиционирование спрайта
+
+
+class Shop_spell_3(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.topleft = (775, 200)  # Позиционирование спрайта
+
+
+class Shop_spell_button_1(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (200, 625)  # Позиционирование спрайта
+
+
+class Shop_spell_button_2(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (500, 625)  # Позиционирование спрайта
+
+
+class Shop_spell_button_3(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (800, 625)  # Позиционирование спрайта
+
+
+class Shop_skin_button_1(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (200, 625)  # Позиционирование спрайта
+
+
+class Shop_skin_button_2(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (500, 625)  # Позиционирование спрайта
+
+
+class Shop_skin_button_3(pygame.sprite.Sprite):  # Кнопка карты
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.bottomleft = (800, 625)  # Позиционирование спрайта
+
+
 class Settings(pygame.sprite.Sprite):  # Кнопка достижений
     def __init__(self):
         super().__init__()
@@ -300,6 +396,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
         self.b_font = pygame.font.Font(self.font_path, 100)
         self.font_70 = pygame.font.Font(self.font_path, 70)
+        self.font_30 = pygame.font.Font(self.font_path, 30)
 
         self.coin_image = pygame.image.load('images/menu_coin.png')
         self.scaled_coin_image = pygame.transform.scale(self.coin_image, (40, 40))
@@ -307,6 +404,8 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.all_sprites = pygame.sprite.Group()
         self.map_sprites = pygame.sprite.Group()
         self.arcade_sprites = pygame.sprite.Group()
+        self.shop_skins_sprites = pygame.sprite.Group()
+        self.shop_spell_sprites = pygame.sprite.Group()
 
         self.all_sprites.add(ShopSprites())
         self.all_sprites.add(SkinsSprites())
@@ -342,6 +441,24 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.map_sprites.add(Lvl8())
         self.map_sprites.add(Lvl9())
         self.map_sprites.add(Lvl10())
+
+        self.shop_skins_sprites.add(Shop_skin_1())
+        self.shop_skins_sprites.add(Shop_skin_2())
+        self.shop_skins_sprites.add(Shop_skin_3())
+        self.shop_skins_sprites.add(Shop_skin_button_1())
+        self.shop_skins_sprites.add(Shop_skin_button_2())
+        self.shop_skins_sprites.add(Shop_skin_button_3())
+
+        self.shop_spell_sprites.add(Shop_spell_1())
+        self.shop_spell_sprites.add(Shop_spell_2())
+        self.shop_spell_sprites.add(Shop_spell_3())
+        self.shop_spell_sprites.add(Shop_spell_button_1())
+        self.shop_spell_sprites.add(Shop_spell_button_2())
+        self.shop_spell_sprites.add(Shop_spell_button_3())
+        self.shop_spell_sprites.add(Load_lock('images/bonus_shield.png', (236, 286), (128, 128)))
+        self.shop_spell_sprites.add(Load_lock('images/bonus_magnet.png', (536, 286), (128, 128)))
+        self.shop_spell_sprites.add(Load_lock('images/bonus_freezing.png', (836, 286), (128, 128)))
+
 
         self.map_sprites.add(draw_vertikall_line((170, 370), 1))
         self.map_sprites.add(draw_vertikall_line((380, 370), 2))
@@ -506,6 +623,33 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             self.screen.blit(self.scaled_coin_image, (10, 10))
             self.draw_text(str(game.STATE['coins']), self.font, self.screen, 80, 24, (254, 254, 10))  # Счетчик монет
 
+            if flag_skins:
+                self.shop_skins_sprites.draw(self.screen)
+
+                self.draw_text("Купить", self.font, self.screen, 300, 590, (160, 40, 222))
+                self.draw_text("Купить", self.font, self.screen, 600, 590, (160, 40, 222))
+                self.draw_text("Купить", self.font, self.screen, 900, 590, (160, 40, 222))
+
+
+
+
+            if flag_shop:
+                self.shop_spell_sprites.draw(self.screen)
+
+                self.draw_text("Купить", self.font, self.screen, 300, 590, (160, 40, 222))
+                self.draw_text("Купить", self.font, self.screen, 600, 590, (160, 40, 222))
+                self.draw_text("Купить", self.font, self.screen, 900, 590, (160, 40, 222))
+
+                self.draw_text("Щит", self.font, self.screen, 300, 240, (160, 40, 222))
+                self.draw_text("Магнит", self.font, self.screen, 600, 240, (160, 40, 222))
+                self.draw_text("Мороз", self.font, self.screen, 900, 240, (160, 40, 222))
+
+                self.draw_text("Дарует временную", self.font_30, self.screen, 300, 460, (160, 40, 222))
+                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 480,(160, 40, 222))
+
+
+
+
             if flag_map:  # отображение карты уровней
                 self.map_sprites.draw(self.screen)
                 self.draw_text("1", self.b_font, self.screen, 180, 310, (0, 0, 0))
@@ -553,6 +697,8 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                     self.check_click(pos)
                     self.click_lvl_map(pos)
                     self.click_arcade(pos)
+                    self.click_shop_spell(pos)
+                    self.click_shop_skin(pos)
 
             pygame.display.flip()
 
@@ -619,6 +765,26 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl10) and game.STATE['levels'][8] > 0:
                     game.map_level("level_10.txt", 22, 16)
 
+    def click_shop_spell(self, pos):
+        for sprite in self.shop_spell_sprites:
+            if sprite.rect.collidepoint(pos) and flag_shop:
+                if isinstance(sprite, Shop_spell_button_1):
+                    print('способность 1 куплена')
+                elif isinstance(sprite, Shop_spell_button_2):
+                    print('способность 2 куплена')
+                elif isinstance(sprite, Shop_spell_button_3):
+                    print('способность 3 куплена')
+
+    def click_shop_skin(self, pos):
+        for sprite in self.shop_skins_sprites:
+            if sprite.rect.collidepoint(pos) and flag_skins:
+                if isinstance(sprite, Shop_skin_button_1):
+                    print('скин 1 куплен')
+                elif isinstance(sprite, Shop_skin_button_2):
+                    print('скин 2 куплен')
+                elif isinstance(sprite, Shop_skin_button_3):
+                    print('скин 3 куплен')
+
 
 def achivements_function(self):
     print("Список достижений открыт!")
@@ -628,7 +794,6 @@ def achivements_function(self):
 def settings_function(self):
     print("Запуск настроек!")
     pygame.time.delay(2000)  # Имитация задержки
-
 
 
 Lobby()
