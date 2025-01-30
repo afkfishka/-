@@ -80,7 +80,7 @@ TRAP_IMAGES = {
     'f': 'textures\\trap\\trap_4.png', 'g': 'textures\\trap\\trap_5.png', 'h': 'textures\\trap\\trap_6.png',
     'j': 'textures\\trap\\trap_7.png', 'k': 'textures\\trap\\trap_8.png', 'l': 'textures\\trap\\trap_9.png',
     '&': 'textures\\trap\\trap_10.png', '(': 'textures\\trap\\trap_11.png', 'л': 'textures\\trap\\trap_12.png',
-    'з': 'textures\\trap\\trap_13.png'
+    'ь': 'textures\\trap\\trap_13.png', 'ю': 'textures\\trap\\trap_14.png', '#': 'textures\\trap\\trap_15.png'
 }
 
 # Словарь для изображений трамплина

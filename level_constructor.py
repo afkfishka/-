@@ -5,23 +5,23 @@ from pygame import KEYDOWN, K_ESCAPE
 
 # Размеры окна
 # screen_size = width, height = 1000, 1000
-screen_size = width, height = 325, 1000
+screen_size = width, height = 1700, 1000
 cell_size = 25
 
 # Определение пути к изображениям
 image_paths = {
-    '□': 'blocks/wall_1.png',
-    '#': 'spike/spike_9.png',
-    'a': 'trap/trap_1.png',
-    '↙': 'trampoline/trampoline_1.png',
-    'A': 'fish/fish_icon.png',
-    '♜': 'bat/bat_left_0.png',
-    '⇑': 'dart/dart_left_0.png',
-    '+': 'xp/xp_0.png',
-    '$': 'coin/coin_0.png',
-    '*': 'star/star_0.png',
-    '⊞': 'ice box/ice_box_0.png',
-    'F': 'exit/exit_0.png',
+    '□': 'textures/blocks/wall_1.png',
+    '#': 'textures/spike/spike_9.png',
+    'a': 'textures/trap/trap_1.png',
+    '↙': 'textures/trampoline/trampoline_1.png',
+    'A': 'textures/fish/fish_icon.png',
+    '♜': 'textures/bat/bat_left_0.png',
+    '⇑': 'textures/dart/dart_left_0.png',
+    '+': 'textures/xp/xp_0.png',
+    '$': 'textures/coin/coin_0.png',
+    '*': 'textures/star/star_0.png',
+    '⊞': 'textures/ice box/ice_box_0.png',
+    'F': 'textures/exit/exit_0.png',
     ' ': None  # Для пустоты будет черный квадрат с белой рамкой
 }
 

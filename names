@@ -13,7 +13,7 @@ WALL_IMAGES = {
     'o': 'wall_28.png', 'p': 'wall_29.png',
     '[': 'wall_30.png', 'A': 'wall_A.png', ']': 'wall_31.png',
      '"': 'wall_32.png', ';': 'wall_33.png',
-    ':': 'wall_34.png', ',': 'wall_35.png', '<': 'wall_36.png'
+    ':': 'wall_34.png', ',':'wall_35.png', '<': 'wall_36.png'
 }
 
 SPIKE_IMAGES = {

@@ -615,9 +615,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Lvl8) and game.STATE['levels'][6] > 0:
                     game.map_level("level_8.txt", 5, 37)
                 elif isinstance(sprite, Lvl9) and game.STATE['levels'][7] > 0:
-                    pass
+                    game.map_level("level_9.txt", 6, 4)
                 elif isinstance(sprite, Lvl10) and game.STATE['levels'][8] > 0:
-                    pass
+                    game.map_level("level_10.txt", 22, 16)
 
 
 def achivements_function(self):
