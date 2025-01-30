@@ -14,7 +14,7 @@ PLATFORM_WIDTH = PLATFORM_HEIGHT = 42
 
 # Скорость передвижения и ограничение кадров
 MOVE_STEP = 21
-FPS = 120
+FPS_LIMIT = 120
 
 # Цвет заднего фона
 BACKGROUND_COLOR = "#00000000"
@@ -1485,7 +1485,7 @@ def map_level(name_file, start_x, start_y):
             screen.blit(pause_button.image, pause_button.rect)
             screen.blit(hero.image, camera.apply(hero))
             pygame.display.update()  # Обновляем экран
-            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+            pygame.time.Clock().tick(FPS_LIMIT)  # Ограничиваем FPS игры до 120
 
         elif paused:
             pygame.mixer.music.pause()
@@ -1623,7 +1623,7 @@ def arcade():
             draw_text(text=('Счёт: ' + str(COUNT_XP)), font=my_font, surface=screen, x=30, y=-10, color=(254, 254, 10))
 
             pygame.display.update()  # Обновляем экран
-            pygame.time.Clock().tick(FPS)  # Ограничиваем FPS игры до 120
+            pygame.time.Clock().tick(FPS_LIMIT)  # Ограничиваем FPS игры до 120
 
         if hero.rect.y <= 500:
             block = False
