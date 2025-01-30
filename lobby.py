@@ -69,14 +69,6 @@ class ArcadeSprites(pygame.sprite.Sprite):  # Кнопка аркады
         self.rect.center = (907, 750)  # Позиционирование спрайта
 
 
-class Achivements(pygame.sprite.Sprite):  # Кнопка достижений
-    def __init__(self):
-        super().__init__()
-
-        self.image = pygame.image.load('images/menu_achievements1.png')  # Загрузка изображения
-        self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
-        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (1160, 30)  # Позиционирование спрайта в центре экрана
 
 
 class Pink_line(pygame.sprite.Sprite):  # Кнопка достижений
@@ -223,7 +215,7 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         self.image = pygame.image.load('images/menu_settings1.png')  # Загрузка изображения
         self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
-        self.rect.center = (1100, 30)  # Позиционирование спрайта в центре экрана
+        self.rect.center = (1170, 30)  # Позиционирование спрайта в центре экрана
 
 
 class Arcade_right(pygame.sprite.Sprite):  # Кнопка карты
@@ -392,6 +384,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.b_font = pygame.font.Font(self.font_path, 100)
         self.font_70 = pygame.font.Font(self.font_path, 70)
         self.font_30 = pygame.font.Font(self.font_path, 30)
+        self.font_50 = pygame.font.Font(self.font_path, 50)
 
         self.coin_image = pygame.image.load('images/menu_coin.png')
         self.scaled_coin_image = pygame.transform.scale(self.coin_image, (40, 40))
@@ -406,7 +399,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.all_sprites.add(SkinsSprites())
         self.all_sprites.add(MapSprites())
         self.all_sprites.add(ArcadeSprites())
-        self.all_sprites.add(Achivements())
         self.all_sprites.add(Settings())
 
         self.image_path_stars_0 = 'textures/star/stars_0.png'
@@ -622,9 +614,27 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_skins:
                 self.shop_skins_sprites.draw(self.screen)
 
-                self.draw_text("Купить", self.font, self.screen, 300, 590, (160, 40, 222))
-                self.draw_text("Купить", self.font, self.screen, 600, 590, (160, 40, 222))
-                self.draw_text("Купить", self.font, self.screen, 900, 590, (160, 40, 222))
+                self.draw_text("Имеется", self.font, self.screen, 300, 590, 'black')
+                self.draw_text("Купить", self.font, self.screen, 600, 590, 'black')
+                self.draw_text("Купить", self.font, self.screen, 900, 590, 'black')
+
+                self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
+                self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
+                self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
+
+                self.draw_text("Типичный иска-", self.font_30, self.screen, 300, 450, 'black')
+                self.draw_text("тель приключений", self.font_30, self.screen, 300, 470,'black')
+
+                self.draw_text("Великий воин", self.font_30, self.screen, 600, 450, 'black')
+                self.draw_text("из тени", self.font_30, self.screen, 600, 470, 'black')
+
+                self.draw_text("Джабба Хат с", self.font_30, self.screen, 900, 450, 'black')
+                self.draw_text("планеты Татуин", self.font_30, self.screen, 900, 470, 'black')
+
+                self.draw_text("Бесплатно", self.font_50, self.screen, 300, 535, 'black')
+                self.draw_text("50", self.font, self.screen, 600, 535, 'black')
+                self.draw_text("70", self.font, self.screen, 900, 535, 'black')
+
 
 
 
@@ -632,16 +642,30 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_shop:
                 self.shop_spell_sprites.draw(self.screen)
 
-                self.draw_text("Купить", self.font, self.screen, 300, 590, (160, 40, 222))
-                self.draw_text("Купить", self.font, self.screen, 600, 590, (160, 40, 222))
-                self.draw_text("Купить", self.font, self.screen, 900, 590, (160, 40, 222))
+                self.draw_text("Купить", self.font, self.screen, 300, 590, 'black')
+                self.draw_text("Купить", self.font, self.screen, 600, 590, 'black')
+                self.draw_text("Купить", self.font, self.screen, 900, 590, 'black')
 
-                self.draw_text("Щит", self.font, self.screen, 300, 240, (160, 40, 222))
-                self.draw_text("Магнит", self.font, self.screen, 600, 240, (160, 40, 222))
-                self.draw_text("Мороз", self.font, self.screen, 900, 240, (160, 40, 222))
+                self.draw_text("Щит", self.font, self.screen, 300, 240, 'black')
+                self.draw_text("Магнит", self.font, self.screen, 600, 240, 'black')
+                self.draw_text("Мороз", self.font, self.screen, 900, 240, 'black')
 
-                self.draw_text("Дарует временную", self.font_30, self.screen, 300, 460, (160, 40, 222))
-                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 480,(160, 40, 222))
+                self.draw_text("Дарует временную", self.font_30, self.screen, 300, 450, 'black')
+                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 470,'black')
+
+                self.draw_text("Притягивает сокро-", self.font_30, self.screen, 600, 450, 'black')
+                self.draw_text("вища поблизости", self.font_30, self.screen, 600, 470, 'black')
+
+                self.draw_text("Замораживает всё", self.font_30, self.screen, 900, 450, 'black')
+                self.draw_text("вокруг", self.font_30, self.screen, 900, 470, 'black')
+
+                self.draw_text("15$", self.font, self.screen, 300, 535, 'black')
+                self.draw_text("10$", self.font, self.screen, 600, 535, 'black')
+                self.draw_text("20$", self.font, self.screen, 900, 535, 'black')
+
+
+
+
 
 
 
@@ -726,8 +750,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                     flag_skins = False  # флаг для отрисовки меню скинов
                     flag_map = False  # флаг для отрисовки карты уровней
                     flag_arcade = True  # флаг для отрисовки аркады
-                elif isinstance(sprite, Achivements):
-                    pass
                 elif isinstance(sprite, Settings):
                     game.Settings(self.screen)
 
@@ -782,9 +804,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                     print('скин 3 куплен')
 
 
-def achivements_function(self):
-    print("Список достижений открыт!")
-    pygame.time.delay(2000)  # Имитация задержки
 
 
 def settings_function(self):
