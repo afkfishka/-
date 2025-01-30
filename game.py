@@ -6,6 +6,7 @@ import pygame
 import pickle
 import time
 import os
+import webbrowser
 
 # Установка размеров окна и платформы
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) = 1200, 800
@@ -30,7 +31,7 @@ COUNT_COIN = 0
 COUNT_STAR = 0
 
 # Сохраняемые данные
-STATE = {'skin': 'spectrum',
+STATE = {'skin': ['froggy', 5],
          'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': None,  # Состояние музыки
@@ -41,7 +42,8 @@ STATE = {'skin': 'spectrum',
          'doubled xp': 10,
          'magnet': 10,
          'record': 0,
-         'score': 0
+         'score': 0,
+         'lang': 'ru'
          }
 
 # Словарь с изображениями стен
@@ -146,22 +148,22 @@ class Player(sprite.Sprite):
         self.direction = None
 
         # Загружаем кадры для различных направлений
-        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                      f"{STATE['skin']}_botleft")
-        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       f"{STATE['skin']}_botright")
-        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                      f"{STATE['skin']}_leftbot")
-        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                    f"{STATE['skin']}_lefttop")
-        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                       f"{STATE['skin']}_rightbot")
-        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                     f"{STATE['skin']}_righttop")
-        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                    f"{STATE['skin']}_topleft")
-        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 6,
-                                                     f"{STATE['skin']}_topright")
+        self.frames_down_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                      f"{STATE['skin'][0]}_botleft")
+        self.frames_down_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                       f"{STATE['skin'][0]}_botright")
+        self.frames_left_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                      f"{STATE['skin'][0]}_leftbot")
+        self.frames_left_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                    f"{STATE['skin'][0]}_lefttop")
+        self.frames_right_down = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                       f"{STATE['skin'][0]}_rightbot")
+        self.frames_right_up = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                     f"{STATE['skin'][0]}_righttop")
+        self.frames_up_left = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                    f"{STATE['skin'][0]}_topleft")
+        self.frames_up_right = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), STATE['skin'][1],
+                                                     f"{STATE['skin'][0]}_topright")
 
         # Загружаем кадры анимации движения
         self.flight_frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'man'), 4, "man_move")
@@ -798,6 +800,70 @@ class Restart(pygame.sprite.Sprite):
         self.rect.center = (495, 510)  # Позиционирование спрайта в центре экрана
 
 
+class Music(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/settings_music.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(400, 355))  # Установка координат кнопки
+
+
+class Volume(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/settings_volume.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(505, 355))  # Установка координат кнопки
+
+
+class Quit(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/settings_quit.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(715, 355))  # Установка координат кнопки
+
+
+class FPS(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/settings_fps.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(610, 355))  # Установка координат кнопки
+
+
+class Cross(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/cross.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (30, 30))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(805, 240))  # Установка координат кнопки
+
+
+class Donate(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/donate.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (200, 65))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(400, 485))  # Установка координат кнопки
+
+
+class USA(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/usa.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (16 * 5.7, 9 * 5.7))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(710, 490))  # Установка координат кнопки
+
+
+class RUS(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('images/rus.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (16 * 5.7, 9 * 5.7))  # Растяжение изображения
+        self.rect = self.image.get_rect(topleft=(610, 490))  # Установка координат кнопки
+
+
 class Home(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -952,6 +1018,79 @@ class Pause:
                     print('resume')
                     self.running = False
                 elif isinstance(sprite, Home):
+                    print('back to lobby')
+                    activate_menu()  # Активируем меню
+                    pygame.quit()  # Закрываем текущее игровое окно
+
+
+class Settings:
+    def __init__(self, screen):
+        self.screen = screen
+        self.running = True
+
+        self.font_path = 'fonts/zx_spectrum_7_bold.ttf'
+
+        self.font100 = pygame.font.Font(self.font_path, 100)
+        self.font80 = pygame.font.Font(self.font_path, 80)
+        self.font40 = pygame.font.Font(self.font_path, 40)
+        self.font30 = pygame.font.Font(self.font_path, 30)
+
+        self.settings = pygame.sprite.Group()
+        self.settings.add(GameOver())
+        self.settings.add(Music())
+        self.settings.add(Volume())
+        self.settings.add(FPS())
+        self.settings.add(Quit())
+        self.settings.add(Cross())
+        self.settings.add(Donate())
+        self.settings.add(USA())
+        self.settings.add(RUS())
+
+        self.main_menu()
+
+    def main_menu(self):
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    self.check_click(pos)
+            # обновляем значения
+            # self.screen.fill((0, 0, 0))
+
+            self.settings.draw(self.screen)
+            draw_text("Настройки", self.font100, self.screen, 420, 225, "black")
+            # рисуем
+            pygame.display.flip()
+        pygame.quit()
+
+    def check_click(self, pos):
+        for sprite in self.settings:
+            if sprite.rect.collidepoint(pos):
+                if isinstance(sprite, Music):
+                    print('mus')
+
+                elif isinstance(sprite, Volume):
+                    print('vol')
+
+                elif isinstance(sprite, Quit):
+                    print('quit')
+
+                elif isinstance(sprite, FPS):
+                    print('fps')
+
+                elif isinstance(sprite, Donate):
+                    print('donate')
+                    webbrowser.open('https://yoomoney.ru/fundraise/183N31A6QH5.250130')  # Открытие ссылки
+
+                elif isinstance(sprite, USA):
+                    print('lang: en')
+
+                elif isinstance(sprite, RUS):
+                    print('lang: ru')
+
+                elif isinstance(sprite, Cross):
                     print('back to lobby')
                     activate_menu()  # Активируем меню
                     pygame.quit()  # Закрываем текущее игровое окно

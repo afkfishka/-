@@ -587,7 +587,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 elif isinstance(sprite, Achivements):
                     pass
                 elif isinstance(sprite, Settings):
-                    pass
+                    game.Settings(self.screen)
 
     def click_arcade(self, pos):
         for sprite in self.arcade_sprites:
