@@ -9,7 +9,7 @@ flag_map = True  # флаг для отрисовки карты уровней
 flag_arcade = False  # флаг для отрисовки аркады
 
 
-class Load_image(pygame.sprite.Sprite):
+class Load_image(pygame.sprite.Sprite): # Загрузка изображения
     def __init__(self, image_path, position):
         super().__init__()
         # Загрузка изображения
@@ -17,7 +17,7 @@ class Load_image(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
 
 
-class Load_lock(pygame.sprite.Sprite):
+class Load_lock(pygame.sprite.Sprite):   # Загрузка изображения с трансформированием
     def __init__(self, image_path, position, scalled):
         super().__init__()
         # Загрузка изображения
@@ -29,7 +29,7 @@ class Load_lock(pygame.sprite.Sprite):
 # уровни все
 
 
-def load_animation_frames(path, count, prefix):
+def load_animation_frames(path, count, prefix):      # Анимация фреймов
     frames = []
     for i in range(count):
         image_path = os.path.join(path, f'{prefix}_{i}.png')  # Загружаем кадры анимации
@@ -37,7 +37,7 @@ def load_animation_frames(path, count, prefix):
     return frames
 
 
-class ShopSprites(pygame.sprite.Sprite):  # Кнопка магазина
+class ShopSprites(pygame.sprite.Sprite):  # Спрайты магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/shop.png')  # Загрузка изображения
@@ -45,7 +45,7 @@ class ShopSprites(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect.center = (292, 750)  # Позиционирование спрайта
 
 
-class SkinsSprites(pygame.sprite.Sprite):  # Кнопка скинов
+class SkinsSprites(pygame.sprite.Sprite):  # Спрайты скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/skin.png')  # Загрузка изображения
@@ -53,7 +53,7 @@ class SkinsSprites(pygame.sprite.Sprite):  # Кнопка скинов
         self.rect.center = (497, 750)  # Позиционирование спрайта
 
 
-class MapSprites(pygame.sprite.Sprite):  # Кнопка карты
+class MapSprites(pygame.sprite.Sprite):  # Спрайты карты
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/map.png')  # Загрузка изображения
@@ -61,7 +61,7 @@ class MapSprites(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.center = (702, 750)  # Позиционирование спрайта
 
 
-class ArcadeSprites(pygame.sprite.Sprite):  # Кнопка аркады
+class ArcadeSprites(pygame.sprite.Sprite):  # Спрайты аркады
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/arcade.png')  # Загрузка изображения
@@ -71,7 +71,7 @@ class ArcadeSprites(pygame.sprite.Sprite):  # Кнопка аркады
 
 
 
-class Pink_line(pygame.sprite.Sprite):  # Кнопка достижений
+class Pink_line(pygame.sprite.Sprite):  # Розовая линия
     def __init__(self):
         super().__init__()
 
@@ -80,7 +80,7 @@ class Pink_line(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect.center = (900, 450)  # Позиционирование спрайта в центре экрана
 
 
-class Pink_line2(pygame.sprite.Sprite):  # Кнопка достижений
+class Pink_line2(pygame.sprite.Sprite):  # Розовая линия
     def __init__(self):
         super().__init__()
 
@@ -89,7 +89,7 @@ class Pink_line2(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect.center = (300, 450)  # Позиционирование спрайта в центре экрана
 
 
-class ArcadeDoor(pygame.sprite.Sprite):
+class ArcadeDoor(pygame.sprite.Sprite):  # Врата для аркады
     def __init__(self):
         x, y = (445, 350)
         a = 5
@@ -112,7 +112,7 @@ class ArcadeDoor(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.frames[self.index], (self.rect.width, self.rect.height))
 
 
-class Shop_skin_1(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_1(pygame.sprite.Sprite):  # картинки магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -120,7 +120,7 @@ class Shop_skin_1(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (175, 200)  # Позиционирование спрайта
 
 
-class Shop_skin_2(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_2(pygame.sprite.Sprite):  # картинки магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -128,7 +128,7 @@ class Shop_skin_2(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (475, 200)  # Позиционирование спрайта
 
 
-class Shop_skin_3(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_3(pygame.sprite.Sprite):  # картинки магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -136,7 +136,8 @@ class Shop_skin_3(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (775, 200)  # Позиционирование спрайта
 
 
-class Shop_skin_11(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_11(pygame.sprite.Sprite):
+    '''Анимированный скин в магазине'''
     def __init__(self):
         super().__init__()
 
@@ -158,7 +159,8 @@ class Shop_skin_11(pygame.sprite.Sprite):  # Кнопка карты
             self.image = pygame.transform.scale(self.image, (128, 128))
 
 
-class Shop_skin_22(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_22(pygame.sprite.Sprite):
+    '''Анимированный скин в магазине'''
     def __init__(self):
         super().__init__()
 
@@ -180,7 +182,8 @@ class Shop_skin_22(pygame.sprite.Sprite):  # Кнопка карты
             self.image = pygame.transform.scale(self.image, (128, 128))
 
 
-class Shop_skin_33(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_33(pygame.sprite.Sprite):
+    '''Анимированный скин в магазине'''
     def __init__(self):
         super().__init__()
 
@@ -203,7 +206,7 @@ class Shop_skin_33(pygame.sprite.Sprite):  # Кнопка карты
             self.image = pygame.transform.scale(self.image, (128, 128))
 
 
-class Shop_spell_1(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_1(pygame.sprite.Sprite):  # Картинка магазина скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -211,7 +214,7 @@ class Shop_spell_1(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (175, 200)  # Позиционирование спрайта
 
 
-class Shop_spell_2(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_2(pygame.sprite.Sprite):   # Картинка магазина скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -219,7 +222,7 @@ class Shop_spell_2(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (475, 200)  # Позиционирование спрайта
 
 
-class Shop_spell_3(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_3(pygame.sprite.Sprite):   # Картинка магазина скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -227,7 +230,7 @@ class Shop_spell_3(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.topleft = (775, 200)  # Позиционирование спрайта
 
 
-class Shop_spell_button_1(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_button_1(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -235,7 +238,7 @@ class Shop_spell_button_1(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (200, 625)  # Позиционирование спрайта
 
 
-class Shop_spell_button_2(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_button_2(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -243,7 +246,7 @@ class Shop_spell_button_2(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (500, 625)  # Позиционирование спрайта
 
 
-class Shop_spell_button_3(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_spell_button_3(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -251,7 +254,7 @@ class Shop_spell_button_3(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (800, 625)  # Позиционирование спрайта
 
 
-class Shop_skin_button_1(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_button_1(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -259,7 +262,7 @@ class Shop_skin_button_1(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (200, 625)  # Позиционирование спрайта
 
 
-class Shop_skin_button_2(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_button_2(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -267,7 +270,7 @@ class Shop_skin_button_2(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (500, 625)  # Позиционирование спрайта
 
 
-class Shop_skin_button_3(pygame.sprite.Sprite):  # Кнопка карты
+class Shop_skin_button_3(pygame.sprite.Sprite):  # Кнопка магазина
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/zxc.png')  # Загрузка изображения
@@ -275,7 +278,7 @@ class Shop_skin_button_3(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.bottomleft = (800, 625)  # Позиционирование спрайта
 
 
-class Settings(pygame.sprite.Sprite):  # Кнопка достижений
+class Settings(pygame.sprite.Sprite):  # Кнопка настроек
     def __init__(self):
         super().__init__()
 
@@ -285,7 +288,7 @@ class Settings(pygame.sprite.Sprite):  # Кнопка достижений
         self.rect.center = (1170, 30)  # Позиционирование спрайта в центре экрана
 
 
-class Arcade_right(pygame.sprite.Sprite):  # Кнопка карты
+class Arcade_right(pygame.sprite.Sprite):  # картинка для аркады
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/rignt.png')  # Загрузка изображения
@@ -293,7 +296,7 @@ class Arcade_right(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.center = (775, 245)  # Позиционирование спрайта
 
 
-class Arcade_left(pygame.sprite.Sprite):  # Кнопка карты
+class Arcade_left(pygame.sprite.Sprite): # картинка для аркады
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/left.png')  # Загрузка изображения
@@ -301,7 +304,7 @@ class Arcade_left(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.center = (400, 245)  # Позиционирование спрайта
 
 
-class Arcade_button(pygame.sprite.Sprite):  # Кнопка карты
+class Arcade_button(pygame.sprite.Sprite):  # картинка для аркады
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/play_in_arcade.png')  # Загрузка изображения
@@ -309,7 +312,7 @@ class Arcade_button(pygame.sprite.Sprite):  # Кнопка карты
         self.rect.center = (600, 600)  # Позиционирование спрайта
 
 
-class draw_lvl(pygame.sprite.Sprite):
+class draw_lvl(pygame.sprite.Sprite):     # Рисуем уровень
     def __init__(self, position):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -317,7 +320,7 @@ class draw_lvl(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
-class Lvl1(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl1(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -326,7 +329,7 @@ class Lvl1(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(120, 270))  # Устанавливаем позицию
 
 
-class Lvl2(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl2(pygame.sprite.Sprite):   # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -335,7 +338,7 @@ class Lvl2(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(120, 430))  # Устанавливаем позицию
 
 
-class Lvl3(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl3(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -344,7 +347,7 @@ class Lvl3(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(330, 430))  # Устанавливаем позицию
 
 
-class Lvl4(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl4(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -353,7 +356,7 @@ class Lvl4(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(330, 270))  # Устанавливаем позицию
 
 
-class Lvl5(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl5(pygame.sprite.Sprite):   # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -362,7 +365,7 @@ class Lvl5(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(540, 270))  # Устанавливаем позицию
 
 
-class Lvl6(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl6(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -371,7 +374,7 @@ class Lvl6(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(540, 430))  # Устанавливаем позицию
 
 
-class Lvl7(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl7(pygame.sprite.Sprite): # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -380,7 +383,7 @@ class Lvl7(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(750, 430))  # Устанавливаем позицию
 
 
-class Lvl8(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl8(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -389,7 +392,7 @@ class Lvl8(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(750, 270))  # Устанавливаем позицию
 
 
-class Lvl9(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl9(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -398,7 +401,7 @@ class Lvl9(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(960, 270))  # Устанавливаем позицию
 
 
-class Lvl10(pygame.sprite.Sprite):  # Кнопка магазина
+class Lvl10(pygame.sprite.Sprite): # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -407,7 +410,7 @@ class Lvl10(pygame.sprite.Sprite):  # Кнопка магазина
         self.rect = self.image.get_rect(topleft=(960, 430))  # Устанавливаем позицию
 
 
-class draw_vertikall_line(pygame.sprite.Sprite):
+class draw_vertikall_line(pygame.sprite.Sprite):   # Отрисовка линий уровней
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((20, 60))  # Создаем поверхность
@@ -420,7 +423,7 @@ class draw_vertikall_line(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
-class draw_gorizontall_line(pygame.sprite.Sprite):
+class draw_gorizontall_line(pygame.sprite.Sprite): # Отрисовка линий уровней
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((90, 20))  # Создаем поверхность
@@ -439,7 +442,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.screen_size = (1200, 800)
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption("Тайны подземелий")
-
+        print(game.STATE)
         # Воспроизведение фоновой музыки
 
         self.BLACK = (0, 0, 0)
@@ -668,17 +671,22 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         game.update_background_music()
         self.main_menu()
 
-    def draw_text(self, text, font, surface, x, y, color):
+    def draw_text(self, text, font, surface, x, y, color):       # Отрисовка текста
         textobj = font.render(text, True, color)
         textrect = textobj.get_rect()
         textrect.center = (x, y)
         surface.blit(textobj, textrect)
 
-    def main_menu(self):
+    def main_menu(self):       # Запуск лобби
         while True:
             self.screen.fill(self.BLACK)
-            self.draw_text("Тайны подземелий", self.font, self.screen, self.screen_size[0] // 2,
-                           self.screen_size[1] // 6, (160, 40, 222))
+            if game.STATE['lang'] == 'ru':
+                self.draw_text("Тайны подземелий", self.font, self.screen, self.screen_size[0] // 2,
+                               self.screen_size[1] // 6, (160, 40, 222))
+            else:
+                self.draw_text("Secrets of the dungeons", self.font, self.screen, self.screen_size[0] // 2,
+                               self.screen_size[1] // 6, (160, 40, 222))
+
 
             self.all_sprites.draw(self.screen)
             self.screen.blit(self.scaled_coin_image, (10, 10))
@@ -713,7 +721,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.shop_skin_33.update()
 
 
-            if flag_shop:
+            if flag_shop:        # Отрисовка спрайтов магазина
                 self.shop_spell_sprites.draw(self.screen)
 
                 self.draw_text("Купить", self.font, self.screen, 300, 590, 'black')
@@ -744,7 +752,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
 
 
-            if flag_map:  # отображение карты уровней
+            if flag_map:  # Отрисовка спрайтов карты уровней
                 self.map_sprites.draw(self.screen)
                 self.draw_text("1", self.b_font, self.screen, 180, 310, (0, 0, 0))
                 self.draw_text("2", self.b_font, self.screen, 180, 470, (0, 0, 0)) if game.STATE['levels'][
@@ -766,7 +774,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("10", self.b_font, self.screen, 1020, 470, (0, 0, 0)) if game.STATE['levels'][
                                                                                             8] > 0 else None
 
-            if flag_arcade:
+            if flag_arcade:  # Отрисовка спрайтов аркады
                 self.arcade_sprites.draw(self.screen)
 
                 self.draw_text("Аркада", self.b_font, self.screen, self.screen_size[0] // 2,
@@ -876,13 +884,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                     print('скин 2 куплен')
                 elif isinstance(sprite, Shop_skin_button_3):
                     print('скин 3 куплен')
-
-
-
-
-def settings_function(self):
-    print("Запуск настроек!")
-    pygame.time.delay(2000)  # Имитация задержки
 
 
 Lobby()

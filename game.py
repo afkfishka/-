@@ -46,7 +46,7 @@ STATE = {'skin': ['froggy', 5],
          'lang': 'ru'
          }
 
-SKINS = {'classic': (True, 6), 'spectrum': (False, 6), 'froggy': (False, 5)}
+SKINS = {'classic': (True, 6), 'spectrum': (False, 6), 'froggy': (False, 5)}  #  словарь скинов
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
@@ -1109,10 +1109,10 @@ class Settings:
                     webbrowser.open('https://yoomoney.ru/fundraise/183N31A6QH5.250130')  # Открытие ссылки
 
                 elif isinstance(sprite, USA):
-                    print('lang: en')
+                    STATE['lang'] = 'eng'
 
                 elif isinstance(sprite, RUS):
-                    print('lang: ru')
+                    STATE['lang'] = 'ru'
 
                 elif isinstance(sprite, Cross):
                     print('back to lobby')
