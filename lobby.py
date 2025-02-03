@@ -9,7 +9,7 @@ flag_map = True  # флаг для отрисовки карты уровней
 flag_arcade = False  # флаг для отрисовки аркады
 
 
-class Load_image(pygame.sprite.Sprite): # Загрузка изображения
+class Load_image(pygame.sprite.Sprite):  # Загрузка изображения
     def __init__(self, image_path, position):
         super().__init__()
         # Загрузка изображения
@@ -17,7 +17,7 @@ class Load_image(pygame.sprite.Sprite): # Загрузка изображени�
         self.rect = self.image.get_rect(topleft=position)  # Установить позицию спрайта
 
 
-class Load_lock(pygame.sprite.Sprite):   # Загрузка изображения с трансформированием
+class Load_lock(pygame.sprite.Sprite):  # Загрузка изображения с трансформированием
     def __init__(self, image_path, position, scalled):
         super().__init__()
         # Загрузка изображения
@@ -29,7 +29,7 @@ class Load_lock(pygame.sprite.Sprite):   # Загрузка изображени
 # уровни все
 
 
-def load_animation_frames(path, count, prefix):      # Анимация фреймов
+def load_animation_frames(path, count, prefix):  # Анимация фреймов
     frames = []
     for i in range(count):
         image_path = os.path.join(path, f'{prefix}_{i}.png')  # Загружаем кадры анимации
@@ -79,8 +79,6 @@ class ArcadeSprites(pygame.sprite.Sprite):  # Спрайты аркады
             self.image = pygame.image.load('images/arcade_eng.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (907, 750)  # Позиционирование спрайта
-
-
 
 
 class Pink_line(pygame.sprite.Sprite):  # Розовая линия
@@ -150,6 +148,7 @@ class Shop_skin_3(pygame.sprite.Sprite):  # картинки магазина
 
 class Shop_skin_11(pygame.sprite.Sprite):
     '''Анимированный скин в магазине'''
+
     def __init__(self):
         super().__init__()
 
@@ -173,6 +172,7 @@ class Shop_skin_11(pygame.sprite.Sprite):
 
 class Shop_skin_22(pygame.sprite.Sprite):
     '''Анимированный скин в магазине'''
+
     def __init__(self):
         super().__init__()
 
@@ -196,6 +196,7 @@ class Shop_skin_22(pygame.sprite.Sprite):
 
 class Shop_skin_33(pygame.sprite.Sprite):
     '''Анимированный скин в магазине'''
+
     def __init__(self):
         super().__init__()
 
@@ -207,7 +208,6 @@ class Shop_skin_33(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.topleft = (836, 286)  # Позиционирование спрайта
-
 
     def update(self):
         self.frame_counter += 1
@@ -226,7 +226,7 @@ class Shop_spell_1(pygame.sprite.Sprite):  # Картинка магазина �
         self.rect.topleft = (175, 200)  # Позиционирование спрайта
 
 
-class Shop_spell_2(pygame.sprite.Sprite):   # Картинка магазина скинов
+class Shop_spell_2(pygame.sprite.Sprite):  # Картинка магазина скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -234,7 +234,7 @@ class Shop_spell_2(pygame.sprite.Sprite):   # Картинка магазина 
         self.rect.topleft = (475, 200)  # Позиционирование спрайта
 
 
-class Shop_spell_3(pygame.sprite.Sprite):   # Картинка магазина скинов
+class Shop_spell_3(pygame.sprite.Sprite):  # Картинка магазина скинов
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/layout_shop.png')  # Загрузка изображения
@@ -293,7 +293,6 @@ class Shop_skin_button_3(pygame.sprite.Sprite):  # Кнопка магазина
 class Settings(pygame.sprite.Sprite):  # Кнопка настроек
     def __init__(self):
         super().__init__()
-
         self.image = pygame.image.load('images/menu_settings1.png')  # Загрузка изображения
         self.image = pygame.transform.scale(self.image, (40, 40))  # Масштабируем изображение до 40x40
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
@@ -308,7 +307,7 @@ class Arcade_right(pygame.sprite.Sprite):  # картинка для аркад�
         self.rect.center = (775, 245)  # Позиционирование спрайта
 
 
-class Arcade_left(pygame.sprite.Sprite): # картинка для аркады
+class Arcade_left(pygame.sprite.Sprite):  # картинка для аркады
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/left.png')  # Загрузка изображения
@@ -324,7 +323,16 @@ class Arcade_button(pygame.sprite.Sprite):  # картинка для аркад
         self.rect.center = (600, 600)  # Позиционирование спрайта
 
 
-class draw_lvl(pygame.sprite.Sprite):     # Рисуем уровень
+class Count(pygame.sprite.Sprite):  # Отображения количества бонусов
+    def __init__(self, cord):
+        super().__init__()
+        self.image = pygame.image.load('images/count.png')  # Загрузка изображения
+        self.image = pygame.transform.scale(self.image, (50, 50))  # Масштабируем изображение до 40x40
+        self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
+        self.rect.center = (cord)  # Позиционирование спрайта в центре экрана
+
+
+class draw_lvl(pygame.sprite.Sprite):  # Рисуем уровень
     def __init__(self, position):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -341,7 +349,7 @@ class Lvl1(pygame.sprite.Sprite):  # Отрисовка уровня
         self.rect = self.image.get_rect(topleft=(120, 270))  # Устанавливаем позицию
 
 
-class Lvl2(pygame.sprite.Sprite):   # Отрисовка уровня
+class Lvl2(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -368,7 +376,7 @@ class Lvl4(pygame.sprite.Sprite):  # Отрисовка уровня
         self.rect = self.image.get_rect(topleft=(330, 270))  # Устанавливаем позицию
 
 
-class Lvl5(pygame.sprite.Sprite):   # Отрисовка уровня
+class Lvl5(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -386,7 +394,7 @@ class Lvl6(pygame.sprite.Sprite):  # Отрисовка уровня
         self.rect = self.image.get_rect(topleft=(540, 430))  # Устанавливаем позицию
 
 
-class Lvl7(pygame.sprite.Sprite): # Отрисовка уровня
+class Lvl7(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -413,7 +421,7 @@ class Lvl9(pygame.sprite.Sprite):  # Отрисовка уровня
         self.rect = self.image.get_rect(topleft=(960, 270))  # Устанавливаем позицию
 
 
-class Lvl10(pygame.sprite.Sprite): # Отрисовка уровня
+class Lvl10(pygame.sprite.Sprite):  # Отрисовка уровня
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((120, 100))  # Создаем поверхность
@@ -422,7 +430,7 @@ class Lvl10(pygame.sprite.Sprite): # Отрисовка уровня
         self.rect = self.image.get_rect(topleft=(960, 430))  # Устанавливаем позицию
 
 
-class draw_vertikall_line(pygame.sprite.Sprite):   # Отрисовка линий уровней
+class draw_vertikall_line(pygame.sprite.Sprite):  # Отрисовка линий уровней
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((20, 60))  # Создаем поверхность
@@ -435,7 +443,7 @@ class draw_vertikall_line(pygame.sprite.Sprite):   # Отрисовка лини
         self.rect = self.image.get_rect(topleft=position)  # Устанавливаем позицию
 
 
-class draw_gorizontall_line(pygame.sprite.Sprite): # Отрисовка линий уровней
+class draw_gorizontall_line(pygame.sprite.Sprite):  # Отрисовка линий уровней
     def __init__(self, position, id=None):
         super().__init__()
         self.image = pygame.Surface((90, 20))  # Создаем поверхность
@@ -534,6 +542,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         self.shop_spell_sprites.add(Load_lock('images/bonus_magnet.png', (536, 286), (128, 128)))
         self.shop_spell_sprites.add(Load_lock('images/bonus_freezing.png', (836, 286), (128, 128)))
 
+        self.shop_spell_sprites.add(Count((395, 230)))
+        self.shop_spell_sprites.add(Count((695, 230)))
+        self.shop_spell_sprites.add(Count((995, 230)))
 
         self.map_sprites.add(draw_vertikall_line((170, 370), 1))
         self.map_sprites.add(draw_vertikall_line((380, 370), 2))
@@ -683,13 +694,13 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         game.update_background_music()
         self.main_menu()
 
-    def draw_text(self, text, font, surface, x, y, color):       # Отрисовка текста
+    def draw_text(self, text, font, surface, x, y, color):  # Отрисовка текста
         textobj = font.render(text, True, color)
         textrect = textobj.get_rect()
         textrect.center = (x, y)
         surface.blit(textobj, textrect)
 
-    def main_menu(self):       # Запуск лобби
+    def main_menu(self):  # Запуск лобби
         while True:
             self.screen.fill(self.BLACK)
             if game.STATE['lang'] == 'ru':
@@ -698,7 +709,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             else:
                 self.draw_text("Secrets of the dungeons", self.font, self.screen, self.screen_size[0] // 2,
                                self.screen_size[1] // 6, (160, 40, 222))
-
 
             self.all_sprites.draw(self.screen)
             self.screen.blit(self.scaled_coin_image, (10, 10))
@@ -743,7 +753,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
 
                 self.draw_text("Типичный иска-", self.font_30, self.screen, 300, 450, 'black')
-                self.draw_text("тель приключений", self.font_30, self.screen, 300, 470,'black')
+                self.draw_text("тель приключений", self.font_30, self.screen, 300, 470, 'black')
 
                 self.draw_text("Великий воин", self.font_30, self.screen, 600, 450, 'black')
                 self.draw_text("из тени", self.font_30, self.screen, 600, 470, 'black')
@@ -759,8 +769,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.shop_skin_22.update()
                 self.shop_skin_33.update()
 
-
-            if flag_shop:        # Отрисовка спрайтов магазина
+            if flag_shop:  # Отрисовка спрайтов магазина
                 self.shop_spell_sprites.draw(self.screen)
 
                 self.draw_text("Купить", self.font, self.screen, 300, 590, 'black')
@@ -772,7 +781,7 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("Мороз", self.font, self.screen, 900, 240, 'black')
 
                 self.draw_text("Дарует временную", self.font_30, self.screen, 300, 450, 'black')
-                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 470,'black')
+                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 470, 'black')
 
                 self.draw_text("Притягивает сокро-", self.font_30, self.screen, 600, 450, 'black')
                 self.draw_text("вища поблизости", self.font_30, self.screen, 600, 470, 'black')
@@ -784,6 +793,9 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("10$", self.font, self.screen, 600, 535, 'black')
                 self.draw_text("20$", self.font, self.screen, 900, 535, 'black')
 
+                self.draw_text(f"{game.STATE['shield']}", self.font, self.screen, 395, 225, 'white')
+                self.draw_text(f"{game.STATE['magnet']}", self.font, self.screen, 695, 225, 'white')
+                self.draw_text(f"{game.STATE['freezing']}", self.font, self.screen, 995, 225, 'white')
 
             if flag_map:  # Отрисовка спрайтов карты уровней
                 self.map_sprites.draw(self.screen)

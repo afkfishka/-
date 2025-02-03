@@ -32,7 +32,7 @@ COUNT_STAR = 0
 
 # Сохраняемые данные
 STATE = {'skin': ['man', 6],
-         'coins': 0,  # Монеты
+         'coins': 100,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': True,  # Состояние музыки
          'sound': True,  # Состояние звуковых эффектов
@@ -1145,6 +1145,8 @@ class Settings:
 
                 elif isinstance(sprite, Quit):
                     print('quit')
+                    pygame.quit()
+                    exit()
 
                 elif isinstance(sprite, FPS):
                     print('fps')
