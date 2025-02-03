@@ -31,22 +31,21 @@ COUNT_COIN = 0
 COUNT_STAR = 0
 
 # Сохраняемые данные
-STATE = {'skin': ['froggy', 5],
+STATE = {'skin': ['man', 6],
          'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': True,  # Состояние музыки
          'sound': True,  # Состояние звуковых эффектов
-         'freezing': 10,
-         'shield': 10,
-         'doubled coins': 10,
-         'doubled xp': 10,
-         'magnet': 10,
+         'freezing': 0,
+         'shield': 0,
+         'magnet': 0,
          'record': 0,
          'score': 0,
          'lang': 'ru'
          }
 
-SKINS = {'classic': (True, 6), 'spectrum': (False, 6), 'froggy': (False, 5)}  #  словарь скинов
+# Состояние покупки скинов
+SKINS = {'man': True, 'spectrum': False, 'froggy': False}  # словарь скинов
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
@@ -106,12 +105,14 @@ SOUNDS = {
     'ice box': pygame.mixer.Sound('music and sounds/ice box.wav')
 }
 
+# Каналы для воспроизведения звуковых эффектов
 coin_channel = pygame.mixer.Channel(0)
 death_channel = pygame.mixer.Channel(1)
 xp_channel = pygame.mixer.Channel(2)
 star_channel = pygame.mixer.Channel(3)
 ice_channel = pygame.mixer.Channel(4)
 
+# Инициализация собственного шрифта
 font_path = 'fonts/zx_spectrum_7_bold.ttf'
 font_size = 80
 my_font = pygame.font.Font(font_path, font_size)
@@ -300,6 +301,8 @@ class Player(sprite.Sprite):
 
 
 class Fire(sprite.Sprite):
+    """Класс для представления следа полета персонажа."""
+
     def __init__(self, hero):
         super().__init__()
         x, y = hero.rect.x, hero.rect.y
@@ -385,6 +388,9 @@ class Star(sprite.Sprite):
 
 
 class IceBox(sprite.Sprite):
+    """Класс для представления IceBox.
+    Блок не имеет коллизию для персонажа, но имеет для врагов."""
+
     def __init__(self, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -614,6 +620,9 @@ class Bat(sprite.Sprite):
 
 
 class Dart(sprite.Sprite):  # ⇐⇑⇒⇓
+    """Класс для представления арбалета.
+       Блок с некой периодичностью выпускает стрелы."""
+
     def __init__(self, dart_type, x, y):
         super().__init__()
         self.dart_type, self.x, self.y = dart_type, x, y
@@ -651,6 +660,9 @@ class Dart(sprite.Sprite):  # ⇐⇑⇒⇓
 
 
 class Arrow(sprite.Sprite):
+    """Класс для представления стрел.
+    Убивают персонажа при столкновении."""
+
     def __init__(self, arror_type, x, y):
         super().__init__()
         self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
@@ -694,6 +706,9 @@ class Arrow(sprite.Sprite):
 
 
 class Teleport(sprite.Sprite):
+    """Класс для представления телепорта.
+    Перемещает персонажа между двумя парами телепортов."""
+
     def __init__(self, x, y, portal_id):
         super().__init__()
         self.frames = load_animation_frames(os.path.join(os.path.dirname(__file__), 'textures/portal'), 11, "portal")
@@ -787,6 +802,8 @@ class Trampoline(sprite.Sprite):
 
 
 class GameOver(pygame.sprite.Sprite):
+    """Класс для представления окна смерти."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/game over.png')  # Загрузка изображения
@@ -795,6 +812,8 @@ class GameOver(pygame.sprite.Sprite):
 
 
 class Restart(pygame.sprite.Sprite):
+    """Класс для представления кнопки RESTART."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/restart.png')  # Загрузка изображения
@@ -803,6 +822,8 @@ class Restart(pygame.sprite.Sprite):
 
 
 class Music(pygame.sprite.Sprite):
+    """Класс для представления кнопки MUSIC."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/settings_music.png') if STATE['music'] else pygame.image.load(
@@ -818,6 +839,8 @@ class Music(pygame.sprite.Sprite):
 
 
 class Volume(pygame.sprite.Sprite):
+    """Класс для представления кнопки VOLUME."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/settings_volume.png') if STATE['sound'] else pygame.image.load(
@@ -833,6 +856,8 @@ class Volume(pygame.sprite.Sprite):
 
 
 class Quit(pygame.sprite.Sprite):
+    """Класс для представления кнопки QUIT."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/settings_quit.png')  # Загрузка изображения
@@ -841,6 +866,8 @@ class Quit(pygame.sprite.Sprite):
 
 
 class FPS(pygame.sprite.Sprite):
+    """Класс для представления кнопки FPS."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/settings_fps.png')  # Загрузка изображения
@@ -849,6 +876,8 @@ class FPS(pygame.sprite.Sprite):
 
 
 class Cross(pygame.sprite.Sprite):
+    """Класс для представления кнопки крестика."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/cross.png')  # Загрузка изображения
@@ -857,6 +886,8 @@ class Cross(pygame.sprite.Sprite):
 
 
 class Donate(pygame.sprite.Sprite):
+    """Класс для представления кнопки DONATE."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/donate.png')  # Загрузка изображения
@@ -865,6 +896,8 @@ class Donate(pygame.sprite.Sprite):
 
 
 class USA(pygame.sprite.Sprite):
+    """Класс для представления кнопки смена языка (en)."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/usa.png')  # Загрузка изображения
@@ -873,6 +906,8 @@ class USA(pygame.sprite.Sprite):
 
 
 class RUS(pygame.sprite.Sprite):
+    """Класс для представления кнопки смены языка (ru)."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/rus.png')  # Загрузка изображения
@@ -881,6 +916,8 @@ class RUS(pygame.sprite.Sprite):
 
 
 class Home(pygame.sprite.Sprite):
+    """Класс для представления кнопки HOME."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/home.png')  # Загрузка изображения
@@ -889,6 +926,8 @@ class Home(pygame.sprite.Sprite):
 
 
 class Resume(pygame.sprite.Sprite):
+    """Класс для представления кнопки RESUME."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/resume.png')  # Загрузка изображения
@@ -897,6 +936,8 @@ class Resume(pygame.sprite.Sprite):
 
 
 class Death:
+    """Класс для представления окна при смерти."""
+
     def __init__(self, screen, start_x=None, start_y=None, name_file=None):
         self.name_file = name_file
         self.start_x = start_x
@@ -971,6 +1012,8 @@ class Death:
 
 
 class Pause:
+    """Класс для представления окна при паузе."""
+
     def __init__(self, screen, name_file=None):
         self.screen = screen
         self.name_file = name_file
@@ -1040,6 +1083,8 @@ class Pause:
 
 
 class Settings:
+    """Класс для представления окна при открытии настроек."""
+
     def __init__(self, screen):
         self.screen = screen
         self.running = True
@@ -1121,6 +1166,8 @@ class Settings:
 
 
 class PauseButton(pygame.sprite.Sprite):
+    """Класс для представления кнопки паузы."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('images/menu_pause.png')
@@ -1130,6 +1177,9 @@ class PauseButton(pygame.sprite.Sprite):
 
 
 class Water(sprite.Sprite):
+    """Класс для представления воды в аркаде.
+    Вода равномерно поднимается и убивает персонажа при столкновении."""
+
     def __init__(self, level, hero):
         super().__init__()
         self.rect = Rect(PLATFORM_WIDTH * 2, hero.rect.y + 500, PLATFORM_WIDTH * 11, PLATFORM_HEIGHT * 11)
@@ -1141,6 +1191,9 @@ class Water(sprite.Sprite):
 
 
 class Magnet(sprite.Sprite):
+    """Класс для представления магнита (бонуса).
+    Собирает все сокровища в увеличенном радиусе от персонажа."""
+
     def __init__(self, hero):
         super().__init__()
         self.rect = Rect(hero.rect.x - PLATFORM_WIDTH * 1.5, hero.rect.y - PLATFORM_HEIGHT * 1.5, PLATFORM_WIDTH * 4,
@@ -1230,6 +1283,7 @@ def activate_menu():
     Lobby()
 
 
+# Функция для воспроизведения музыки
 def set_background_music():
     if STATE.get('music', False):  # Проверка состояния музыки
         pygame.mixer.music.load('music and sounds/game.mp3')
@@ -1237,6 +1291,7 @@ def set_background_music():
         pygame.mixer.music.set_volume(0.01)
 
 
+# Функция для обновления музыки
 def update_background_music():
     if STATE['music']:
         if not pygame.mixer.get_init():  # Проверка, инициализирован ли модулями звука
@@ -1248,11 +1303,13 @@ def update_background_music():
         pygame.mixer.music.stop()  # Остановка музыки если 'music' выключен
 
 
+# Функция для обнуления собранных сокровищ
 def reset_bonuses():
     global COUNT_XP, COUNT_COIN, COUNT_STAR
     COUNT_XP, COUNT_COIN, COUNT_STAR = 0, 0, 0
 
 
+# Функция для обнуления уровня
 def reset_level():
     global ENTITIES, PLATFORMS, PORTALS
     ENTITIES.empty()  # удаляем все спрайты
@@ -1261,12 +1318,14 @@ def reset_level():
     PORTALS.clear()
 
 
+# Функция для отрисовки текста
 def draw_text(text, font, surface, x, y, color):
     textobj = font.render(text, True, color)
     textrect = Rect(x, y, 100, 100)
     surface.blit(textobj, textrect)
 
 
+# Функция для инициализации уровня
 def load_platform(level):
     for y, row in enumerate(level):
         for x, col in enumerate(row):
@@ -1339,6 +1398,7 @@ def load_platform(level):
     PORTALS.sort(key=lambda x: x[0])
 
 
+# Функция для обновления всех энтити
 def update_entity(hero, freezing):
     hero.update(PLATFORMS)
     if not freezing:
@@ -1352,11 +1412,13 @@ def update_entity(hero, freezing):
                 entity.update()
 
 
+# Функция для обновления бонусов
 def update_bonuse(hero):
     for bonus in BONUSES:
         bonus.update(hero)
 
 
+# Функция для проверки столкновения
 def check_collided(collided_objects, hero, name_file=None):
     global COUNT_COIN, COUNT_XP, COUNT_STAR, STATE
     for obj in collided_objects:
@@ -1422,6 +1484,7 @@ if loaded_state is not None:
 STATE['score'] = 0
 
 
+# Основной режим игры
 def map_level(name_file, start_x, start_y):
     game_over_active = False
     paused = False
