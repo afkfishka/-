@@ -983,13 +983,23 @@ class Death:
             # self.screen.fill((0, 0, 0))
 
             self.game_over.draw(self.screen)
-            self.draw_text("Рестарт", self.font40, self.screen, 520, 505, "black")
-            self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
-            self.draw_text("Game over", self.b_font, self.screen, 600, 390, "black")
-            if self.name_file:
-                self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+
+            if STATE['lang'] == 'ru':
+                self.draw_text("Рестарт", self.font40, self.screen, 520, 505, "black")
+                self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
+                self.draw_text("Game over", self.b_font, self.screen, 600, 390, "black")
+                if self.name_file:
+                    self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+                else:
+                    self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
             else:
-                self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
+                self.draw_text("Restart", self.font40, self.screen, 520, 505, "black")
+                self.draw_text("Menu", self.font40, self.screen, 720, 505, "black")
+                self.draw_text("Game over", self.b_font, self.screen, 600, 390, "black")
+                if self.name_file:
+                    self.draw_text(f"Level {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+                else:
+                    self.draw_text('Arcade', self.b_font, self.screen, 600, 275, "black")
 
             # рисуем
             pygame.display.flip()
@@ -1057,13 +1067,22 @@ class Pause:
             # self.screen.fill((0, 0, 0))
 
             self.game_pause.draw(self.screen)
-            self.draw_text("Далее", self.font40, self.screen, 520, 505, "black")
-            self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
-            self.draw_text("Pause", self.b_font, self.screen, 600, 390, "black")
-            if self.name_file:
-                self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+            if STATE['lang'] == 'ru':
+                self.draw_text("Далее", self.font40, self.screen, 520, 505, "black")
+                self.draw_text("Меню", self.font40, self.screen, 720, 505, "black")
+                self.draw_text("Pause", self.b_font, self.screen, 600, 390, "black")
+                if self.name_file:
+                    self.draw_text(f"Уровень {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+                else:
+                    self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
             else:
-                self.draw_text('Аркада', self.b_font, self.screen, 600, 275, "black")
+                self.draw_text("Next", self.font40, self.screen, 520, 505, "black")
+                self.draw_text("Menu", self.font40, self.screen, 720, 505, "black")
+                self.draw_text("Pause", self.b_font, self.screen, 600, 390, "black")
+                if self.name_file:
+                    self.draw_text(f"Level {str(self.name_file[6:-4])}", self.b_font, self.screen, 585, 275, "black")
+                else:
+                    self.draw_text('Arcade', self.b_font, self.screen, 600, 275, "black")
 
             # рисуем
             pygame.display.flip()
@@ -1121,7 +1140,10 @@ class Settings:
             # self.screen.fill((0, 0, 0))
 
             self.settings.draw(self.screen)
-            draw_text("Настройки", self.font100, self.screen, 420, 225, "black")
+            if STATE['lang'] == 'ru':
+                draw_text("Настройки", self.font100, self.screen, 420, 225, "black")
+            else:
+                draw_text("Settings", self.font100, self.screen, 420, 225, "black")
             # рисуем
             pygame.display.flip()
         pygame.quit()

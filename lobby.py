@@ -719,51 +719,96 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
 
                 # Отображение статусов скинов
                 # Обычный
-                self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
-                if game.SKINS['man']:
-                    if game.STATE['skin'][0] == 'man':
-                        self.draw_text("ВЫБРАН", self.font, self.screen, 300, 590, 'black')
+                if game.STATE['lang'] == 'ru':
+                    if game.SKINS['man']:
+                        if game.STATE['skin'][0] == 'man':
+                            self.draw_text("ВЫБРАН", self.font, self.screen, 300, 590, 'black')
+                        else:
+                            self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 300, 590, 'black')
                     else:
-                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 300, 590, 'black')
-                else:
-                    self.draw_text("КУПИТЬ", self.font, self.screen, 300, 590, 'black')
+                        self.draw_text("КУПИТЬ", self.font, self.screen, 300, 590, 'black')
 
-                # Спектра
-                self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
-                if game.SKINS['spectrum']:
-                    if game.STATE['skin'][0] == 'spectrum':
-                        self.draw_text("ВЫБРАН", self.font, self.screen, 600, 590, 'black')
+                    # Спектра
+
+                    if game.SKINS['spectrum']:
+                        if game.STATE['skin'][0] == 'spectrum':
+                            self.draw_text("ВЫБРАН", self.font, self.screen, 600, 590, 'black')
+                        else:
+                            self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 600, 590, 'black')
                     else:
-                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 600, 590, 'black')
-                else:
-                    self.draw_text("КУПИТЬ", self.font, self.screen, 600, 590, 'black')
+                        self.draw_text("КУПИТЬ", self.font, self.screen, 600, 590, 'black')
 
-                # Джабба
-                self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
-                if game.SKINS['froggy']:
-                    if game.STATE['skin'][0] == 'froggy':
-                        self.draw_text("ВЫБРАН", self.font, self.screen, 900, 590, 'black')
+                    # Джабба
+
+                    if game.SKINS['froggy']:
+                        if game.STATE['skin'][0] == 'froggy':
+                            self.draw_text("ВЫБРАН", self.font, self.screen, 900, 590, 'black')
+                        else:
+                            self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 900, 590, 'black')
                     else:
-                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 900, 590, 'black')
+                        self.draw_text("КУПИТЬ", self.font, self.screen, 900, 590, 'black')
+
+                    self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
+                    self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
+                    self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
+
+                    self.draw_text("Типичный иска-", self.font_30, self.screen, 300, 450, 'black')
+                    self.draw_text("тель приключений", self.font_30, self.screen, 300, 470, 'black')
+
+                    self.draw_text("Великий воин", self.font_30, self.screen, 600, 450, 'black')
+                    self.draw_text("из тени", self.font_30, self.screen, 600, 470, 'black')
+
+                    self.draw_text("Джабба Хат с", self.font_30, self.screen, 900, 450, 'black')
+                    self.draw_text("планеты Татуин", self.font_30, self.screen, 900, 470, 'black')
+
+                    self.draw_text("Бесплатно", self.font_50, self.screen, 300, 535, 'black')
+                    self.draw_text("50$", self.font, self.screen, 600, 535, 'black')
+                    self.draw_text("70$", self.font, self.screen, 900, 535, 'black')
+
+
+
                 else:
-                    self.draw_text("КУПИТЬ", self.font, self.screen, 900, 590, 'black')
+                    if game.SKINS['man']:
+                        if game.STATE['skin'][0] == 'man':
+                            self.draw_text("SELECTED", self.font, self.screen, 300, 590, 'black')
+                        else:
+                            self.draw_text("HAVE", self.font, self.screen, 300, 590, 'black')
+                    else:
+                        self.draw_text("BUY", self.font, self.screen, 300, 590, 'black')
 
-                self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
-                self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
-                self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
+                    # Спектра
 
-                self.draw_text("Типичный иска-", self.font_30, self.screen, 300, 450, 'black')
-                self.draw_text("тель приключений", self.font_30, self.screen, 300, 470, 'black')
+                    if game.SKINS['spectrum']:
+                        if game.STATE['skin'][0] == 'spectrum':
+                            self.draw_text("SELECTED", self.font, self.screen, 600, 590, 'black')
+                        else:
+                            self.draw_text("HAVE", self.font, self.screen, 600, 590, 'black')
+                    else:
+                        self.draw_text("BUY", self.font, self.screen, 600, 590, 'black')
 
-                self.draw_text("Великий воин", self.font_30, self.screen, 600, 450, 'black')
-                self.draw_text("из тени", self.font_30, self.screen, 600, 470, 'black')
+                    # Джабба
 
-                self.draw_text("Джабба Хат с", self.font_30, self.screen, 900, 450, 'black')
-                self.draw_text("планеты Татуин", self.font_30, self.screen, 900, 470, 'black')
+                    if game.SKINS['froggy']:
+                        if game.STATE['skin'][0] == 'froggy':
+                            self.draw_text("SELECTED", self.font, self.screen, 900, 590, 'black')
+                        else:
+                            self.draw_text("HAVE", self.font, self.screen, 900, 590, 'black')
+                    else:
+                        self.draw_text("BUY", self.font, self.screen, 900, 590, 'black')
 
-                self.draw_text("Бесплатно", self.font_50, self.screen, 300, 535, 'black')
-                self.draw_text("50$", self.font, self.screen, 600, 535, 'black')
-                self.draw_text("70$", self.font, self.screen, 900, 535, 'black')
+                    self.draw_text("Usual", self.font, self.screen, 300, 240, 'black')
+                    self.draw_text("Spectrum", self.font, self.screen, 600, 240, 'black')
+                    self.draw_text("Jabba", self.font, self.screen, 900, 240, 'black')
+
+                    self.draw_text("Adventurer", self.font_30, self.screen, 300, 450, 'black')
+
+                    self.draw_text("Great Warrior", self.font_30, self.screen, 600, 450, 'black')
+
+                    self.draw_text("Jabba Hat", self.font_30, self.screen, 900, 450, 'black')
+
+                    self.draw_text("Free", self.font_50, self.screen, 300, 535, 'black')
+                    self.draw_text("50$", self.font, self.screen, 600, 535, 'black')
+                    self.draw_text("70$", self.font, self.screen, 900, 535, 'black')
 
                 self.shop_skin_11.update()
                 self.shop_skin_22.update()
@@ -772,22 +817,43 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_shop:  # Отрисовка спрайтов магазина
                 self.shop_spell_sprites.draw(self.screen)
 
-                self.draw_text("Купить", self.font, self.screen, 300, 590, 'black')
-                self.draw_text("Купить", self.font, self.screen, 600, 590, 'black')
-                self.draw_text("Купить", self.font, self.screen, 900, 590, 'black')
+                if game.STATE['lang'] == 'ru':
+                    self.draw_text("Купить", self.font, self.screen, 300, 590, 'black')
+                    self.draw_text("Купить", self.font, self.screen, 600, 590, 'black')
+                    self.draw_text("Купить", self.font, self.screen, 900, 590, 'black')
 
-                self.draw_text("Щит", self.font, self.screen, 300, 240, 'black')
-                self.draw_text("Магнит", self.font, self.screen, 600, 240, 'black')
-                self.draw_text("Мороз", self.font, self.screen, 900, 240, 'black')
+                    self.draw_text("Щит", self.font, self.screen, 300, 240, 'black')
+                    self.draw_text("Магнит", self.font, self.screen, 600, 240, 'black')
+                    self.draw_text("Мороз", self.font, self.screen, 900, 240, 'black')
 
-                self.draw_text("Дарует временную", self.font_30, self.screen, 300, 450, 'black')
-                self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 470, 'black')
+                    self.draw_text("Дарует временную", self.font_30, self.screen, 300, 450, 'black')
+                    self.draw_text("защиту от ловушек", self.font_30, self.screen, 300, 470, 'black')
 
-                self.draw_text("Притягивает сокро-", self.font_30, self.screen, 600, 450, 'black')
-                self.draw_text("вища поблизости", self.font_30, self.screen, 600, 470, 'black')
+                    self.draw_text("Притягивает сокро-", self.font_30, self.screen, 600, 450, 'black')
+                    self.draw_text("вища поблизости", self.font_30, self.screen, 600, 470, 'black')
 
-                self.draw_text("Замораживает всё", self.font_30, self.screen, 900, 450, 'black')
-                self.draw_text("вокруг", self.font_30, self.screen, 900, 470, 'black')
+                    self.draw_text("Замораживает всё", self.font_30, self.screen, 900, 450, 'black')
+                    self.draw_text("вокруг", self.font_30, self.screen, 900, 470, 'black')
+
+
+
+                else:
+                    self.draw_text("Buy", self.font, self.screen, 300, 590, 'black')
+                    self.draw_text("Buy", self.font, self.screen, 600, 590, 'black')
+                    self.draw_text("Buy", self.font, self.screen, 900, 590, 'black')
+
+                    self.draw_text("Shield", self.font, self.screen, 300, 240, 'black')
+                    self.draw_text("Magnet", self.font, self.screen, 600, 240, 'black')
+                    self.draw_text("Frost", self.font, self.screen, 900, 240, 'black')
+
+                    self.draw_text("Protection", self.font_30, self.screen, 300, 450, 'black')
+
+                    self.draw_text("Attraction all", self.font_30, self.screen, 600, 450, 'black')
+
+
+                    self.draw_text("Freezing all", self.font_30, self.screen, 900, 450, 'black')
+
+
 
                 self.draw_text("15$", self.font, self.screen, 300, 535, 'black')
                 self.draw_text("10$", self.font, self.screen, 600, 535, 'black')
@@ -822,17 +888,31 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_arcade:  # Отрисовка спрайтов аркады
                 self.arcade_sprites.draw(self.screen)
 
-                self.draw_text("Аркада", self.b_font, self.screen, self.screen_size[0] // 2,
-                               self.screen_size[1] // 10 * 3, "Yellow")
-                self.draw_text("Играть", self.b_font, self.screen, self.screen_size[0] // 2,
-                               587, "black")
-                self.arcade_sprites.update()
+                if game.STATE['lang'] == 'ru':
+                    self.draw_text("Аркада", self.b_font, self.screen, self.screen_size[0] // 2,
+                                   self.screen_size[1] // 10 * 3, "Yellow")
+                    self.draw_text("Играть", self.b_font, self.screen, self.screen_size[0] // 2,
+                                   587, "black")
+                    self.arcade_sprites.update()
 
-                self.draw_text('Очки', self.font_70, self.screen, 300, 400, (212, 0, 254))
-                self.draw_text(str(game.STATE['score']), self.font_70, self.screen, 300, 480, (212, 0, 254))
+                    self.draw_text('Очки', self.font_70, self.screen, 300, 400, (212, 0, 254))
+                    self.draw_text(str(game.STATE['score']), self.font_70, self.screen, 300, 480, (212, 0, 254))
 
-                self.draw_text('Рекорд', self.font_70, self.screen, 900, 400, (212, 0, 254))
-                self.draw_text(str(game.STATE['record']), self.font_70, self.screen, 900, 480, (212, 0, 254))
+                    self.draw_text('Рекорд', self.font_70, self.screen, 900, 400, (212, 0, 254))
+                    self.draw_text(str(game.STATE['record']), self.font_70, self.screen, 900, 480, (212, 0, 254))
+
+                else:
+                    self.draw_text("Arcade", self.b_font, self.screen, self.screen_size[0] // 2,
+                                   self.screen_size[1] // 10 * 3, "Yellow")
+                    self.draw_text("Play", self.b_font, self.screen, self.screen_size[0] // 2,
+                                   587, "black")
+                    self.arcade_sprites.update()
+
+                    self.draw_text('Points', self.font_70, self.screen, 300, 400, (212, 0, 254))
+                    self.draw_text(str(game.STATE['score']), self.font_70, self.screen, 300, 480, (212, 0, 254))
+
+                    self.draw_text('Record', self.font_70, self.screen, 900, 400, (212, 0, 254))
+                    self.draw_text(str(game.STATE['record']), self.font_70, self.screen, 900, 480, (212, 0, 254))
 
             # Обработка событий
             for event in pygame.event.get():
