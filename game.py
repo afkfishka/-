@@ -32,7 +32,7 @@ COUNT_STAR = 0
 
 # Сохраняемые данные
 STATE = {'skin': ['man', 6],
-         'coins': 100,  # Монеты
+         'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': True,  # Состояние музыки
          'sound': True,  # Состояние звуковых эффектов
@@ -1634,7 +1634,6 @@ def arcade():
     shuffle(arcades)
 
     id_arcade = 0
-    name_file = arcades[0][0]
     start_x, start_y = arcades[0][1]
 
     # Создаем экземпляр игрока
@@ -1689,14 +1688,17 @@ def arcade():
                     elif event.key == K_1:
                         magnet = Magnet(hero)
                         BONUSES.append(magnet)
+                        STATE['magnet'] -= 1
                         print('start magnet')
                     elif event.key == K_2:
                         freezing = True
                         print('start freez')
+                        STATE['freezing'] -= 1
                     elif event.key == K_3:
                         hero.shielded = True
                         hero.shielded_start = time.time()
                         print('start shield')
+                        STATE['shield'] -= 1
 
             if freezing:
                 if not freezing_start:
@@ -1735,6 +1737,10 @@ def arcade():
         if hero.rect.y <= 500:
             block = False
             id_arcade += 1
+
+            if id_arcade > 3:
+                shuffle(arcades)
+                id_arcade = 0
 
             # Очищаем данные перед загрузкой нового уровня
             reset_level()
