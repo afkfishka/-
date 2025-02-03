@@ -40,7 +40,10 @@ def load_animation_frames(path, count, prefix):      # Анимация фрей
 class ShopSprites(pygame.sprite.Sprite):  # Спрайты магазина
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/shop.png')  # Загрузка изображения
+        if game.STATE['lang'] == 'ru':
+            self.image = pygame.image.load('images/shop.png')  # Загрузка изображения
+        elif game.STATE['lang'] == 'eng':
+            self.image = pygame.image.load('images/shop_eng.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (292, 750)  # Позиционирование спрайта
 
@@ -48,7 +51,10 @@ class ShopSprites(pygame.sprite.Sprite):  # Спрайты магазина
 class SkinsSprites(pygame.sprite.Sprite):  # Спрайты скинов
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/skin.png')  # Загрузка изображения
+        if game.STATE['lang'] == 'ru':
+            self.image = pygame.image.load('images/skin.png')  # Загрузка изображения
+        elif game.STATE['lang'] == 'eng':
+            self.image = pygame.image.load('images/skin_eng.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (497, 750)  # Позиционирование спрайта
 
@@ -56,7 +62,10 @@ class SkinsSprites(pygame.sprite.Sprite):  # Спрайты скинов
 class MapSprites(pygame.sprite.Sprite):  # Спрайты карты
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/map.png')  # Загрузка изображения
+        if game.STATE['lang'] == 'ru':
+            self.image = pygame.image.load('images/map.png')  # Загрузка изображения
+        elif game.STATE['lang'] == 'eng':
+            self.image = pygame.image.load('images/map_eng.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (702, 750)  # Позиционирование спрайта
 
@@ -64,7 +73,10 @@ class MapSprites(pygame.sprite.Sprite):  # Спрайты карты
 class ArcadeSprites(pygame.sprite.Sprite):  # Спрайты аркады
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('images/arcade.png')  # Загрузка изображения
+        if game.STATE['lang'] == 'ru':
+            self.image = pygame.image.load('images/arcade.png')  # Загрузка изображения
+        elif game.STATE['lang'] == 'eng':
+            self.image = pygame.image.load('images/arcade_eng.png')  # Загрузка изображения
         self.rect = self.image.get_rect()  # Получение прямоугольника для позиционирования
         self.rect.center = (907, 750)  # Позиционирование спрайта
 
