@@ -1355,6 +1355,7 @@ def load_platform(level):
             elif col in SPIKE_IMAGES:  # Создаем колючку
                 spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, SPIKE_IMAGES[col])
                 ENTITIES.add(spike)
+                PLATFORMS.append(spike)
 
             elif col in TRAP_IMAGES:  # Создаем ловушку
                 trap = Trap(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, TRAP_IMAGES[col])
