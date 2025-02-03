@@ -230,6 +230,7 @@ class Player(sprite.Sprite):
                 self.direction = None  # Останавливаем движение, если столкновение
 
     def move(self, platforms):
+        global game_over_active1
         # Переменные для изменения позиции
         dx, dy = 0, 0
 
@@ -280,7 +281,27 @@ class Player(sprite.Sprite):
                 elif dy > 0:  # Движение вниз
                     self.rect.bottom = platform.rect.top
                 return False  # Столкновение произошло
-
+            if isinstance(platform, Spike) and self.rect.colliderect(platform.rect):
+                print('zxc1')
+                if not self.shielded:
+                    # Персонаж умирает
+                    if STATE['sound']:
+                        death_channel.play(SOUNDS['death'])
+                        death_channel.set_volume(0.2)
+                    save_game(STATE)
+                    game_over_active1 = True
+                    return False  # Столкновение произошло
+                else:
+                    self.shielded = False  # Деактивировать щит
+                    if dx < 0:  # Движение влево
+                        self.rect.left = platform.rect.right
+                    elif dx > 0:  # Движение вправо
+                        self.rect.right = platform.rect.left
+                    if dy < 0:  # Движение вверх
+                        self.rect.top = platform.rect.bottom
+                    elif dy > 0:  # Движение вниз
+                        self.rect.bottom = platform.rect.top
+                    return False  # Столкновение произошло
         return True  # Перемещение прошло успешно
 
     def activate_shield(self):
@@ -930,6 +951,8 @@ class Death:
     """Класс для представления окна при смерти."""
 
     def __init__(self, screen, start_x=None, start_y=None, name_file=None):
+        global game_over_active1
+        game_over_active1 = False
         self.name_file = name_file
         self.start_x = start_x
         self.start_y = start_y
@@ -1363,8 +1386,9 @@ def load_platform(level):
 
             elif col in SPIKE_IMAGES:  # Создаем колючку
                 spike = Spike(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, SPIKE_IMAGES[col])
-                ENTITIES.add(spike)
                 PLATFORMS.append(spike)
+                ENTITIES.add(spike)
+
 
             elif col in TRAP_IMAGES:  # Создаем ловушку
                 trap = Trap(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, TRAP_IMAGES[col])
@@ -1435,7 +1459,7 @@ def check_collided(collided_objects, hero, name_file=None):
     global COUNT_COIN, COUNT_XP, COUNT_STAR, STATE
     for obj in collided_objects:
         # Проверка столкновения игрока со смертельно опасными объектами
-        if isinstance(obj, Spike) or (isinstance(obj, Thorn) and obj.image_name is not None and (
+        if (isinstance(obj, Thorn) and obj.image_name is not None and (
                 '2' in obj.image_name or '3' in obj.image_name)) or (
                 isinstance(obj, Fish) and int(obj.image_name[5:-4]) in list(range(6, 15)) or (
                 isinstance(obj, Bat)) or isinstance(obj, Arrow) or isinstance(obj, Water)):
@@ -1496,6 +1520,7 @@ if loaded_state is not None:
 STATE['score'] = 0
 
 
+game_over_active1 = False
 # Основной режим игры
 def map_level(name_file, start_x, start_y):
     game_over_active = False
@@ -1543,7 +1568,7 @@ def map_level(name_file, start_x, start_y):
     pause_button = PauseButton()
 
     while True:
-        if not game_over_active and not paused:  # Проверка состояния игры
+        if not game_over_active and not game_over_active1 and not paused:  # Проверка состояния игры
             keys = pygame.key.get_pressed()  # Получаем состояние клавиш
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -1620,10 +1645,10 @@ def map_level(name_file, start_x, start_y):
 
 # Основная функция аркады
 def arcade():
+    global game_over_active1
     game_over_active = False
     paused = False
     block = False
-    first_movement = False
     freezing = False
     freezing_start = None
 
@@ -1800,9 +1825,10 @@ def arcade():
             paused = False
             pygame.mixer.music.unpause()
 
-        if game_over_active:
+        if game_over_active or game_over_active1:
             STATE['score'] = COUNT_XP
             STATE['record'] = max(STATE['record'], COUNT_XP)
             game_over_active = False
+            game_over_active1 = False
             Death(screen)
             pygame.mixer.music.stop()  # Останавливаем музыку
