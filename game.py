@@ -1575,17 +1575,20 @@ def map_level(name_file, start_x, start_y):
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
                     elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
-                    elif event.key == K_1:
+                    elif event.key == K_1 and STATE['magnet'] > 0:
                         magnet = Magnet(hero)
                         BONUSES.append(magnet)
+                        STATE['magnet'] -= 1
                         print('start magnet')
-                    elif event.key == K_2:
+                    elif event.key == K_2 and STATE['freezing'] > 0:
                         freezing = True
                         print('start freez')
-                    elif event.key == K_3:
+                        STATE['freezing'] -= 1
+                    elif event.key == K_3 and STATE['shield'] > 0:
                         hero.shielded = True
                         hero.shielded_start = time.time()
                         print('start shield')
+                        STATE['shield'] -= 1
 
             if freezing:
                 if not freezing_start:
@@ -1708,16 +1711,16 @@ def arcade():
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'up')
                     elif event.key == K_DOWN or event.key == K_s:
                         hero.start_move(keys[K_LEFT], keys[K_RIGHT], keys[K_UP], keys[K_DOWN], 'down')
-                    elif event.key == K_1:
+                    elif event.key == K_1 and STATE['magnet'] > 0:
                         magnet = Magnet(hero)
                         BONUSES.append(magnet)
                         STATE['magnet'] -= 1
                         print('start magnet')
-                    elif event.key == K_2:
+                    elif event.key == K_2 and STATE['freezing'] > 0:
                         freezing = True
                         print('start freez')
                         STATE['freezing'] -= 1
-                    elif event.key == K_3:
+                    elif event.key == K_3 and STATE['shield'] > 0:
                         hero.shielded = True
                         hero.shielded_start = time.time()
                         print('start shield')
