@@ -829,13 +829,13 @@ class Music(pygame.sprite.Sprite):
         self.image = pygame.image.load('images/settings_music.png') if STATE['music'] else pygame.image.load(
             'images/settings_music0.png')  # Загрузка изображения# Загрузка изображения
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(400, 355))  # Установка координат кнопки
+        self.rect = self.image.get_rect(topleft=(450, 355))  # Установка координат кнопки
 
     def update_image(self):
         image_path = 'images/settings_music.png' if STATE['music'] else 'images/settings_music0.png'
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(400, 355))  # Установка координат кнопки
+        self.rect = self.image.get_rect(topleft=(450, 355))  # Установка координат кнопки
 
 
 class Volume(pygame.sprite.Sprite):
@@ -846,13 +846,13 @@ class Volume(pygame.sprite.Sprite):
         self.image = pygame.image.load('images/settings_volume.png') if STATE['sound'] else pygame.image.load(
             'images/settings_volume0.png')  # Загрузка изображения
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(505, 355))  # Установка координат кнопки
+        self.rect = self.image.get_rect(topleft=(558, 355))  # Установка координат кнопки
 
     def update_image(self):
         image_path = 'images/settings_volume.png' if STATE['sound'] else 'images/settings_volume0.png'
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(505, 355))  # Установка координат кнопки
+        self.rect = self.image.get_rect(topleft=(558, 355))  # Установка координат кнопки
 
 
 class Quit(pygame.sprite.Sprite):
@@ -862,17 +862,8 @@ class Quit(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('images/settings_quit.png')  # Загрузка изображения
         self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(715, 355))  # Установка координат кнопки
+        self.rect = self.image.get_rect(topleft=(665, 355))  # Установка координат кнопки
 
-
-class FPS(pygame.sprite.Sprite):
-    """Класс для представления кнопки FPS."""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('images/settings_fps.png')  # Загрузка изображения
-        self.image = pygame.transform.scale(self.image, (21 * 4, 23 * 4))  # Растяжение изображения
-        self.rect = self.image.get_rect(topleft=(610, 355))  # Установка координат кнопки
 
 
 class Cross(pygame.sprite.Sprite):
@@ -1119,7 +1110,6 @@ class Settings:
         self.settings.add(GameOver())
         self.settings.add(Music())
         self.settings.add(Volume())
-        self.settings.add(FPS())
         self.settings.add(Quit())
         self.settings.add(Cross())
         self.settings.add(Donate())
@@ -1169,9 +1159,6 @@ class Settings:
                     print('quit')
                     pygame.quit()
                     exit()
-
-                elif isinstance(sprite, FPS):
-                    print('fps')
 
                 elif isinstance(sprite, Donate):
                     print('donate')
