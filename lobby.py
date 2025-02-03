@@ -695,9 +695,36 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
             if flag_skins:
                 self.shop_skins_sprites.draw(self.screen)
 
-                self.draw_text("Имеется", self.font, self.screen, 300, 590, 'black')
-                self.draw_text("Купить", self.font, self.screen, 600, 590, 'black')
-                self.draw_text("Купить", self.font, self.screen, 900, 590, 'black')
+                # Отображение статусов скинов
+                # Обычный
+                self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
+                if game.SKINS['man']:
+                    if game.STATE['skin'][0] == 'man':
+                        self.draw_text("ВЫБРАН", self.font, self.screen, 300, 590, 'black')
+                    else:
+                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 300, 590, 'black')
+                else:
+                    self.draw_text("КУПИТЬ", self.font, self.screen, 300, 590, 'black')
+
+                # Спектра
+                self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
+                if game.SKINS['spectrum']:
+                    if game.STATE['skin'][0] == 'spectrum':
+                        self.draw_text("ВЫБРАН", self.font, self.screen, 600, 590, 'black')
+                    else:
+                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 600, 590, 'black')
+                else:
+                    self.draw_text("КУПИТЬ", self.font, self.screen, 600, 590, 'black')
+
+                # Джабба
+                self.draw_text("Джабба", self.font, self.screen, 900, 240, 'black')
+                if game.SKINS['froggy']:
+                    if game.STATE['skin'][0] == 'froggy':
+                        self.draw_text("ВЫБРАН", self.font, self.screen, 900, 590, 'black')
+                    else:
+                        self.draw_text("ИМЕЕТСЯ", self.font, self.screen, 900, 590, 'black')
+                else:
+                    self.draw_text("КУПИТЬ", self.font, self.screen, 900, 590, 'black')
 
                 self.draw_text("Обычный", self.font, self.screen, 300, 240, 'black')
                 self.draw_text("Спектра", self.font, self.screen, 600, 240, 'black')
@@ -744,12 +771,6 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
                 self.draw_text("15$", self.font, self.screen, 300, 535, 'black')
                 self.draw_text("10$", self.font, self.screen, 600, 535, 'black')
                 self.draw_text("20$", self.font, self.screen, 900, 535, 'black')
-
-
-
-
-
-
 
 
             if flag_map:  # Отрисовка спрайтов карты уровней
@@ -869,21 +890,43 @@ class Lobby(pygame.sprite.Sprite):  # Лобби
         for sprite in self.shop_spell_sprites:
             if sprite.rect.collidepoint(pos) and flag_shop:
                 if isinstance(sprite, Shop_spell_button_1):
-                    print('способность 1 куплена')
+                    if game.STATE['coins'] >= 15:
+                        print('способность 1 куплена')
+                        game.STATE['shield'] += 1
+                        game.STATE['coins'] -= 15
+                        game.save_game(game.STATE)
                 elif isinstance(sprite, Shop_spell_button_2):
-                    print('способность 2 куплена')
+                    if game.STATE['coins'] >= 10:
+                        print('способность 2 куплена')
+                        game.STATE['magnet'] += 1
+                        game.STATE['coins'] -= 10
+                        game.save_game(game.STATE)
                 elif isinstance(sprite, Shop_spell_button_3):
-                    print('способность 3 куплена')
+                    if game.STATE['coins'] >= 20:
+                        print('способность 3 куплена')
+                        game.STATE['freezing'] += 1
+                        game.STATE['coins'] -= 20
+                        game.save_game(game.STATE)
 
     def click_shop_skin(self, pos):
         for sprite in self.shop_skins_sprites:
             if sprite.rect.collidepoint(pos) and flag_skins:
                 if isinstance(sprite, Shop_skin_button_1):
-                    print('скин 1 куплен')
+                    game.SKINS['man'] = True
+                    game.STATE['skin'] = ['man', 6]
+                    game.save_game(game.STATE)
                 elif isinstance(sprite, Shop_skin_button_2):
-                    print('скин 2 куплен')
+                    if game.STATE['coins'] >= 50 and not game.SKINS['spectrum']:
+                        game.SKINS['spectrum'] = True
+                        game.STATE['skin'] = ['spectrum', 6]
+                        game.STATE['coins'] -= 50
+                        game.save_game(game.STATE)
                 elif isinstance(sprite, Shop_skin_button_3):
-                    print('скин 3 куплен')
+                    if game.STATE['coins'] >= 70 and not game.SKINS['froggy']:
+                        game.SKINS['froggy'] = True
+                        game.STATE['skin'] = ['froggy', 5]
+                        game.STATE['coins'] -= 70
+                        game.save_game(game.STATE)
 
 
 Lobby()

@@ -31,22 +31,21 @@ COUNT_COIN = 0
 COUNT_STAR = 0
 
 # Сохраняемые данные
-STATE = {'skin': ['froggy', 5],
+STATE = {'skin': ['man', 6],
          'coins': 0,  # Монеты
          'levels': [0] + [-1] * 9,  # Прогресс ур-й
          'music': True,  # Состояние музыки
          'sound': True,  # Состояние звуковых эффектов
-         'freezing': 10,
-         'shield': 10,
-         'doubled coins': 10,
-         'doubled xp': 10,
-         'magnet': 10,
+         'freezing': 0,
+         'shield': 0,
+         'magnet': 0,
          'record': 0,
          'score': 0,
          'lang': 'ru'
          }
 
-SKINS = {'classic': (True, 6), 'spectrum': (False, 6), 'froggy': (False, 5)}  #  словарь скинов
+SKINS = {'man': True, 'spectrum': False, 'froggy': False}  # словарь скинов
+
 
 # Словарь с изображениями стен
 WALL_IMAGES = {
